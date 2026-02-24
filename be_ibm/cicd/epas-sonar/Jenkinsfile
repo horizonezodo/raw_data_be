@@ -1,0 +1,170 @@
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(true)
+        timestamps()
+    }
+
+    environment {
+        SONAR_PROJECT_KEY  = 'be-ibm'
+        MAVEN_IMAGE        = 'maven:3.9.11-eclipse-temurin-17'
+        M2_CACHE           = '/var/lib/jenkins/.m2'
+        MAVEN_SETTINGS     = '.mvn/settings.xml'
+    }
+
+    stages {
+
+        stage('Validate MR Condition') {
+            steps {
+                gitlabCommitStatus(name: 'validate') {
+                    script {
+                        def source = env.gitlabSourceBranch ?: env.CHANGE_BRANCH ?: env.gitlabBranch ?: ''
+                        def target = env.gitlabTargetBranch ?: env.CHANGE_TARGET ?: ''
+                        def isMr = (env.gitlabMergeRequestIid ?: env.gitlabMergeRequestId ?: env.CHANGE_ID) ? true : false
+                        echo "Detected isMr=${isMr}"
+                        echo "MR source=${source}"
+                        echo "MR target=${target}"
+
+                        if (isMr) {
+                            if (target != 'dev') {
+                                currentBuild.result = 'NOT_BUILT'
+                                error("Skip: MR target is not dev")
+                            }
+                            if (!source?.trim() || source == 'dev') {
+                                currentBuild.result = 'NOT_BUILT'
+                                error("Skip: invalid source branch for MR")
+                            }
+                        } else {
+                            source = 'dev'
+                            target = ''
+                            echo "Non-MR build. Force source=${source}"
+                        }
+
+                        env.EPAS_SOURCE_BRANCH = source
+                        env.EPAS_TARGET_BRANCH = target
+                        env.EPAS_IS_MR = isMr.toString()
+                        env.SONAR_SHOULD_DELETE = (isMr && target == 'dev') ? 'true' : 'false'
+                    }
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                gitlabCommitStatus(name: 'checkout') {
+                    script {
+                        def branch = env.EPAS_SOURCE_BRANCH ?: 'dev'
+                        if (scm?.userRemoteConfigs) {
+                            def remote = scm.userRemoteConfigs[0].url
+                            def credId = scm.userRemoteConfigs[0].credentialsId
+
+                            echo "Building branch: ${branch}"
+                            echo "Repo URL(from scm): ${remote}"
+                            echo "CredId(from scm): ${credId}"
+
+                            checkout([
+                                $class: 'GitSCM',
+                                branches: [[name: "*/${branch}"]],
+                                userRemoteConfigs: [[
+                                    url: remote,
+                                    credentialsId: credId
+                                ]]
+                            ])
+                        } else {
+                            echo "Fallback to checkout(scm)"
+                            checkout scm
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build + Sonar (Docker Maven)') {
+            steps {
+                gitlabCommitStatus(name: 'build-sonar') {
+                    script {
+                        def source = env.EPAS_SOURCE_BRANCH ?: 'unknown-branch'
+                        def dynamicKey
+                        def dynamicName
+
+                        if (source == 'dev' && env.EPAS_IS_MR != 'true') {
+                            dynamicKey  = "${SONAR_PROJECT_KEY}"
+                            dynamicName = "${SONAR_PROJECT_KEY} [dev]"
+                        } else {
+                            def safeBranch = source.replaceAll('[^a-zA-Z0-9._-]', '_')
+                            dynamicKey  = "${SONAR_PROJECT_KEY}__${safeBranch}"
+                            dynamicName = "${SONAR_PROJECT_KEY} [${source}]"
+                        }
+
+                        env.SONAR_DYNAMIC_KEY  = dynamicKey
+                        env.SONAR_DYNAMIC_NAME = dynamicName
+
+                        echo "Sonar projectKey=${env.SONAR_DYNAMIC_KEY}"
+                        echo "Sonar should delete? ${env.SONAR_SHOULD_DELETE}"
+
+                        withSonarQubeEnv('sonarqube-dev') {
+                            sh """
+                                docker run --rm --network host \
+                                  -v \$(pwd):/app -w /app \
+                                  -v ${M2_CACHE}:/root/.m2 \
+                                  -e SONAR_HOST_URL=${SONAR_HOST_URL} \
+                                  -e SONAR_AUTH_TOKEN=${SONAR_AUTH_TOKEN} \
+                                  ${MAVEN_IMAGE} mvn -B clean test sonar:sonar --settings ${MAVEN_SETTINGS} \
+                                    -Dsonar.projectKey=${dynamicKey} \
+                                    -Dsonar.projectName="${dynamicName}" \
+                                    -Dsonar.host.url=${SONAR_HOST_URL} \
+                                    -Dsonar.login=${SONAR_AUTH_TOKEN}
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            when {
+                    expression {
+                        return (
+                            (env.EPAS_IS_MR == 'true' && env.EPAS_TARGET_BRANCH == 'dev')
+                            || (env.EPAS_IS_MR != 'true' && env.EPAS_SOURCE_BRANCH == 'dev')
+                        )
+                    }
+                }
+            steps {
+                gitlabCommitStatus(name: 'quality-gate') {
+                    timeout(time: 5, unit: 'MINUTES') {
+                        script {
+                            def qg = waitForQualityGate()
+
+                            if (qg.status != 'OK') {
+                                error "SonarQube Quality Gate failed: ${qg.status}"
+                            }
+
+                            if (env.SONAR_SHOULD_DELETE == 'true' && env.SONAR_DYNAMIC_KEY?.trim()) {
+                                echo "Quality Gate OK. Deleting Sonar project: ${env.SONAR_DYNAMIC_KEY}"
+                                withSonarQubeEnv('sonarqube-dev') {
+                                    sh """
+                                        set +e
+                                        curl -sS -u "\$SONAR_AUTH_TOKEN:" -X POST \
+                                          "\$SONAR_HOST_URL/api/projects/delete?project=${env.SONAR_DYNAMIC_KEY}"
+                                        echo "Delete attempted for ${env.SONAR_DYNAMIC_KEY}"
+                                        exit 0
+                                    """
+                                }
+                            } else {
+                                echo "Skip delete (keep project). Reason: build dev or not allowed to delete."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

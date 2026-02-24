@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1769825821511-4" author="quynv">
+        <sql>
+            ALTER TABLE IBM_CFG_DEP_INT_RATE_DTL
+                MODIFY (INTEREST_RATE NUMBER(7,5));
+
+            ALTER TABLE IBM_CFG_DEP_INT_RATE_DTL
+                MODIFY (INTEREST_RATE_MIN NUMBER(7,5));
+
+            ALTER TABLE IBM_CFG_DEP_INT_RATE_DTL
+                MODIFY (INTEREST_RATE_MAX NUMBER(7,5));
+        </sql>
+
+    </changeSet>
+
+
+
+
+</databaseChangeLog>
