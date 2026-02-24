@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1769767290057-1" author="dinht">
+        <addColumn tableName="com_cfg_common">
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="is_active" type="INT"/>
+            <column name="is_delete" type="INT"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1769767290057-4" author="dinht">
+        <addNotNullConstraint columnName="created_by" tableName="com_cfg_common"/>
+    </changeSet>
+    <changeSet id="1769767290057-6" author="dinht">
+        <addNotNullConstraint columnName="created_date" tableName="com_cfg_common"/>
+    </changeSet>
+    <changeSet id="1769767290057-9" author="dinht">
+        <addNotNullConstraint columnName="is_active" tableName="com_cfg_common"/>
+    </changeSet>
+    <changeSet id="1769767290057-10" author="dinht">
+        <addColumn tableName="com_cfg_mfe_remote_url">
+            <column name="is_active" type="INT"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1769767290057-11" author="dinht">
+        <addNotNullConstraint columnName="is_active" tableName="com_cfg_mfe_remote_url"/>
+    </changeSet>
+    <changeSet id="1769767290057-13" author="dinht">
+        <addNotNullConstraint columnName="is_delete" tableName="com_cfg_common"/>
+    </changeSet>
+
+</databaseChangeLog>

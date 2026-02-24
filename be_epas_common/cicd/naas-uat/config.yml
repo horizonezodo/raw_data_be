@@ -1,0 +1,150 @@
+## Scheduled
+quartz:
+  properties:
+    org:
+      quartz:
+        jobStore:
+          isClustered: true
+        scheduler:
+          instanceId: AUTO
+        threadPool:
+          threadCount: 5
+        job-store-type: jdbc
+      scheduler:
+        instanceName: MyScheduler
+## Dùng để mã hóa/ Giải mã password trong phần gửi mail
+aes:
+  key: ${AES_KEY:oZLnIHs8wk38jSC8XKhIpi2d} # 24 ky tu
+
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: NAAS_UAT_COMMON
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+  #    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+  #    username: EPAS_DEV_COMMON
+  #    password: 123456
+  #    driver-class-name: oracle.jdbc.OracleDriver
+  application:
+    name: COMMON
+  kafka:
+    bootstrap-servers: 10.10.0.31:9092
+    producer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+  jpa:
+    hibernate:
+      ddl-auto: none
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://10.10.0.31:31094/realms/NAAS_UAT
+          jwk-set-uri: http://10.10.0.31:31094/realms/NAAS_UAT/protocol/openid-connect/certs
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 1GB
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+    enabled: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+bpm:
+  core:
+    activity-log-enabled: true
+    cors:
+      allowed-origins:
+        - https://naas.uat.ngvgroup.vn
+        - https://*.zdn.vn
+    web:
+      ignoring-paths:
+        - /assets/**
+        - /favicon.ico
+      public-paths:
+        - /remotes/url
+        - /remotes/module
+        - /setting/get-config-log
+        - /setting/app-config
+        - /auth/login
+        - /auth/token
+        - /auth/exchange-code
+        - /auth/refresh-token
+        - /auth/list-branch
+        - /auth/update-branch
+        - /auth/get-kc-login-url
+        - /captcha/**
+        - /public/**
+        - /tenant/search-tenant
+        - /tenant/exist
+    oauth2:
+      token-uri: http://10.10.0.31:31094/realms/NAAS_UAT/protocol/openid-connect/token
+      client-id: epas_service
+      client-secret: pbfgGWvDF3i8SgM8Asi8Z2yWJnNmMybe
+      cache-token: true
+    stored-procedure:
+      enabled: true
+
+logging:
+  kafka:
+    topic:
+      activity: COM_INF_LOG_ACTIVITY_TOPIC_NAAS   # trùng với topic bên producer
+      audit: COM_INF_LOG_AUDIT_TOPIC_NAAS
+    consumer-group: activity-log-consumer
+  config: classpath:log4j.xml
+
+stat:
+  websocket:
+    group-id: ${spring.application.name}-${random.uuid}
+    session-topic: WS_USER_SESSION_EVENT_NAAS
+
+job:
+  kafka:
+    topic:
+      id: JOB-ID-NAAS       # Đảm bảo giá trị này là hợp lệ, không để placeholder.
+      status: JOB-STATUS-NAAS
+    consumer-group:
+      clear-activity: ADMIN_CLEAR_ACTIVITY_GROUP_NAAS
+      status: ADMIN_JOB_STATUS_GROUP_NAAS
+  scheduler:
+    fixed-delay-ms: 10000
+
+minio:
+  bucket: naas-uat
+  url: http://minio-api-ext.minio-operator.svc.cluster.local:9000
+  public-url: https://naas.uat.ngvgroup.vn/api-common/api/public
+  access-key: admin
+  secret-key: admin123
+app:
+  keycloak:
+    realm: NAAS_UAT
+    serverUrl: http://10.10.0.31:31094
+    adminRealmsPath: "/admin/realms/"
+    scope:
+      openid-email-profile: "openid email profile organization"
+
+
+auth:
+  clientId: epas_service
+  clientSecret: pbfgGWvDF3i8SgM8Asi8Z2yWJnNmMybe
+  redirectUri: https://epas.dev.ngvgroup.vn/auth/callback
+  keycloakBaseUrl: http://10.10.0.31:31094/realms/NAAS_UAT/protocol/openid-connect/auth
+

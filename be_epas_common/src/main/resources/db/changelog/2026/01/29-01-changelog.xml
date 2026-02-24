@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1769682863385-1" author="dvson">
+        <dropTable cascadeConstraints="true" tableName="COMMON_TENANT"/>
+    </changeSet>
+    <changeSet id="1769682863385-2" author="dvson">
+        <dropTable cascadeConstraints="true" tableName="COM_ORGANIZATION_MAPING"/>
+    </changeSet>
+    <changeSet id="1769682863385-3" author="dvson">
+        <dropTable cascadeConstraints="true" tableName="LOG_MAIL"/>
+    </changeSet>
+    <changeSet id="1769682863385-4" author="dvson">
+        <dropTable cascadeConstraints="true" tableName="MAIL_TEMPLATE"/>
+    </changeSet>
+    <changeSet id="1769682863385-5" author="dvson">
+        <dropTable cascadeConstraints="true" tableName="MENU"/>
+    </changeSet>
+    <changeSet id="1769682863385-6" author="dvson">
+        <dropTable cascadeConstraints="true" tableName="MENU_MAPPING"/>
+    </changeSet>
+    <changeSet id="1769682863385-7" author="dvson">
+        <dropTable cascadeConstraints="true" tableName="TENANT_CONFIG"/>
+    </changeSet>
+    <changeSet id="1769682863385-8" author="dvson">
+        <dropTable cascadeConstraints="true" tableName="USER_MAIL"/>
+    </changeSet>
+    <changeSet id="1769682863385-9" author="dvson">
+        <dropSequence sequenceName="MENU_MAP_SEQ"/>
+    </changeSet>
+    <changeSet id="1769682863385-10" author="dvson">
+        <dropSequence sequenceName="MENU_SEQ"/>
+    </changeSet>
+    <changeSet id="1769682863385-11" author="dvson">
+        <dropSequence sequenceName="REURL_SEQ"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,13 @@
+package com.naas.admin_service.features.category.dto.cominforganization;
+
+import lombok.*;
+
+@Getter
+@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ComInfOrganizationDto {
+    private String orgCode;
+    private String orgName;
+}

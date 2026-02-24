@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="KAFKA_TOPIC">EPAS-LOG-DATA</Property>
+        <Property name="KAFKA_BOOTSTRAP_SERVERS">10.10.0.31:9092</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- Kafka Appender -->
+<!--        <Kafka name="KafkaAppender" topic="${KAFKA_TOPIC}">-->
+<!--            &lt;!&ndash; Dùng JsonLayout để ELK dễ parse &ndash;&gt;-->
+<!--            <JsonLayout eventEol="true" compact="true">-->
+<!--                <KeyValuePair key="service" value="admin-service"/>-->
+<!--            </JsonLayout>-->
+<!--            <Property name="bootstrap.servers">${KAFKA_BOOTSTRAP_SERVERS}</Property>-->
+<!--            <Property name="acks">1</Property>-->
+<!--        </Kafka>-->
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger for root -->
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+<!--            <AppenderRef ref="KafkaAppender"/>-->
+        </Root>
+    </Loggers>
+</Configuration>

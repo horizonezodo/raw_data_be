@@ -1,0 +1,196 @@
+## Scheduled
+quartz:
+  properties:
+    org:
+      quartz:
+        jobStore:
+          isClustered: true
+        scheduler:
+          instanceId: AUTO
+        threadPool:
+          threadCount: 5
+        job-store-type: jdbc
+      scheduler:
+        instanceName: MyScheduler
+
+# Dùng để mã hóa/ Giải mã password trong phần gửi mail
+aes:
+  key: ${AES_KEY:oZLnIHs8wk38jSC8XKhIpi2d} # 24 ky tu
+#
+
+spring:
+  data:
+    redis:
+      host: 10.10.0.31
+      port: 6379
+      password: Ngv@123456
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: TENANT_NGV_DEMO
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+#    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+#    username: EPAS_DEV_COMMON
+#    password: 123456
+#    driver-class-name: oracle.jdbc.OracleDriver
+  application:
+    name: COMMON
+  kafka:
+    bootstrap-servers: 10.10.0.31:9092
+    producer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+  jpa:
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 1024MB
+  liquibase:
+    change-log: classpath:/db/master-changelog/db.changelog-master.xml
+    enabled: true
+  sql:
+    init:
+      mode: never
+
+
+security:
+  keycloak:
+    base-url: http://10.10.0.31:31090
+    realm: EPAS_DEV
+    token-uri: http://10.10.0.31:31090/realms/EPAS_DEV/protocol/openid-connect/token
+    auth-uri: http://10.10.0.31:31090/realms/EPAS_DEV/protocol/openid-connect/auth
+    client-id: epas_service
+    client-secret: R4lYzWDlyAwp5V2lwetT6RYvBfvkweLT
+    redirect-uri: https://epas.dev.ngvgroup.vn/auth/callback
+    admin-realms-path: "/admin/realms/"
+    scope-openid-email-profile: "openid email profile organization"
+
+server:
+  port: 8301
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+bpm:
+  liquibase:
+    tenant:
+#      enabled: true
+#      migrate-on-startup: true
+      change-log: classpath:db/changelog/db.changelog-master.xml
+#      schema-targets:
+#        common_schema: COMMON
+#        hrm_schema: HRM
+  core:
+    security:
+      permission:
+        use-db: true
+    activity-log-enabled: true
+    cors:
+      allowed-origins:
+        - https://epas.dev.ngvgroup.vn
+        - http://localhost:4200
+        - http://localhost:4201
+        - http://localhost:4202
+        - https://*.zdn.vn
+    web:
+      ignoring-paths:
+        - /assets/**
+        - /favicon.ico
+      public-paths:
+        - /remotes/url
+        - /remotes/module
+        - /setting/get-config-log
+        - /setting/app-config
+        - /auth/login
+        - /auth/token
+        - /auth/exchange-code
+        - /auth/refresh-token
+        - /auth/list-branch
+        - /auth/update-branch
+        - /auth/get-kc-login-url
+        - /captcha/**
+        - /public/**
+        - /tenant/search-tenant
+        - /tenant/exist
+#        - /actuator/**
+#        - /camunda/**
+    stored-procedure:
+      enabled: true
+
+logging:
+  kafka:
+    topic:
+      activity: COM_INF_LOG_ACTIVITY_TOPIC   # trùng với topic bên producer
+      audit: COM_INF_LOG_AUDIT_TOPIC
+    consumer-group: activity-log-consumer
+  config: classpath:log4j.xml
+  level:
+    com.zaxxer.hikari: DEBUG
+    com.ngvgroup.bpm.core.persistence.config.DataSourceCache: DEBUG
+    com.ngvgroup.bpm.core.liquibase: DEBUG
+    liquibase: INFO
+
+stat:
+  websocket:
+    group-id: ${spring.application.name}-${random.uuid}
+    session-topic: WS_USER_SESSION_EVENT
+
+job:
+  kafka:
+    topic:
+      id: JOB-ID        # Đảm bảo giá trị này là hợp lệ, không để placeholder.
+      status: JOB-STATUS
+    consumer-group:
+      clear-activity: ADMIN_CLEAR_ACTIVITY_GROUP
+      status: ADMIN_JOB_STATUS_GROUP
+  scheduler:
+    fixed-delay-ms: 10000
+
+minio:
+  bucket: epas
+  url: http://10.10.0.31:32010
+  public-url: https://epas.dev.ngvgroup.vn/api-common/api/public
+  access-key: admin
+  secret-key: admin123
+multitenancy:
+  enabled: true
+#  enabled: false
+#  tenant-claim: tenant_id
+#  tenant-header: X-Tenant-Id
+  kafka:
+    topic: EVENT-CREATED-TENANT
+    group: ${spring.application.name}
+  schema:
+    password: 123456
+  organizations:
+    enabled: true
+#    claim: organization              # claim name trong token
+#    tenantAttribute: tenant_id       # attribute bạn set ở A3
+#    preferTenantAttribute: true      # ưu tiên attribute (tenant_id) hơn alias
+#    selectHeader: X-Org-Alias        # dùng khi user thuộc nhiều org
+
+#  pool:
+#    max-size: 5
+#    min-idle: 0
+#    idle-timeout-ms: 1800000
+#    cache-max-size: 200
+#
+#  refresh:
+#    enabled: true
+#    interval-ms: 300000
+
+#
+
+
