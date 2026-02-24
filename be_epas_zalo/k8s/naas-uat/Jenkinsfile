@@ -1,0 +1,145 @@
+pipeline {
+    agent any
+
+    environment {
+        NAME_SERVICE = 'epas-zalo-be'
+        NAME_SPACE = 'naas-uat'
+        DEPLOYMENT_NAME = 'naas-uat-zalo-be-deployment'
+        DEPLOYMENT_FILE = 'k8s/naas-uat/deployment.yaml'
+        REGISTRY = 'localhost:32000'
+        MAVEN_IMAGE = 'maven:3.9.11-eclipse-temurin-17'
+    }
+
+    stages {
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    // Lấy commit hash ngắn
+                    env.GIT_COMMIT_HASH = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    env.IMAGE_NAME = "${REGISTRY}/${NAME_SERVICE}:${NAME_SPACE}-${env.GIT_COMMIT_HASH}"
+                    env.APP_LABEL = "${NAME_SPACE}-${NAME_SERVICE}"
+                    
+                    echo "Namespace: ${NAME_SPACE}"
+                    echo "Service Name: ${NAME_SERVICE}"
+                    echo "Commit Hash: ${env.GIT_COMMIT_HASH}"
+                    echo "Image Name: ${env.IMAGE_NAME}"
+                    echo "Deployment File: ${DEPLOYMENT_FILE}"
+                    echo "Deployment Name: ${DEPLOYMENT_NAME}"
+                }
+            }
+        }
+
+        stage('Clone Source') {
+            steps {
+                echo 'Cloning repository...'
+                checkout scm
+            }
+        }
+
+        stage('Build JAR (Docker Maven)') {
+            steps {
+                script {
+                    sh """
+                        docker run --rm \
+                            -v \$(pwd):/app -w /app \
+                            -v /var/lib/jenkins/.m2:/root/.m2 \
+                            ${MAVEN_IMAGE} mvn clean verify -DskipTests
+                    """
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build(
+                        "${env.IMAGE_NAME}",
+                        "--progress=plain -f k8s/${NAME_SPACE}/Dockerfile ."
+                    )
+                }
+            }
+        }
+
+        stage('Push to MicroK8s Registry') {
+            steps {
+                script {
+                    echo 'Pushing image to MicroK8s registry...'
+                    docker.withRegistry("http://${REGISTRY}") {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    echo "Deploying image ${env.IMAGE_NAME} to Kubernetes..."
+
+                    // 1️⃣ Tạo namespace nếu chưa có
+                    sh """
+                        microk8s kubectl get ns ${NAME_SPACE} || \
+                        microk8s kubectl create ns ${NAME_SPACE}
+                    """
+
+                    // 2️⃣ Apply deployment
+                    sh """
+                        microk8s kubectl apply -f ${DEPLOYMENT_FILE} -n ${NAME_SPACE}
+                    """
+
+                    // 3️⃣ Cập nhật image bằng set image
+                    sh """
+                        microk8s kubectl set image deployment/${DEPLOYMENT_NAME} \
+                        ${NAME_SERVICE}=${env.IMAGE_NAME} \
+                        -n ${NAME_SPACE}
+                    """
+
+                    // 4️⃣ Đợi rollout xong
+                    sh "microk8s kubectl rollout status deployment/${DEPLOYMENT_NAME} -n ${NAME_SPACE} --timeout=300s"
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    echo 'Verifying deployment...'
+                    sh "microk8s kubectl get pods -n ${NAME_SPACE} -l app=${env.APP_LABEL}"
+                    sh "microk8s kubectl get svc -n ${NAME_SPACE} -l app=${env.APP_LABEL}"
+                    sh "microk8s kubectl get ingress -n ${NAME_SPACE}"
+                }
+            }
+        }
+
+        stage('Cleanup Old Images') {
+            steps {
+                script {
+                    echo 'Cleaning up old images in MicroK8s registry...'
+                    sh """
+                        microk8s ctr images ls | grep ${NAME_SERVICE} | sort -rk2 | tail -n +4 | awk '{print \$1}' | \
+                        xargs -r microk8s ctr images rm || true
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                echo 'Pipeline executed successfully!'
+                echo "✅ Application is accessible via Ingress:"
+                echo "   https://ncf.uat.ngvgroup.vn/api-zalo/"
+            }
+        }
+        failure {
+            echo 'Pipeline execution failed!'
+            script {
+                sh "microk8s kubectl logs -n ${NAME_SPACE} -l app=${env.APP_LABEL} --tail=50"
+            }
+        }
+        always {
+            cleanWs()
+        }
+    }
+}

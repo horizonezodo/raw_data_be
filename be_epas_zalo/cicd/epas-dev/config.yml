@@ -1,0 +1,67 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: zns-service
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  datasource:
+    url: jdbc:oracle:thin:@//113.190.234.241:31521/ORCLPDB1
+    username: EPAS_DEV_ZALO
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+      data-source-properties:
+        oracle.jdbc.fanEnabled: false
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      ddl-auto: none
+    jackson:
+      serialization:
+        indent-output: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${app.keycloak.serverUrl}/realms/${app.keycloak.realm}
+zns:
+  auth_uri: "https://oauth.zaloapp.com/v4/oa/permission"
+  redirect_uri: "https%3A%2F%2Fepas.dev.ngvgroup.vn%2Fapi-zalo%2Fauth%2Fcallback"
+  token_uri: "https://oauth.zaloapp.com/v4/oa/access_token"
+  zns_uri: "https://business.openapi.zalo.me"
+  oa_uri: "https://openapi.zalo.me"
+  oa_link_uri: "https://epas.dev.ngvgroup.vn/zalo/subscriber-management/ZOA"
+app:
+  keycloak:
+    realm: EPAS_DEV
+    serverUrl: http://10.10.0.31:31090
+auth:
+  clientId: admin-service
+fe:
+  url: "https://epas.dev.ngvgroup.vn/zalo/service-management/pay-bill"
+
+bpm:
+  core:
+    oauth2:
+      token-uri: http://10.10.0.31:31090/realms/EPAS_DEV/protocol/openid-connect/token
+      client-id: epas_service
+      client-secret: 30EiPJ7G5O9DWc8YroWViOWETiPxB29f
+      cache-token: true
+    cors:
+      allowed-origins:
+        - https://epas.dev.ngvgroup.vn
+        - https://demo.dev.ngvgroup.vn
+        - http://localhost:4200
+        - http://localhost:4202
+        - https://*.zdn.vn
+  logging-toggle:
+    enabled: true
+    remote-base-url: https://epas.dev.ngvgroup.vn/api-zalo/api/setting/get-config-log
+    cache-ttl-seconds: 30
+  activity-log-enabled: true

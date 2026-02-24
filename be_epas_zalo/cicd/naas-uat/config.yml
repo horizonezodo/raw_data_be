@@ -1,0 +1,82 @@
+server:
+  port: 8080
+spring:
+  kafka:
+    bootstrap-servers: 10.10.0.31:9092
+  application:
+    name: zns-service
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  datasource:
+    url: jdbc:oracle:thin:@//113.190.234.241:31521/ORCLPDB1
+    username: naas_uat_zalo
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+      data-source-properties:
+        oracle.jdbc.fanEnabled: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      ddl-auto: none
+    jackson:
+      serialization:
+        indent-output: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${app.keycloak.serverUrl}/realms/${app.keycloak.realm}
+zns:
+  auth_uri: "https://oauth.zaloapp.com/v4/oa/permission"
+  redirect_uri: "https%3A%2F%2Fepas.dev.ngvgroup.vn%2Fapi-zalo%2Fauth%2Fcallback"
+  token_uri: "https://oauth.zaloapp.com/v4/oa/access_token"
+  zns_uri: "https://business.openapi.zalo.me"
+  oa_uri: "https://openapi.zalo.me"
+  oa_link_uri: "https://naas.uat.ngvgroup.vn/zalo/subscriber-management/ZOA"
+app:
+  keycloak:
+    realm: NAAS_UAT
+    serverUrl: http://10.10.0.31:31094
+auth:
+  clientId: epas_service
+fe:
+  url: "https://naat.uat.ngvgroup.vn/zalo/service-management/pay-bill"
+
+bpm:
+  core:
+    cors:
+      allowed-origins:
+        - https://naas.uat.ngvgroup.vn
+        - https://*.zdn.vn
+    web:
+      ignoring-paths:
+        - /remotes/url
+        - /remotes/module
+        - /setting/layout-public
+        - /setting/captcha-public
+        - /auth/login
+        - /auth/exchange-code
+        - /auth/token
+        - /auth/refresh-token
+        - /auth/list-branch
+        - /auth/update-branch
+        - /captcha/**
+    oauth2:
+      token-uri: http://10.10.0.31:31094/realms/NAAS_UAT/protocol/openid-connect/token
+      client-id: epas_service
+      client-secret: 30EiPJ7G5O9DWc8YroWViOWETiPxB29f
+      cache-token: true
+    stored-procedure:
+      enabled: true
+    logging-toggle:
+      enabled: false
+      cache-ttl-seconds: 30
+    activity-log-enabled: false

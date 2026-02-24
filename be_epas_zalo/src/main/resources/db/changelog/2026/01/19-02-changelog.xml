@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1768796424841-1" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(400 CHAR)" columnName="ndung_tso" tableName="zss_mau_zns_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-2" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_nhap" tableName="zss_app"/>
+    </changeSet>
+    <changeSet id="1768796424841-3" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_nhap" tableName="zss_ctao_gtri_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-4" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_nhap" tableName="zss_mau_zns"/>
+    </changeSet>
+    <changeSet id="1768796424841-5" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_nhap" tableName="zss_mau_zns_button"/>
+    </changeSet>
+    <changeSet id="1768796424841-6" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_nhap" tableName="zss_mau_zns_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-7" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_sua" tableName="zss_app"/>
+    </changeSet>
+    <changeSet id="1768796424841-8" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_sua" tableName="zss_ctao_gtri_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-9" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_sua" tableName="zss_mau_zns"/>
+    </changeSet>
+    <changeSet id="1768796424841-10" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_sua" tableName="zss_mau_zns_button"/>
+    </changeSet>
+    <changeSet id="1768796424841-11" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="ngay_sua" tableName="zss_mau_zns_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-12" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_nhap" tableName="zss_app"/>
+    </changeSet>
+    <changeSet id="1768796424841-13" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_nhap" tableName="zss_ctao_gtri_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-14" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_nhap" tableName="zss_mau_zns"/>
+    </changeSet>
+    <changeSet id="1768796424841-15" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_nhap" tableName="zss_mau_zns_button"/>
+    </changeSet>
+    <changeSet id="1768796424841-16" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_nhap" tableName="zss_mau_zns_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-17" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_sua" tableName="zss_app"/>
+    </changeSet>
+    <changeSet id="1768796424841-18" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_sua" tableName="zss_ctao_gtri_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-19" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_sua" tableName="zss_mau_zns"/>
+    </changeSet>
+    <changeSet id="1768796424841-20" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_sua" tableName="zss_mau_zns_button"/>
+    </changeSet>
+    <changeSet id="1768796424841-21" author="dinht">
+        <dropNotNullConstraint columnDataType="varchar(32 CHAR)" columnName="nguoi_sua" tableName="zss_mau_zns_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-22" author="dinht">
+        <modifyDataType columnName="timeout" newDataType="DECIMAL(38, 2)" tableName="zss_mau_zns"/>
+    </changeSet>
+    <changeSet id="1768796840903-1" author="dinht">
+        <dropPrimaryKey tableName="zss_mau_zns_tso" constraintName="pk_zss_mau_zns_tso"/>
+    </changeSet>
+    <changeSet id="1768796424841-24" author="dinht">
+        <addPrimaryKey columnNames="ma_tso, zoa_id, ma_mau" constraintName="pk_zss_mau_zns_tso"
+                       tableName="zss_mau_zns_tso"/>
+    </changeSet>
+
+</databaseChangeLog>

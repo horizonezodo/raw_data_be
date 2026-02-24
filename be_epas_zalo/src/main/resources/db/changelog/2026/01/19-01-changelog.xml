@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1768789216510-1" author="dinht">
+        <createTable tableName="dc_dvi">
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dc_dvi"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_dvi" type="VARCHAR(256 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_vtat" type="VARCHAR(64 CHAR)"/>
+            <column name="diachi" type="VARCHAR(256 CHAR)"/>
+            <column name="sdt" type="VARCHAR(32 CHAR)"/>
+            <column name="email" type="VARCHAR(128 CHAR)"/>
+            <column name="gdoc" type="VARCHAR(128 CHAR)"/>
+            <column name="ma_nhnn" type="VARCHAR(12 CHAR)"/>
+            <column name="tso_pgd" type="INT"/>
+            <column name="ma_tinhtp" type="VARCHAR(32 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-2" author="dinht">
+        <createTable tableName="dc_loai_gd">
+            <column name="ma_loai_gdich" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dc_loai_gd"/>
+            </column>
+            <column name="ten_loai_gdich" type="VARCHAR(256 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-3" author="dinht">
+        <createTable tableName="image_storage">
+            <column name="id" type="VARCHAR(255 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_imagestorage"/>
+            </column>
+            <column name="properties" type="NVARCHAR2(255)"/>
+            <column name="duration_time" type="NUMBER"/>
+            <column name="expire_time" type="DATE"/>
+            <column name="image_data" type="BLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-4" author="dinht">
+        <createTable tableName="zss_app">
+            <column name="app_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_app"/>
+            </column>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)"/>
+            <column name="app_name" type="VARCHAR(64 CHAR)"/>
+            <column name="app_secret" type="VARCHAR(128 CHAR)"/>
+            <column name="wh_secret" type="VARCHAR(128 CHAR)"/>
+            <column name="wh_verification_file" type="VARCHAR(64 CHAR)"/>
+            <column name="wh_verification_content" type="VARCHAR(256 CHAR)"/>
+            <column name="pcf_wh_url" type="VARCHAR(256 CHAR)"/>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-5" author="dinht">
+        <createTable tableName="zss_ctao_gtri_tso">
+            <column name="ma_ctao_gtri_tso" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_ctao_gtri_tso"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_ctao_gtri_tso" type="VARCHAR(512 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cthuc_ctao_gtri_tso" type="VARCHAR(1024 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="loai_gia_tri" type="VARCHAR(16 CHAR)"/>
+            <column name="mdich_sdung" type="VARCHAR(16 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-6" author="dinht">
+        <createTable tableName="zss_dmuc">
+            <column name="ma_dmuc" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dmuc"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_dmuc" type="VARCHAR(256 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-7" author="dinht">
+        <createTable tableName="zss_dmuc_ctiet">
+            <column name="ma_dmuc_ctiet" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dmuc_ctiet"/>
+            </column>
+            <column name="ma_dmuc" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dmuc_ctiet"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(16 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(16 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_dmuc_ctiet" type="VARCHAR(256 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-8" author="dinht">
+        <createTable tableName="zss_dvi_thue_bao">
+            <column name="ma_thue_bao" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dvi_thue_bao"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)"/>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)"/>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)"/>
+            <column name="zoa_id" type="VARCHAR(32 CHAR)"/>
+            <column name="ma_goi_dvu" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_dky" type="VARCHAR(8 CHAR)"/>
+            <column name="ngay_hluc" type="VARCHAR(8 CHAR)"/>
+            <column name="tgian" type="INT"/>
+            <column name="dvi_tgian" type="VARCHAR(8 CHAR)"/>
+            <column name="ngay_het_hluc" type="VARCHAR(8 CHAR)"/>
+            <column name="cthi_ghan" type="VARCHAR(4 CHAR)"/>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)"/>
+            <column name="mota" type="VARCHAR(1024 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-9" author="dinht">
+        <createTable tableName="zss_dvu">
+            <column name="ma_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dvu"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_dvu" type="VARCHAR(256 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_loai_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="so_lgui_tbai" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hthuc_gui" type="VARCHAR(32 CHAR)"/>
+            <column name="tgian_gui" type="VARCHAR(32 CHAR)"/>
+            <column name="gio_bdau_gui" type="VARCHAR(8 CHAR)"/>
+            <column name="gio_kthuc_gui" type="VARCHAR(8 CHAR)"/>
+            <column name="su_kien" type="VARCHAR(1024 CHAR)"/>
+            <column name="dvu_lquan" type="VARCHAR(4 CHAR)"/>
+            <column name="mota" type="VARCHAR(1024 CHAR)"/>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-10" author="dinht">
+        <createTable tableName="zss_dvu_gdich">
+            <column name="ma_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dvu_gdich"/>
+            </column>
+            <column name="ma_loai_gdich" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dvu_gdich"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-11" author="dinht">
+        <createTable tableName="zss_dvu_lsu">
+            <column name="ma_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dvu_lsu"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_dvu" type="VARCHAR(256 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_loai_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="so_lgui_tbai" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hthuc_gui" type="VARCHAR(32 CHAR)"/>
+            <column name="tgian_gui" type="VARCHAR(32 CHAR)"/>
+            <column name="gio_bdau_gui" type="VARCHAR(8 CHAR)"/>
+            <column name="gio_kthuc_gui" type="VARCHAR(8 CHAR)"/>
+            <column name="su_kien" type="VARCHAR(1024 CHAR)"/>
+            <column name="dvu_lquan" type="VARCHAR(4 CHAR)"/>
+            <column name="mota" type="VARCHAR(1024 CHAR)"/>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-12" author="dinht">
+        <createTable tableName="zss_dvu_mau_zns">
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dvu_mau_zns"/>
+            </column>
+            <column name="ma_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dvu_mau_zns"/>
+            </column>
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_dvu_mau_zns"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-13" author="dinht">
+        <createTable tableName="zss_goi_dvu">
+            <column name="ma_goi_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_goi_dvu"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_goi_dvu" type="VARCHAR(256 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mota" type="VARCHAR(1024 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-14" author="dinht">
+        <createTable tableName="zss_goi_dvu_ctiet">
+            <column name="ma_goi_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_goi_dvu_ctiet"/>
+            </column>
+            <column name="ma_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_goi_dvu_ctiet"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-15" author="dinht">
+        <createTable tableName="zss_goi_dvu_ctiet_ls">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_goi_dvu_ctiet_ls"/>
+            </column>
+            <column name="ma_goi_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-16" author="dinht">
+        <createTable tableName="zss_goi_dvu_ls">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_goi_dvu_ls"/>
+            </column>
+            <column name="ma_goi_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_goi_dvu" type="VARCHAR(256 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mota" type="VARCHAR(1024 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-17" author="dinht">
+        <createTable tableName="zss_mau_zns">
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns"/>
+            </column>
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_mau" type="VARCHAR(60 CHAR)"/>
+            <column name="tgian_cho" type="VARCHAR(16 CHAR)"/>
+            <column name="lket" type="VARCHAR(1024 CHAR)"/>
+            <column name="ma_cluong_mau" type="VARCHAR(32 CHAR)"/>
+            <column name="loai_zns" type="VARCHAR(64 CHAR)"/>
+            <column name="ma_loai_mau" type="VARCHAR(32 CHAR)"/>
+            <column name="dongia" type="DECIMAL(21, 2)"/>
+            <column name="tde_mau" type="VARCHAR(65 CHAR)"/>
+            <column name="ndung_tde" type="VARCHAR(400 CHAR)"/>
+            <column name="vban1" type="VARCHAR(400 CHAR)"/>
+            <column name="vban2" type="VARCHAR(400 CHAR)"/>
+            <column name="vban3" type="VARCHAR(400 CHAR)"/>
+            <column name="vban4" type="VARCHAR(400 CHAR)"/>
+            <column name="ghi_chu" type="VARCHAR(400 CHAR)"/>
+            <column name="tthai_zns" type="VARCHAR(64 CHAR)"/>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_mau_dtac" type="VARCHAR(64 CHAR)"/>
+            <column name="ly_do" type="VARCHAR(2048 CHAR)"/>
+            <column name="timeout" type="DECIMAL"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-18" author="dinht">
+        <createTable tableName="zss_mau_zns_bang">
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_bang"/>
+            </column>
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_bang"/>
+            </column>
+            <column name="dong_so" type="BIGINT"/>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)"/>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)"/>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)"/>
+            <column name="tde_bang" type="VARCHAR(35 CHAR)"/>
+            <column name="ndung_bang" type="VARCHAR(54 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-19" author="dinht">
+        <createTable tableName="zss_mau_zns_button">
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_button"/>
+            </column>
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_button"/>
+            </column>
+            <column name="ma_button" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_button"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="loai_button" type="VARCHAR(256 CHAR)"/>
+            <column name="ndung" type="VARCHAR(1024 CHAR)"/>
+            <column name="lket" type="VARCHAR(1024 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-20" author="dinht">
+        <createTable tableName="zss_mau_zns_hanh">
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_hanh"/>
+            </column>
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_hanh"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)"/>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)"/>
+            <column name="loai_button" type="INT"/>
+            <column name="loai_hanh" type="VARCHAR(32 CHAR)"/>
+            <column name="logo_sang" type="BLOB"/>
+            <column name="logo_toi" type="BLOB"/>
+            <column name="anh1" type="BLOB"/>
+            <column name="anh2" type="BLOB"/>
+            <column name="anh3" type="BLOB"/>
+            <column name="ten_lgo_sang" type="VARCHAR(128 CHAR)"/>
+            <column name="ten_lgo_toi" type="VARCHAR(128 CHAR)"/>
+            <column name="ten_anh1" type="VARCHAR(128 CHAR)"/>
+            <column name="ten_anh2" type="VARCHAR(128 CHAR)"/>
+            <column name="ten_anh3" type="VARCHAR(128 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-21" author="dinht">
+        <createTable tableName="zss_mau_zns_tso">
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_tso"/>
+            </column>
+            <column name="ma_tso" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_tso"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_tso" type="VARCHAR(256 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="param_type" type="VARCHAR(256 CHAR)"/>
+            <column name="ndung_tso" type="VARCHAR(400 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bbuoc" type="VARCHAR(32 CHAR)"/>
+            <column name="kieu_tso" type="VARCHAR(32 CHAR)"/>
+            <column name="so_ktu_tda" type="DECIMAL(21)"/>
+            <column name="so_ktu_tthieu" type="DECIMAL(21)"/>
+            <column name="nhan_gtri_null" type="VARCHAR(1 CHAR)"/>
+            <column name="ma_ctao_gtri_tso" type="VARCHAR(32 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-22" author="dinht">
+        <createTable tableName="zss_mau_zns_ttoan">
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_ttoan"/>
+            </column>
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_mau_zns_ttoan"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)"/>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)"/>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)"/>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)"/>
+            <column name="ma_nganhang" type="VARCHAR(32 CHAR)"/>
+            <column name="ten_tkhoan" type="VARCHAR(256 CHAR)"/>
+            <column name="stk" type="VARCHAR(32 CHAR)"/>
+            <column name="stien" type="VARCHAR(32 CHAR)"/>
+            <column name="ndung" type="VARCHAR(1024 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-23" author="dinht">
+        <createTable tableName="zss_ndung">
+            <column name="ma_ndung" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_ndung"/>
+            </column>
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="json_tso" type="VARCHAR(512 CHAR)"/>
+            <column name="ma_cdich" type="VARCHAR(32 CHAR)"/>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_khhang" type="VARCHAR(32 CHAR)"/>
+            <column name="ma_phhoi" type="VARCHAR(64 CHAR)"/>
+            <column name="ndung" type="VARCHAR(1024 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tai_khoan_zalo" type="VARCHAR(16 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ten_khhang" type="VARCHAR(256 CHAR)"/>
+            <column name="tgian_gui_dukien" type="VARCHAR(16 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tgian_gui_tcong" type="VARCHAR(16 CHAR)"/>
+            <column name="tgian_tao" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tthai_guizns" type="VARCHAR(64 CHAR)"/>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_mau_dtac" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_message" type="VARCHAR(64 CHAR)"/>
+            <column name="tgian_gui" type="VARCHAR(32 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-24" author="dinht">
+        <createTable tableName="zss_ndung_ls">
+            <column name="zoa_id" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_ndung_ls"/>
+            </column>
+            <column name="ma_zns" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_ndung_ls"/>
+            </column>
+            <column name="nguoi_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_nhap" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nguoi_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_sua" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tai_khoan_zalo" type="VARCHAR(16 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ndung" type="VARCHAR(1024 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_mau" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_dvu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tgian_tao" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tgian_gui_dukien" type="VARCHAR(16 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tthai_nvu" type="VARCHAR(8 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ngay_dlieu" type="VARCHAR(32 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ma_cdich" type="VARCHAR(32 CHAR)"/>
+            <column name="ma_khhang" type="VARCHAR(32 CHAR)"/>
+            <column name="ten_khhang" type="VARCHAR(256 CHAR)"/>
+            <column name="json_tso" type="VARCHAR(512 CHAR)"/>
+            <column name="tgian_gui_tcong" type="VARCHAR(16 CHAR)"/>
+            <column name="ma_phhoi" type="VARCHAR(64 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768789216510-25" author="dinht">
+        <createTable tableName="zss_tkhoan_zoa">
+            <column name="ma_zoa" type="VARCHAR(64 CHAR)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zss_tkhoan_zoa"/>
+            </column>
+            <column name="ma_dvi" type="VARCHAR(32 CHAR)"/>
+            <column name="app_id" type="VARCHAR(32 CHAR)"/>
+            <column name="ten_zoa" type="VARCHAR(64 CHAR)"/>
+            <column name="access_token" type="VARCHAR(4000 CHAR)"/>
+            <column name="refresh_token" type="VARCHAR(4000 CHAR)"/>
+            <column name="ngay_dhan_tk" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

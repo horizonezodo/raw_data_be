@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: naas-uat-zalo-be-deployment
+  namespace: naas-uat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: naas-uat-zalo-be
+      environment: naas-uat
+  template:
+    metadata:
+      labels:
+        app: naas-uat-zalo-be
+        environment: naas-uat
+    spec:
+      containers:
+      - name: epas-zalo-be
+        image: localhost:32000/epas-zalo-be:naas-uat
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "naas-uat"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: naas-uat-zalo-be-service
+  namespace: naas-uat
+spec:
+  selector:
+    app: naas-uat-zalo-be
+    environment: naas-uat
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: naas-uat-zalo-be-ingress
+  namespace: naas-uat
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: public
+  rules:
+  - host: ncf.uat.ngvgroup.vn
+    http:
+      paths:
+      - path: /api-zalo(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: naas-uat-zalo-be-service
+            port:
+              number: 8080
