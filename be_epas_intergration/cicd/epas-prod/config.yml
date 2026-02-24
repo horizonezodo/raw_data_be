@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: admin-service
+
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:1521/dbwr
+    username: EPAS_COMMON
+    password: 123456a@
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${app.keycloak.serverUrl}/realms/${app.keycloak.realm}
+
+server:
+  port: 9201  # Port HTTPS
+
+app:
+  keycloak:
+    admin:
+      clientId: admin-cli
+      clientSecret: NSmkKGWDa16GQk3CnoW8MMHteAzYdDAs
+    realm: EPAS
+    serverUrl: http://10.10.0.39:9120
+auth:
+  clientId: common-service
+logging:
+  config: classpath:log4j.xml
+
+#grafana
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
+
+
+# Scheduled
+quartz:
+  properties:
+    org:
+      quartz:
+        jobStore:
+          isClustered: true
+        scheduler:
+          instanceId: AUTO
+        threadPool:
+          threadCount: 5
+        job-store-type: jdbc
+      scheduler:
+        instanceName: MyScheduler
+
+aes:
+  key: ${AES_KEY:oZLnIHs8wk38jSC8XKhIpi2d} # 24 ky tu
+
+client:
+  bus-pcf: http://10.10.0.37:8203

@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: integration
+
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: EPAS_UAT_COMMON
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://10.10.0.31:10701/realms/EPAS_UAT
+          jwk-set-uri: http://10.10.0.31:10701/realms/EPAS_UAT/protocol/openid-connect/certs
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+bpm:
+  engine:
+    rest:
+      enabled: true
+  core:
+    cors:
+      allowed-origins:
+        - https://epas.uat.ngvgroup.vn
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allowed-headers:
+        - "*"
+      exposed-headers:
+        - Authorization
+      allow-credentials: true
+      max-age: 3600
+    oauth2:
+      token-uri: http://10.10.0.31:10701/realms/EPAS_UAT/protocol/openid-connect/token
+      client-id: epas_service
+      client-secret: 30EiPJ7G5O9DWc8YroWViOWETiPxB29f
+      cache-token: true
+    web:
+      ignoring-paths:
+        - /api-docs/**
+        - /swagger-ui.html
+        - /swagger-ui/**
+        - /h2-console/**
+        - /actuator/**
+# Cấu hình Swagger
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+    filter: true
+
+endpoint:
+  epas-common: https://epas.uat.ngvgroup.vn/api-common/api
