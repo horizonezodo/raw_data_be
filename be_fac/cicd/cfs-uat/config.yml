@@ -1,0 +1,133 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+
+spring:
+  application:
+    name: FAC
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 1024MB
+
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: CFS_FAC
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+    parameters:
+      common_schema: CFS_COMMON
+      hrm_schema: CFS_HRM
+      bpm_schema: CFS_BPM
+      crm_schema: CFS_CRM
+
+  sql:
+    init:
+      mode: never
+
+  kafka:
+    bootstrap-servers: 10.10.0.31:9092
+    producer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
+
+#security
+security:
+  keycloak:
+    base-url: http://10.10.0.31:31093
+    realm: CFS_UAT
+    token-uri: http://10.10.0.31:31093/realms/CFS_UAT/protocol/openid-connect/token
+    auth-uri: http://10.10.0.31:31093/realms/CFS_UAT/protocol/openid-connect/auth
+    client-id: epas_service
+    client-secret: 30EiPJ7G5O9DWc8YroWViOWETiPxB29f
+    redirect-uri: https://cfs.uat.ngvgroup.vn/auth/callback
+    admin-realms-path: '/admin/realms/'
+    scope-openid-email-profile: 'openid email profile organization'
+
+#bpm
+bpm:
+  core:
+    security:
+      permission:
+        use-db: false
+    logging-toggle:
+      enabled: true
+      remote-base-url: https://cfs.uat.ngvgroup.vn/api-common/api/setting/get-config-log
+      cache-ttl-seconds: 30
+    activity-log-enabled: true
+    cors:
+      allowed-origins:
+        - https://cfs.uat.ngvgroup.vn
+    web:
+      ignoring-paths:
+        - /assets/**
+        - /favicon.ico
+        - /tenant/check-multitenancy
+        - /tenant/check-tenant-exist
+      public-paths:
+        - /remotes/url
+        - /remotes/module
+        - /setting/layout-public
+        - /setting/captcha-public
+        - /setting/get-config-log
+        - /auth/login
+        - /auth/token
+        - /auth/exchange-code
+        - /auth/refresh-token
+        - /auth/list-branch
+        - /auth/update-branch
+        - /auth/get-kc-login-url
+        - /captcha/**
+        - /public/**
+        - /tenant/search-tenant
+    #        - /actuator/**
+    #        - /camunda/**
+    stored-procedure:
+      enabled: true
+
+#minio
+minio:
+  bucket: cfs-uat
+  url: http://minio-api-ext.minio-operator.svc.cluster.local:9000
+  access-key: admin
+  secret-key: admin123
+
+#logging
+logging:
+  kafka:
+    topic:
+      activity: COM_INF_LOG_ACTIVITY_TOPIC_CFS   # trùng với topic bên producer
+      audit: COM_INF_LOG_AUDIT_TOPIC_CFS
+
+
+service:
+  bpm:
+    url: https://cfs.uat.ngvgroup.vn/api-bpm
+  common:
+    url: https://cfs.uat.ngvgroup.vn/api-common
+
+camunda:
+  bpm:
+    client:
+      base-url: https://cfs.uat.ngvgroup.vn/fac/api/engine-rest

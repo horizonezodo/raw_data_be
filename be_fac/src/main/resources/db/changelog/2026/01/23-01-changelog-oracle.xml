@@ -1,0 +1,1084 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1768616606465-1" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_acc_class">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_acc_class"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="acc_class_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_class_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_side_type" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_nature" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-2" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_acc_class_coa_map">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_acc_class_coa_map"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry_date" type="DATETIME"/>
+            <column name="coa_version_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_class_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_coa_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="debt_group_code" type="VARCHAR(32)"/>
+            <column name="currency_code" type="VARCHAR(255)"/>
+            <column name="channel_code" type="VARCHAR(64)"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-3" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_acc_map_value">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_acc_map_value"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="map_code" type="VARCHAR(128)"/>
+            <column name="business_code" type="VARCHAR(128)"/>
+            <column name="map_value" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-4" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_acc_purpose">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_acc_purpose"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_purpose_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_purpose_name" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-5" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_acc_structure">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_acc_structure"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="acc_structure_code" type="VARCHAR(64)"/>
+            <column name="acc_structure_name" type="VARCHAR(256)"/>
+            <column name="acc_type" type="VARCHAR(64)"/>
+            <column name="total_length" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-6" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_acc_structure_dtl">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_acc_structure_dtl"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="sort_number" type="BIGINT"/>
+            <column name="acc_structure_code" type="VARCHAR(64)"/>
+            <column name="segment_code" type="VARCHAR(64)"/>
+            <column name="segment_type" type="VARCHAR(64)"/>
+            <column name="segment_length" type="INT"/>
+            <column name="segment_source" type="VARCHAR(256)"/>
+            <column name="segment_value" type="VARCHAR(512)"/>
+            <column name="gen_scope" type="VARCHAR(512)"/>
+            <column name="is_seq" type="INT"/>
+            <column name="is_required" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-7" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_acct_entry">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_acct_entry"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_code" type="VARCHAR(128)"/>
+            <column name="entry_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_seq_no" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="module_code" type="VARCHAR(64)"/>
+            <column name="ledger_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_dir" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-8" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_acct_entry_dtl">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_acct_entry_dtl"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_seq_no" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_side_type" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_class_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amt_type" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amt_param_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="channel_param_code" type="VARCHAR(128)"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-9" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_coa_acc">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_coa_acc"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coa_version_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coa_scope" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_coa_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_coa_name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_internal" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_leaf" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_allow_posting" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATETIME"/>
+            <column name="expiry_date" type="DATETIME"/>
+            <column name="acc_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_code" type="VARCHAR(64)"/>
+            <column name="acc_level" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_sub_level" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_nature" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_scope" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_coa_map" type="VARCHAR(64)"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-10" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_coa_version">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_coa_version"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="coa_version_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coa_version_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_code" type="VARCHAR(128)"/>
+            <column name="coa_scope" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expire_date" type="DATETIME"/>
+            <column name="is_default" type="INT"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-11" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_voucher_method_gen">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_voucher_method_gen"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_gen_mode" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-12" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_voucher_print">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_voucher_print"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_type_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="print_mode" type="VARCHAR(64)"/>
+            <column name="template_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-13" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_voucher_rule_map">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_voucher_rule_map"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="VARCHAR(4)"/>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ledger_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_method" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cash_flow_dir" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="offbs_dir" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="forced_voucher_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_type_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-14" author="Hoang Hiep">
+        <createTable tableName="fac_cfg_voucher_rule_no">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_cfg_voucher_rule_no"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_type_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_type_name" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_type" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="prefix" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="separator" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="length_seq" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_seq" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="format_order" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-15" author="Hoang Hiep">
+        <createTable tableName="fac_inf_acc">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_inf_acc"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_code" type="VARCHAR(128)"/>
+            <column name="object_type_code" type="VARCHAR(64)"/>
+            <column name="object_code" type="VARCHAR(64)"/>
+            <column name="acc_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_class_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_purpose_code" type="VARCHAR(128)"/>
+            <column name="domain_code" type="VARCHAR(128)"/>
+            <column name="acc_scope" type="VARCHAR(16)"/>
+            <column name="acc_no" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_name" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="open_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="close_date" type="DATETIME"/>
+            <column name="acc_nature" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_status" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_primary_account" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bal" type="DECIMAL(22)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bal_available" type="DECIMAL(22)"/>
+            <column name="bal_actual" type="DECIMAL(22)"/>
+            <column name="int_acr_period_amt" type="DECIMAL(22)"/>
+            <column name="int_acr_amt" type="DECIMAL(22)"/>
+            <column name="int_acr_yprev_amt" type="DECIMAL(22)"/>
+            <column name="int_acr_date" type="DATETIME"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-16" author="Hoang Hiep">
+        <createTable tableName="fac_inf_acc_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_inf_acc_a"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_code" type="VARCHAR(128)"/>
+            <column name="object_type_code" type="VARCHAR(64)"/>
+            <column name="object_code" type="VARCHAR(64)"/>
+            <column name="acc_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_purpose_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="domain_code" type="VARCHAR(128)"/>
+            <column name="acc_scope" type="VARCHAR(16)"/>
+            <column name="acc_no" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_class_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_name" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="open_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="close_date" type="DATETIME"/>
+            <column name="acc_nature" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_status" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_primary_account" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bal" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bal_available" type="DECIMAL"/>
+            <column name="bal_actual" type="DECIMAL"/>
+            <column name="int_acr_period_amt" type="DECIMAL"/>
+            <column name="int_acr_amt" type="DECIMAL"/>
+            <column name="int_acr_yprev_amt" type="DECIMAL"/>
+            <column name="int_acr_date" type="DATETIME"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-17" author="Hoang Hiep">
+        <createTable tableName="fac_inf_acc_bal">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_inf_acc_bal"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_type_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_no" type="VARCHAR(128)"/>
+            <column name="bal_type_code" type="BIGINT"/>
+            <column name="bal" type="DECIMAL"/>
+            <column name="bal_available" type="DECIMAL"/>
+            <column name="bal_actual" type="DECIMAL"/>
+            <column name="total_dr_amt" type="DECIMAL"/>
+            <column name="total_cr_amt" type="DECIMAL"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-18" author="Hoang Hiep">
+        <createTable tableName="fac_inf_acc_bal_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_inf_acc_bal_a"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_type_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_no" type="VARCHAR(128)"/>
+            <column name="bal_type_code" type="BIGINT"/>
+            <column name="bal" type="DECIMAL"/>
+            <column name="bal_available" type="DECIMAL"/>
+            <column name="bal_actual" type="DECIMAL"/>
+            <column name="total_dr_amt" type="DECIMAL"/>
+            <column name="total_cr_amt" type="DECIMAL"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-19" author="Hoang Hiep">
+        <createTable tableName="fac_inf_acc_seq">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_inf_acc_seq"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="acc_structure_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_type" type="VARCHAR(64)"/>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="acc_domain" type="VARCHAR(128)"/>
+            <column name="currency_code" type="VARCHAR(4)"/>
+            <column name="last_seq_no" type="INT"/>
+            <column name="max_length" type="INT"/>
+            <column name="is_overflow" type="INT"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-20" author="Hoang Hiep">
+        <createTable tableName="fac_txn_acct">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_txn_acct"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="business_status" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_content" type="VARCHAR(4000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reference_code" type="VARCHAR(128)"/>
+            <column name="object_type_code" type="VARCHAR(64)"/>
+            <column name="object_txn_code" type="VARCHAR(64)"/>
+            <column name="object_txn_name" type="VARCHAR(128)"/>
+            <column name="address" type="VARCHAR(512)"/>
+            <column name="identification_id" type="VARCHAR(128)"/>
+            <column name="issue_date" type="DATE"/>
+            <column name="issue_place" type="VARCHAR(256)"/>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_foreign_amt" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_base_amt" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_tax_amt" type="DECIMAL"/>
+            <column name="total_fee_amt" type="DECIMAL"/>
+            <column name="total_adjust_amt" type="DECIMAL"/>
+            <column name="total_reversed_amt" type="DECIMAL"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-21" author="Hoang Hiep">
+        <createTable tableName="fac_txn_acct_entry">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_txn_acct_entry"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="business_status" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_acct_entry_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reference_code" type="VARCHAR(128)"/>
+            <column name="entry_type_code" type="VARCHAR(128)"/>
+            <column name="voucher_type_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_no" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_content" type="VARCHAR(4000)"/>
+            <column name="entry_foreign_amt" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_base_amt" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_tax_amt" type="DECIMAL"/>
+            <column name="entry_fee_amt" type="DECIMAL"/>
+            <column name="entry_adjust_amt" type="DECIMAL"/>
+            <column name="entry_reversed_amt" type="DECIMAL"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768616606465-22" author="Hoang Hiep">
+        <createTable tableName="fac_txn_acct_entry_dtl">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fac_txn_acct_entry_dtl"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="business_status" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_acct_entry_dtl_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reference_code" type="VARCHAR(128)"/>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_acct_entry_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_no" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_class_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_coa_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exchange_rate" type="DECIMAL"/>
+            <column name="line_foreign_amt" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="line_base_amt" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

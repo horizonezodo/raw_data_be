@@ -1,0 +1,106 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+  application:
+    name: FAC
+  kafka:
+    bootstrap-servers: 10.10.0.31:9092
+
+  datasource:
+    #    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    #    username: epas_dev_fac
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: TENANT_NGV_DEMO
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: false
+
+security:
+  keycloak:
+    base-url: http://10.10.0.31:31090
+    realm: EPAS_DEV
+    token-uri: http://10.10.0.31:31090/realms/EPAS_DEV/protocol/openid-connect/token
+    auth-uri: http://10.10.0.31:31090/realms/EPAS_DEV/protocol/openid-connect/auth
+    client-id: epas_service
+    client-secret: R4lYzWDlyAwp5V2lwetT6RYvBfvkweLT
+    redirect-uri: https://epas.dev.ngvgroup.vn/auth/callback
+
+logging:
+  kafka:
+    topic:
+      activity: COM_INF_LOG_ACTIVITY_TOPIC
+      audit: COM_INF_LOG_AUDIT_TOPIC
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+bpm:
+  liquibase:
+    tenant:
+      change-log: classpath:db/changelog/db.changelog-master.xml
+      schema-targets:
+        common_schema: COMMON
+        hrm_schema: HRM
+        bpm_schema: BPM
+        crm_schema: CRM
+  core:
+    cors:
+      allowed-origins:
+        - https://epas.dev.ngvgroup.vn
+        - https://demo.dev.ngvgroup.vn
+        - http://localhost:4200
+    logging-toggle:
+      enabled: true
+      remote-base-url: https://epas.dev.ngvgroup.vn/api-common/api/setting/get-config-log
+      cache-ttl-seconds: 30
+    activity-log-enabled: true
+
+multitenancy:
+  enabled: true
+  #  enabled: false
+  kafka:
+    topic: EVENT-CREATED-TENANT
+    group: ${spring.application.name}
+  schema:
+    password: 123456
+
+  organizations:
+    enabled: true
+    claim: organization              # claim name trong token
+    tenantAttribute: tenant_id       # attribute bạn set ở A3
+    preferTenantAttribute: true      # ưu tiên attribute (tenant_id) hơn alias
+    selectHeader: X-Org-Alias        # dùng khi user thuộc nhiều org
+
+service:
+  bpm:
+    url: https://epas.dev.ngvgroup.vn/api-bpm
+  common:
+    url: https://epas.dev.ngvgroup.vn/api-common
+
+camunda:
+  bpm:
+    client:
+      base-url: https://epas.dev.ngvgroup.vn/fac/api/engine-rest
+
+minio:
+  bucket: epas
+  url: http://minio-api-ext.minio-operator.svc.cluster.local:9000
+  access-key: admin
+  secret-key: admin123
