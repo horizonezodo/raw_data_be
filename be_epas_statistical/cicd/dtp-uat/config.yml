@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: STATISTICAL
+  kafka:
+    bootstrap-servers: http://10.10.0.31:32622
+  datasource:
+    #    url: jdbc:oracle:thin:@113.190.234.241:1521/dbwr
+    #    username: TENANT_NGV_DEMO
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: DTP_UAT_RPT
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://10.10.0.31:31095/realms/DTP_UAT
+          jwk-set-uri: http://10.10.0.31:31095/realms/DTP_UAT/protocol/openid-connect/certs
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    parameters:
+      common_schema: DTP_UAT_COMMON
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+logging:
+  kafka:
+    topic:
+      activity: COM_INF_LOG_ACTIVITY_TOPIC
+      audit: COM_INF_LOG_AUDIT_TOPIC
+
+bpm:
+  core:
+    oauth2:
+      token-uri: http://10.10.0.31:31095/realms/DTP_UAT/protocol/openid-connect/token
+      client-id: epas_service
+      client-secret: 
+      cache-token: true
+    cors:
+      allowed-origins:
+        - https://dtp.uat.ngvgroup.vn
+    logging-toggle:
+      enabled: true
+      remote-base-url: https://dtp.uat.ngvgroup.vn/api-common/api/setting/get-config-log
+      cache-ttl-seconds: 30
+    activity-log-enabled: true
+
+
+service:
+  common:
+    url: https://dtp.uat.ngvgroup.vn/api-common
+
+tableau:
+  username: ngv
+
+
+powerbi:
+  api:
+    url: https://api.powerbi.com/v1.0/myorg

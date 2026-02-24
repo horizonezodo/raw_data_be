@@ -1,0 +1,2443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd" objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1768982915901-1" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_ai_tool" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_ai_tool">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_ai_tool" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tool_ai_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tool_ai_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tool_ai_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="input_parameter" type="CLOB" />
+            <column name="template_config" type="CLOB" />
+            <column name="output_format" type="VARCHAR(256)" />
+            <column name="timeout_second" type="DOUBLE" />
+            <column name="retry_count" type="INT" />
+            <column name="requires_auth" type="BOOLEAN" />
+            <column name="allowed_role" type="CLOB" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-2" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_ai_tool_type" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_ai_tool_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk__ctg_cfg_ai_tool_type" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tool_ai_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tool_ai_type_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-3" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_report" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_report">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_report" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="report_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="report_group_code" type="VARCHAR(128)" />
+            <column name="report_code_name" type="VARCHAR(256)" />
+            <column name="report_code_name_en" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="data_source_type" type="VARCHAR(64)" />
+            <column name="report_type" type="VARCHAR(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_display_home_page" type="INT" />
+            <column name="template_code" type="VARCHAR(128)" />
+            <column name="report_source" type="VARCHAR(4000)"/>
+            <column name="report_url_check" type="VARCHAR(512)" />
+            <column name="rounding_digits" type="INT" />
+            <column name="decimal_places" type="VARCHAR(255)" />
+            <column name="separator" type="VARCHAR(16)" />
+            <column name="decimal_separator" type="VARCHAR(16)" />
+            <column name="decimal_format" type="VARCHAR(16)" />
+            <column name="data_format_type" type="VARCHAR(16)" />
+            <column name="zero_display_format" type="VARCHAR(16)" />
+            <column name="negative_display_format" type="VARCHAR(16)" />
+            <column name="sort_number" type="DECIMAL" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-4" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_report_group" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_report_group">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_report_group" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="report_group_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="report_group_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="report_group_name_en" type="VARCHAR(256)" />
+            <column name="sort_number" type="DECIMAL" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-5" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_report_param" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_report_param">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_report_param" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="report_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="parameter_code" type="VARCHAR(128)" />
+            <column name="parameter_name" type="VARCHAR(256)" />
+            <column name="parameter_name_en" type="VARCHAR(256)" />
+            <column name="parameter_type" type="VARCHAR(16)" />
+            <column name="control_type" type="VARCHAR(64)" />
+            <column name="resource_sql" type="VARCHAR(4000)" />
+            <column name="is_display" type="INT" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="display_frame" type="VARCHAR(16)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-6" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_report_param_base" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_report_param_base">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_report_param_base" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)" />
+            <column name="param_base_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="param_base_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="param_base_type" type="VARCHAR(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-7" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_report_param_cond" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_report_param_cond">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_report_param_cond" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="report_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="source_param_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="source_param_value" type="VARCHAR(128)"/>
+            <column name="target_param_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="condition_type" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="expression" type="VARCHAR(4000)" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-8" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_code_map" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_code_map">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_code_map" />
+            </column>
+            <column name="created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="TIMESTAMP"/>
+            <column name="modified_by" type="VARCHAR(32)"/>
+            <column name="record_status" type="VARCHAR(64)" defaultValue="approval">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_delete" type="NUMBER(1,0)" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="NUMBER(1,0)" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="stat_regulatory_code" type="VARCHAR(64)"/>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="report_module_code" type="VARCHAR(64)"/>
+            <column name="stat_type_code" type="VARCHAR(64)"/>
+            <column name="stat_internal_code" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-9" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_kpi" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_kpi">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_kpi" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_code" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_name" type="VARCHAR(512)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_type_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="expression_sql" type="VARCHAR(4000)" />
+            <column name="agrt_timing_code" type="VARCHAR(32)" />
+            <column name="agrt_timing_name" type="VARCHAR(128)" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="parent_code" type="VARCHAR(128)" />
+            <column name="is_valid" type="BOOLEAN" />
+            <column name="valid_sql" type="VARCHAR(4000)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-10" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_regulatory" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_regulatory">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_regulatory" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)" />
+            <column name="stat_regulatory_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_regulatory_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="report_module_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="sort_number" type="BIGINT" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-11" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_regulatory_type" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_regulatory_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_regulatory_type" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="regulatory_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="regulatory_type_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="issued_by" type="VARCHAR(512)" />
+            <column name="issued_date" type="DATETIME" />
+            <column name="effective_date" type="DATETIME" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-12" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_regulatory_wf" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_regulatory_wf">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_regulatory_wf" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="regulatory_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="regulatory_type_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="workflow_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="version_no" type="INT" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-13" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_response_define" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_response_define">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_response_define" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="response_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="response_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-14" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_rule_define" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_rule_define">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_rule_define" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rule_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rule_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rule_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="expression_sql" type="VARCHAR(4000)" />
+            <column name="response_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rule_mode" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="effective_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="expiry_date" type="DATE" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-15" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_rule_define_kpi" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_rule_define_kpi">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_rule_define_kpi" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="rule_code" type="VARCHAR(64)" />
+            <column name="template_code" type="VARCHAR(128)" />
+            <column name="kpi_code" type="VARCHAR(32)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-16" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_rule_type" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_rule_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_rule_type" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rule_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rule_type_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-17" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_score_benchmark" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_score_benchmark">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_score_benchmark" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="benchmark_code" type="VARCHAR(128)" />
+            <column name="benchmark_name" type="VARCHAR(256)" />
+            <column name="stat_score_type_code" type="VARCHAR(128)" />
+            <column name="benchmark_value" type="VARCHAR(128)" />
+            <column name="benchmark_desc" type="VARCHAR(4000)" />
+            <column name="score_value_min" type="DECIMAL(7, 4)" />
+            <column name="score_value_max" type="DECIMAL(7, 4)" />
+            <column name="condition_expression" type="VARCHAR(256)" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="org_code" type="VARCHAR(255)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-18" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_score_group" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_score_group">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_score_group" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_type_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_type_code" type="VARCHAR(64)" />
+            <column name="stat_score_group_type_name" type="VARCHAR(128)" />
+            <column name="weight_score" type="DECIMAL(7, 4)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-19" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_score_group_kpi" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_score_group_kpi">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_score_group_kpi" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_code" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="weight_score" type="DECIMAL(7, 4)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-20" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_score_kpi_result" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_score_kpi_result">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_score_kpi_result" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="org_code" type="VARCHAR(64)" />
+            <column name="kpi_code" type="VARCHAR(32)" />
+            <column name="result_name" type="VARCHAR(128)" />
+            <column name="score_value" type="DECIMAL" />
+            <column name="score_value_min" type="DECIMAL" />
+            <column name="score_value_max" type="DECIMAL" />
+            <column name="condition_expression" type="VARCHAR(256)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-21" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_score_type" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_score_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_score_type" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_type_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_type_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="sql_calc_result" type="VARCHAR(4000)" />
+            <column name="template_result_code" type="VARCHAR(128)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-22" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_score_type_wf" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_score_type_wf">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_score_type_wf" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_type_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="workflow_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="version_no" type="INT" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-23" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_template" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_template">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_template" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_group_code" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="effective_date" type="DATETIME" />
+            <column name="expiry_date" type="DATETIME" />
+            <column name="column_start" type="INT" />
+            <column name="frequency" type="VARCHAR(64)" />
+            <column name="template_file" type="BLOB" />
+            <column name="template_report_file" type="BLOB" />
+            <column name="USER_GUIDE_FILE" type="BLOB" />
+            <column name="expression_sql" type="VARCHAR(4000)" />
+            <column name="template_data_type" type="VARCHAR(128)" />
+            <column name="generated_data_type" type="VARCHAR(128)" />
+            <column name="unit_kpi" type="DOUBLE" />
+            <column name="data_format_type" type="VARCHAR(16)" />
+            <column name="decimal_scale" type="DOUBLE" />
+            <column name="decimal_format" type="VARCHAR(16)" />
+            <column name="rounding_digits" type="DOUBLE" />
+            <column name="separator" type="VARCHAR(16)" />
+            <column name="decimal_separator" type="VARCHAR(255)" />
+            <column name="zero_display_format" type="VARCHAR(16)" />
+            <column name="negative_display_format" type="VARCHAR(16)" />
+            <column name="template_file_name" type="VARCHAR(256)" />
+            <column name="template_report_file_name" type="VARCHAR(256)" />
+            <column name="user_guide_file_name" type="VARCHAR(256)" />
+            <column name="circular_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="circular_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_group_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="regulatory_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="regulatory_type_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-24" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_template_deadline" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_template_deadline">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_template_deadline" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="frequency" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="deadline_type" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="deadline_value" type="VARCHAR(64)" />
+            <column name="deadline_day_time" type="VARCHAR(64)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-25" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_template_kpi" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_template_kpi">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_template_kpi" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_kpi_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_kpi_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="sort_execute" type="DOUBLE" />
+            <column name="sort_number" type="INT" />
+            <column name="data_kpi_type" type="VARCHAR(64)" />
+            <column name="area_id" type="DOUBLE" />
+            <column name="row_index" type="DOUBLE" />
+            <column name="column_index" type="DOUBLE" />
+            <column name="kpi_code" type="VARCHAR(32)" />
+            <column name="expression_sql" type="VARCHAR(4000)" />
+            <column name="unit_kpi" type="DOUBLE" />
+            <column name="decimal_scale" type="DOUBLE" />
+            <column name="rounding_digits" type="DOUBLE" />
+            <column name="SORT_EXCUTE" type="NUMBER(5,0)"/>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_name" type="VARCHAR(512)" />
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-26" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_template_sheet" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_template_sheet">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_template_sheet" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="sheet_data" type="VARCHAR(64)" />
+            <column name="area_id" type="DOUBLE" />
+            <column name="column_start" type="DOUBLE" />
+            <column name="row_start" type="DOUBLE" />
+            <column name="column_end" type="DOUBLE" />
+            <column name="row_end" type="DOUBLE" />
+            <column name="rows_to_delete" type="DOUBLE" />
+            <column name="table_data" type="VARCHAR(64)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-27" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_type" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_type" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_type_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="report_module_code" type="VARCHAR(64)" />
+            <column name="expression_sql" type="VARCHAR(4000)" />
+            <column name="sort_number" type="INT" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-28" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_stat_type_kpi" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_stat_type_kpi">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_stat_type_kpi" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_type_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_type_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-29" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_status" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_status">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_status" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="sort_number" type="BIGINT" />
+            <column name="status_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_type_code" type="VARCHAR(64)" />
+            <column name="status_type_name" type="VARCHAR(128)" />
+            <column name="is_final" type="NUMBER(1,0)" />
+            <column name="is_aggregation" type="NUMBER(1,0)" />
+            <column name="is_allow_edit" type="NUMBER(1,0)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-30" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_status_sla" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_status_sla">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_status_sla" />
+            </column>
+            <column name="created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="TIMESTAMP"/>
+            <column name="modified_by" type="VARCHAR(32)"/>
+            <column name="record_status" type="VARCHAR(64)" defaultValue="approval">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_delete" type="NUMBER(1,0)" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="NUMBER(1,0)" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="status_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration_time" type="NUMBER(4,0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grace_time" type="NUMBER(4,0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="use_business_time" type="NUMBER(4,0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="warrning_before_time" type="NUMBER(4,0)"/>
+            <column name="escalate_after_time" type="NUMBER(4,0)"/>
+            <column name="warrning_sql" type="VARCHAR(4000)"/>
+            <column name="escalate_sql" type="VARCHAR(4000)"/>
+            <column name="is_enable" type="NUMBER(1,0)" defaultValueNumeric="1"/>
+            <column name="time_unit" type="VARCHAR(32)"/>
+            <column name="effective_date" type="DATE"/>
+            <column name="expiry_date" type="DATE"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-31" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_transition_cond" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_transition_cond">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_transition_cond" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="transition_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="condition_type" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="condition_no" type="INT" />
+            <column name="is_mandatory" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="entity_scope" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="error_message" type="VARCHAR(512)" />
+            <column name="expression_sql" type="VARCHAR(2000)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-32" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_transition_post_func" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_transition_post_func">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_transition_post_func" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="transition_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="post_function_type" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="post_function_no" type="INT" />
+            <column name="is_async" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="expression_sql" type="VARCHAR(2000)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-33" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_transition_sla" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_transition_sla">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_transition_sla" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="workflow_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="transition_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="duration_time" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="grace_time" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="use_business_time" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="warrning_before_time" type="INT" />
+            <column name="escalate_after_time" type="INT" />
+            <column name="warrning_sql" type="VARCHAR(4000)" />
+            <column name="escalate_sql" type="VARCHAR(4000)" />
+            <column name="is_enable" type="BOOLEAN" />
+            <column name="time_unit" type="VARCHAR(32)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-34" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_workflow" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_workflow">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_workflow" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="workflow_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="workflow_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="initial_status_code" type="VARCHAR(64)" />
+            <column name="version_no" type="DECIMAL(10, 2)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-35" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_workflow_transition" />
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_workflow_transition">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_workflow_transition" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="workflow_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="transition_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="transition_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="from_status_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="from_status_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="to_status_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="to_status_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_global" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="sort_number" type="INT" />
+            <column name="is_allow_comment" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_allow_attachment" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-36" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="dc_option" />
+            </not>
+        </preConditions>
+        <createTable tableName="dc_option">
+            <column name="id" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dc_option" />
+            </column>
+            <column name="PARTNER_CODE" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="param_code" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="param_value" type="VARCHAR(512)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-45" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_score" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_score">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_score" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_id" type="VARCHAR(128)" />
+            <column name="stat_score_type_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_type_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="workflow_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="version_no" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_period" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="maker_user_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="maker_user_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_content" type="VARCHAR(4000)" />
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-46" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_score_branch" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_score_branch">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_score_branch" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_br_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_instance_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_period" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="achieved_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rank_value" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rank_content" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-47" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_score_branch_group" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_score_branch_group">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_score_branch_group" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_period" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="raw_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="weight_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="achieved_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_br_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-48" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_score_branch_kpi" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_score_branch_kpi">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_score_branch_kpi" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_code" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_name" type="VARCHAR(512)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_value" type="VARCHAR(512)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_period" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="raw_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="weight_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="achieved_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_br_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-49" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_txn_score" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_txn_score">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_txn_score" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_type_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_type_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="workflow_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="version_no" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_period" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="maker_user_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="maker_user_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_content" type="VARCHAR(4000)" />
+            <column name="current_status_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="current_status_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_final" type="BOOLEAN">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-50" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_txn_score_branch" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_txn_score_branch">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_txn_score_branch" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_br_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_instance_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_period" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="achieved_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rank_value" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rank_content" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-51" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_txn_score_branch_group" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_txn_score_branch_group">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_txn_score_branch_group" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_period" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="raw_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="weight_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="achieved_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_br_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-52" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_txn_score_branch_kpi" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_txn_score_branch_kpi">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_txn_score_branch_kpi" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_score_group_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_code" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_name" type="VARCHAR(512)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_value" type="VARCHAR(512)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_period" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="score_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+            <column name="raw_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="weight_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="achieved_score" type="DECIMAL(11, 4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ci_br_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768982915901-53" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="smr_txn_score_status" />
+            </not>
+        </preConditions>
+        <createTable tableName="smr_txn_score_status">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_smr_txn_score_status" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="score_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_user_id" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="txn_user_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="transition_comment" type="VARCHAR(4000)" />
+            <column name="transition_at" type="DATETIME" />
+            <column name="status_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_name" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="transition_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="transition_name" type="VARCHAR(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="record_status" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="018-EPAS_CODE_SEQUENCE" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="EPAS_CODE_SEQUENCE"/></not>
+        </preConditions>
+        <createTable tableName="EPAS_CODE_SEQUENCE">
+            <column name="TABLE_NAME" type="VARCHAR2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COLUMN_NAME" type="VARCHAR2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PREFIX" type="VARCHAR2(255)"/>
+            <column name="LAST_DATE" type="VARCHAR2(8)"/>
+            <column name="LAST_STT" type="NUMBER(22)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

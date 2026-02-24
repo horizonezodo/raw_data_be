@@ -1,0 +1,104 @@
+spring:
+  application:
+    name: statistical-service
+  kafka:
+    bootstrap-servers: 10.10.0.31:9092
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: MC_STATISTICAL
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://10.10.0.31:31092/realms/MC_UAT
+          jwk-set-uri: http://10.10.0.31:31092/realms/MC_UAT/protocol/openid-connect/certs
+logging:
+  kafka:
+    topic:
+      activity: COM_INF_LOG_ACTIVITY_TOPIC
+      audit: COM_INF_LOG_AUDIT_TOPIC
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+bpm:
+  core:
+    oauth2:
+      token-uri: http://10.10.0.31:31092/realms/MC_UAT/protocol/openid-connect/token
+      client-id: epas_service
+      client-secret: 30EiPJ7G5O9DWc8YroWViOWETiPxB29f
+      cache-token: true
+    cors:
+      allowed-origins:
+        - https://mc.uat.ngvgroup.vn
+    logging-toggle:
+      enabled: true
+      remote-base-url: https://mc.uat.ngvgroup.vn/api-common/api/setting/get-config-log
+      cache-ttl-seconds: 30
+    activity-log-enabled: true
+
+
+service:
+  common:
+    url: https://mc.uat.ngvgroup.vn/api-common
+
+tableau:
+  username: ngv
+
+multitenancy:
+  #  enabled: true
+  enabled: false
+  tenant-claim: tenant_id
+  tenant-header: X-Tenant-Id
+  kafka:
+    topic: EVENT-CREATED-TENANT
+    group: ${spring.application.name}
+  schema:
+      password: 123456
+
+  organizations:
+    enabled: true
+    claim: organization              # claim name trong token
+    tenantAttribute: tenant_id       # attribute bạn set ở A3
+    preferTenantAttribute: true      # ưu tiên attribute (tenant_id) hơn alias
+    selectHeader: X-Org-Alias        # dùng khi user thuộc nhiều org
+azure:
+  activedirectory:
+    client-id: 72890988-9196-4315-bfe9-188cf3614fd3
+    client-secret: 
+    tenant-id: 7ba22efa-cdbc-4dde-b312-7a60f64e1674
+    authority: https://login.microsoftonline.com/
+    scope: https://analysis.windows.net/powerbi/api/.default
+
+powerbi:
+  api:
+    url: https://api.powerbi.com/v1.0/myorg
+
+security:
+  keycloak:
+    base-url: http://10.10.0.31:31092
+    realm: EPAS_DEV
+    token-uri: http://10.10.0.31:31092/realms/MC_UAT/protocol/openid-connect/token
+    auth-uri: http://10.10.0.31:31092/realms/MC_UAT/protocol/openid-connect/auth
+    client-id: epas_service
+    client-secret: 30EiPJ7G5O9DWc8YroWViOWETiPxB29f
+    redirect-uri: https://mc.uat.ngvgroup.vn/auth/callback
+    admin-realms-path: '/admin/realms/'
+    scope-openid-email-profile: 'openid email profile organization'

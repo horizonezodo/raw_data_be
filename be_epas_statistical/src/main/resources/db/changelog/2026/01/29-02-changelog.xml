@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="1769677034729-1" author="dinht" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="TMP_KPI_VAL"/></not>
+        </preConditions>
+
+        <sql splitStatements="true" stripComments="true">
+            CREATE GLOBAL TEMPORARY TABLE "TMP_KPI_VAL"
+            (
+                "CI_BR_ID"              VARCHAR2(128),
+                "CI_BR_SCORE_VALUE"     NUMBER,
+                "BENCHMARK_VALUE"       VARCHAR2(128),
+                "BENCHMARK_DESC"        VARCHAR2(4000),
+                "STAT_SCORE_GROUP_CODE" VARCHAR2(64),
+                "GROUP_WEIGHT_SCORE"    NUMBER,
+                "GROUP_SCORE_VALUE"     NUMBER,
+                "GROUP_RAW_SCORE"       NUMBER,
+                "KPI_CODE"              VARCHAR2(32),
+                "KPI_VALUE"             NUMBER,
+                "SCORE_VALUE"           NUMBER,
+                "RESULT_NAME"           VARCHAR2(128),
+                "KPI_WEIGHT_SCORE"      NUMBER
+            ) ON COMMIT PRESERVE ROWS;
+        </sql>
+
+        <rollback>
+            <dropTable tableName="TMP_KPI_VAL"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

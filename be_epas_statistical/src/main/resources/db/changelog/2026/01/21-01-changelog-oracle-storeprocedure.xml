@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <!--  Store procedure  -->
+
+    <changeSet id="create-proc-generate-next-sequence" author="hiepnd"
+               context="init">
+
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <dbms type="oracle"/>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*)
+                    FROM USER_OBJECTS
+                    WHERE OBJECT_TYPE = 'PROCEDURE'
+                    AND OBJECT_NAME = 'GENERATE_NEXT_SEQUENCE'
+                </sqlCheck>
+            </and>
+        </preConditions>
+
+        <comment>Procedure sinh mã sequence tự động cho các bảng nghiệp vụ</comment>
+
+        <sqlFile
+                path="db/sql/oracle/generate_next_sequence.sql"
+                splitStatements="false"
+                stripComments="false"/>
+
+        <rollback>
+            <sql>DROP PROCEDURE GENERATE_NEXT_SEQUENCE</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create-proc-sp-stat-common-kpi" author="hiepnd"
+               context="init">
+
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <dbms type="oracle"/>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*)
+                    FROM USER_OBJECTS
+                    WHERE OBJECT_TYPE = 'PROCEDURE'
+                    AND OBJECT_NAME = 'SP_STAT_COMMON_KPI'
+                </sqlCheck>
+            </and>
+        </preConditions>
+
+        <comment>
+            Procedure tổng hợp KPI theo template (không hard-code schema)
+        </comment>
+
+        <sqlFile
+                path="db/sql/oracle/sp_stat_common_kpi.sql"
+                splitStatements="false"
+                stripComments="false"/>
+
+        <rollback>
+            <sql>DROP PROCEDURE SP_STAT_COMMON_KPI</sql>
+        </rollback>
+    </changeSet>
+
+    <!-- PACKAGE SPEC -->
+    <changeSet id="20260120-01-ctg-kpi-score-spec" author="hiep"  context="init">
+
+        <preConditions onFail="MARK_RAN">
+            <dbms type="oracle"/>
+        </preConditions>
+
+        <sqlFile
+                path="db/sql/oracle/ctg_kpi_score.pks.sql"
+                splitStatements="false"
+                endDelimiter="/"
+                stripComments="false"/>
+    </changeSet>
+
+    <!-- PACKAGE BODY -->
+    <changeSet id="20260120-02-ctg-kpi-score-body" author="hiep"  context="init">
+
+        <preConditions onFail="MARK_RAN">
+            <dbms type="oracle"/>
+        </preConditions>
+
+        <sqlFile
+                path="db/sql/oracle/ctg_kpi_score.pkb.sql"
+                splitStatements="false"
+                endDelimiter="/"
+                stripComments="false"/>
+    </changeSet>
+
+</databaseChangeLog>

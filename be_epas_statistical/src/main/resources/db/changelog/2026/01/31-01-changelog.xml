@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet id="1768982915901-43" author="hiepnd">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="rpt_txn_stat_template_kpi" />
+            </not>
+        </preConditions>
+        <createTable tableName="rpt_txn_stat_template_kpi">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_rpt_txn_stat_template_kpi" />
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="approved_by" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="modified_date" type="DATETIME" />
+            <column name="modified_by" type="VARCHAR(32)" />
+            <column name="is_delete" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(512)" />
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="template_code" type="VARCHAR(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stat_instance_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="aggregation_run_no" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="rev_no" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_code" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="kpi_name" type="VARCHAR(512)">
+                <constraints nullable="false" />
+            </column>
+            <column name="report_data_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="currency_code" type="VARCHAR(255)" />
+            <column name="kpi_value" type="VARCHAR(4000)" />
+            <column name="record_status" type="VARCHAR(64)" />
+            <column name="is_active" type="NUMBER(1,0)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
