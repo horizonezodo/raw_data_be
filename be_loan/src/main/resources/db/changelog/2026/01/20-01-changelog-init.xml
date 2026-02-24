@@ -1,0 +1,1136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1768894694763-1" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="com_cfg_base_rate"/>
+            </not>
+        </preConditions>
+        <createTable tableName="com_cfg_base_rate">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_com_cfg_base_rate"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="currency_code" type="VARCHAR(4)"/>
+            <column name="base_rate_code" type="VARCHAR(64)"/>
+            <column name="base_rate_name" type="VARCHAR(256)"/>
+            <column name="source_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-2" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_collateral_type"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_collateral_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_collateral_type"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="collateral_type_code" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="collateral_type_name" type="VARCHAR(256)"/>
+            <column name="risk_coefficient" type="DECIMAL(7, 4)"/>
+            <column name="deduction_ratio" type="DECIMAL(7, 4)"/>
+            <column name="guarantee_ratio" type="DECIMAL(7, 4)"/>
+            <column name="is_accounting_value" type="BOOLEAN"/>
+            <column name="is_accounting_quantity" type="BOOLEAN"/>
+            <column name="collateral_group_code" type="VARCHAR(64)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-3" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_interest_rate"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_interest_rate">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_interest_rate"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="module_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_by_balance" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-4" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_interest_rate_dtl"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_interest_rate_dtl">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_interest_rate_dtl"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="interest_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate" type="DECIMAL(7, 5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="negotiated_rate" type="DECIMAL(7, 5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_rate" type="DECIMAL(7, 5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount_from" type="DECIMAL"/>
+            <column name="amount_to" type="DECIMAL"/>
+            <column name="doc_no" type="VARCHAR(128)"/>
+            <column name="doc_effective_date" type="DATETIME"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-5" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_loan_purpose"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_loan_purpose">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_loan_purpose"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose_name" type="VARCHAR(256)"/>
+            <column name="risk_level" type="VARCHAR(128)"/>
+            <column name="loan_limit_min" type="DECIMAL(22, 4)"/>
+            <column name="loan_limit_max" type="DECIMAL(22, 4)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-6" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_scoring_benchmark"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_scoring_benchmark">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_scoring_benchmark"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="sort_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="benchmark_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="benchmark_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scoring_indc_group_type" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scoring_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="benchmark_value" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="benchmark_desc" type="VARCHAR(4000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="score_value_min" type="DECIMAL(*, 4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="score_value_max" type="DECIMAL(*, 4)"/>
+            <column name="condition_expression" type="VARCHAR(256)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-7" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_scoring_indc"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_scoring_indc">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_scoring_indc"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="indicator_code" type="VARCHAR(128)"/>
+            <column name="indicator_name" type="VARCHAR(256)"/>
+            <column name="weight_score" type="DECIMAL(*, 4)"/>
+            <column name="sql_execute" type="VARCHAR(512)"/>
+            <column name="control_type" type="VARCHAR(128)"/>
+            <column name="data_type" type="VARCHAR(4000)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-8" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_scoring_indc_group"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_scoring_indc_group">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_scoring_indc_group"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="sort_number" type="DECIMAL"/>
+            <column name="scoring_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scoring_indc_group_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scoring_indc_group_name" type="VARCHAR(256)"/>
+            <column name="scoring_indc_group_type" type="VARCHAR(128)"/>
+            <column name="weight_score" type="DECIMAL(*, 4)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-9" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_scoring_indc_mapp"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_scoring_indc_mapp">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_scoring_indc_mapp"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="sort_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scoring_indc_group_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="indicator_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-10" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_scoring_indc_result"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_scoring_indc_result">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_scoring_indc_result"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="sort_number" type="INT"/>
+            <column name="indicator_code" type="VARCHAR(128)"/>
+            <column name="result_name" type="VARCHAR(128)"/>
+            <column name="score_value" type="DECIMAL(*, 4)"/>
+            <column name="score_value_min" type="DECIMAL(*, 4)"/>
+            <column name="score_value_max" type="DECIMAL(*, 4)"/>
+            <column name="condition_expression" type="VARCHAR(256)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-11" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_cfg_scoring_type"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_cfg_scoring_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_cfg_scoring_type"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="scoring_type_code" type="VARCHAR(128)"/>
+            <column name="scoring_type_name" type="VARCHAR(256)"/>
+            <column name="sql_data_collection" type="VARCHAR(256)"/>
+            <column name="template_collection_code" type="VARCHAR(128)"/>
+            <column name="sql_calc_result" type="VARCHAR(256)"/>
+            <column name="template_result_code" type="VARCHAR(128)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-12" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_inf_area"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_inf_area">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_inf_area"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="area_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="area_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ward_code" type="VARCHAR(128)"/>
+            <column name="area_type_code" type="VARCHAR(64)"/>
+            <column name="area_type" type="VARCHAR(32)"/>
+            <column name="is_rural_area" type="BOOLEAN"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-13" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_inf_area_type"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_inf_area_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_inf_area_type"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="area_type_code" type="VARCHAR(64)"/>
+            <column name="area_type_name" type="VARCHAR(128)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-14" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ctg_inf_currency_type"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ctg_inf_currency_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ctg_inf_currency_type"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="currency_code" type="VARCHAR(64)"/>
+            <column name="currency_name" type="VARCHAR(128)"/>
+            <column name="symbol" type="VARCHAR(32)"/>
+            <column name="country" type="VARCHAR(255)"/>
+            <column name="decimal_places" type="DECIMAL(7, 4)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-15" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lmn_txn_int_rate"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lmn_txn_int_rate">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lmn_txn_int_rate"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="apply_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_status" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-16" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_cfg_int_rate"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_cfg_int_rate">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_cfg_int_rate"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="apply_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-17" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_cfg_int_rate_fixed"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_cfg_int_rate_fixed">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_cfg_int_rate_fixed"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="decision_no" type="VARCHAR(128)"/>
+            <column name="decision_date" type="DATETIME"/>
+            <column name="interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="interest_rate_min" type="DECIMAL(9, 5)"/>
+            <column name="interest_rate_max" type="DECIMAL(9, 5)"/>
+            <column name="base_rate_code" type="VARCHAR(64)"/>
+            <column name="reset_freq" type="VARCHAR(64)"/>
+            <column name="spread" type="DECIMAL(9, 5)"/>
+            <column name="floor_interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="cap_interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-18" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_cfg_int_rate_tier"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_cfg_int_rate_tier">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_cfg_int_rate_tier"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="decision_no" type="VARCHAR(128)"/>
+            <column name="decision_date" type="DATETIME"/>
+            <column name="amt_from" type="DECIMAL(22)"/>
+            <column name="amt_to" type="DECIMAL(22)"/>
+            <column name="interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="interest_rate_min" type="DECIMAL(9, 5)"/>
+            <column name="interest_rate_max" type="DECIMAL(9, 5)"/>
+            <column name="base_rate_code" type="VARCHAR(64)"/>
+            <column name="reset_freq" type="VARCHAR(64)"/>
+            <column name="spread" type="DECIMAL(9, 5)"/>
+            <column name="floor_interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="cap_interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-19" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_txn_int_rate_fixed"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_txn_int_rate_fixed">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_txn_int_rate_fixed"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATETIME"/>
+            <column name="decision_no" type="VARCHAR(128)"/>
+            <column name="decision_date" type="DATETIME"/>
+            <column name="interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="interest_rate_min" type="DECIMAL(9, 5)"/>
+            <column name="interest_rate_max" type="DECIMAL(9, 5)"/>
+            <column name="base_rate_code" type="VARCHAR(64)"/>
+            <column name="reset_freq" type="VARCHAR(64)"/>
+            <column name="spread" type="DECIMAL(9, 5)"/>
+            <column name="floor_interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="cap_interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768894694763-20" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_txn_int_rate_tier"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_txn_int_rate_tier">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_txn_int_rate_tier"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATETIME"/>
+            <column name="decision_no" type="VARCHAR(128)"/>
+            <column name="decision_date" type="DATETIME"/>
+            <column name="amt_from" type="DECIMAL(22)"/>
+            <column name="amt_to" type="DECIMAL(22)"/>
+            <column name="interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="interest_rate_min" type="DECIMAL(9, 5)"/>
+            <column name="interest_rate_max" type="DECIMAL(9, 5)"/>
+            <column name="base_rate_code" type="VARCHAR(64)"/>
+            <column name="reset_freq" type="VARCHAR(64)"/>
+            <column name="spread" type="DECIMAL(9, 5)"/>
+            <column name="floor_interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="cap_interest_rate" type="DECIMAL(9, 5)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768962488309-1" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_cfg_product"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_cfg_product">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_cfg_product"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lnm_product_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lnm_product_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lnm_product_type_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="loan_term_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_class_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_structure_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATE"/>
+            <column name="expiry_date" type="DATE"/>
+            <column name="loan_term_from" type="INT"/>
+            <column name="loan_term_to" type="INT"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768962488309-2" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_cfg_product_dtl"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_cfg_product_dtl">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_cfg_product_dtl"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lnm_product_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="maturity_date_rule" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_payment_method" type="VARCHAR(64)"/>
+            <column name="is_accrued_calc" type="INT"/>
+            <column name="principal_grace_day" type="INT"/>
+            <column name="interest_grace_day" type="INT"/>
+            <column name="interest_calc_method" type="VARCHAR(128)"/>
+            <column name="interest_base_code" type="VARCHAR(128)"/>
+            <column name="interest_date_method" type="VARCHAR(128)"/>
+            <column name="interest_start_method" type="VARCHAR(128)"/>
+            <column name="is_interest_diff_mgmt" type="INT"/>
+            <column name="overdue_check_cond" type="VARCHAR(128)"/>
+            <column name="overdue_interest_type" type="VARCHAR(128)"/>
+            <column name="overdue_interest_value" type="DECIMAL(7, 4)"/>
+            <column name="penalty_interest_type" type="VARCHAR(128)"/>
+            <column name="penalty_interest_value" type="DECIMAL(7, 4)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768962488309-3" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_txn_product"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_txn_product">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_txn_product"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)"/>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lnm_product_code" type="VARCHAR(64)"/>
+            <column name="lnm_product_name" type="VARCHAR(256)"/>
+            <column name="lnm_product_type_code" type="VARCHAR(64)"/>
+            <column name="loan_term_type_code" type="VARCHAR(128)"/>
+            <column name="acc_class_code" type="VARCHAR(128)"/>
+            <column name="acc_structure_code" type="VARCHAR(64)"/>
+            <column name="interest_rate_code" type="VARCHAR(64)"/>
+            <column name="effective_date" type="DATE"/>
+            <column name="expiry_date" type="DATE"/>
+            <column name="loan_term_from" type="INT"/>
+            <column name="loan_term_to" type="INT"/>
+            <column name="business_status" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1768962488309-4" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_txn_product_dtl"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_txn_product_dtl">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_txn_product_dtl"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lnm_product_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="maturity_date_rule" type="VARCHAR(128)"/>
+            <column name="interest_payment_method" type="VARCHAR(64)"/>
+            <column name="is_accrued_calc" type="INT"/>
+            <column name="principal_grace_day" type="INT"/>
+            <column name="interest_grace_day" type="INT"/>
+            <column name="interest_calc_method" type="VARCHAR(128)"/>
+            <column name="interest_base_code" type="VARCHAR(128)"/>
+            <column name="interest_date_method" type="VARCHAR(128)"/>
+            <column name="interest_start_method" type="VARCHAR(128)"/>
+            <column name="is_interest_diff_mgmt" type="INT"/>
+            <column name="overdue_check_cond" type="VARCHAR(128)"/>
+            <column name="overdue_interest_type" type="VARCHAR(128)"/>
+            <column name="overdue_interest_value" type="DECIMAL(7, 4)"/>
+            <column name="penalty_interest_type" type="VARCHAR(128)"/>
+            <column name="penalty_interest_value" type="DECIMAL(7, 4)"/>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="create-epas-code-sequence-table" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="EPAS_CODE_SEQUENCE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="EPAS_CODE_SEQUENCE">
+            <column name="TABLE_NAME" type="VARCHAR2(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COLUMN_NAME" type="VARCHAR2(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PREFIX" type="VARCHAR2(50)"/>
+            <column name="LAST_DATE" type="VARCHAR2(8)"/>
+            <column name="LAST_STT" type="NUMBER(22)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

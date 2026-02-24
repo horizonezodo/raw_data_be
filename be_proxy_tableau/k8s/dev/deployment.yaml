@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tableau-proxy-be
+  namespace: mbamc-biportal-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tableau-proxy-be
+      environment: dev
+  template:
+    metadata:
+      labels:
+        app: tableau-proxy-be
+        environment: dev
+    spec:
+      containers:
+      - name: tableau-proxy-be
+        image: localhost:32000/tableau-proxy:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: app-config
+          mountPath: /deployment/config
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: ""
+        - name: SPRING_CONFIG_LOCATION
+          value: "classpath:/application.properties,optional:file:/deployment/config/application.properties"
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: app-config
+        projected:
+          sources:
+          - configMap:
+              name: tableau-proxy-be-config-app
+          - configMap:
+              name: tableau-proxy-be-config-log
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tableau-proxy-be-service
+  namespace: mbamc-biportal-dev
+spec:
+  selector:
+    app: tableau-proxy-be
+    environment: dev
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tableau-proxy-be-ingress
+  namespace: mbamc-biportal-dev
+spec:
+  ingressClassName: public
+  rules:
+  - host: tableau-proxy.dev.ngvgroup.vn
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tableau-proxy-be-service
+            port:
+              number: 80

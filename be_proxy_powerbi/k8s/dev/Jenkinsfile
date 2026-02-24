@@ -1,0 +1,127 @@
+pipeline {
+    agent any
+
+    environment {
+        dockerImage     = ''
+        containerName   = 'reverse-proxy-be'
+        ENV             = 'dev'
+        REGISTRY        = 'localhost:32000'
+        GIT_COMMIT_HASH = ''
+        IMAGE_NAME      = ''
+        K8S_NAMESPACE   = 'mbamc-biportal-dev'
+        BASE_IMAGE      = 'openjdk:21-jdk-slim'
+    }
+
+    stages {
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    GIT_COMMIT_HASH = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    IMAGE_NAME = "${REGISTRY}/${containerName}:${K8S_NAMESPACE}-${GIT_COMMIT_HASH}"
+                }
+            }
+        }
+
+        stage('Clone Source') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build JAR (Docker Maven)') {
+            steps {
+                script {
+                    sh """
+                        docker run --rm \
+                            -v \$(pwd):/app -w /app \
+                            -v /var/lib/jenkins/.m2:/root/.m2 \
+                            ${BASE_IMAGE} bash -c "
+                                apt-get update && \
+                                apt-get install -y maven && \
+                                if [ -f /app/.mvn/settings.xml ]; then \
+                                    echo 'Using project settings.xml'; \
+                                    mvn clean verify -DskipTests --settings /app/.mvn/settings.xml; \
+                                elif [ -f /root/.m2/settings.xml ]; then \
+                                    echo 'Using Jenkins settings.xml'; \
+                                    mvn clean verify -DskipTests --settings /root/.m2/settings.xml; \
+                                else \
+                                    echo 'No settings.xml found!'; \
+                                    exit 1; \
+                                fi
+                            "
+                    """
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${IMAGE_NAME}", "-f k8s/dev/Dockerfile .")
+                }
+            }
+        }
+
+        stage('Push to MicroK8s Registry') {
+            steps {
+                script {
+                    docker.withRegistry("http://${REGISTRY}") {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh """
+                        microk8s kubectl get ns ${K8S_NAMESPACE} || \
+                        microk8s kubectl create ns ${K8S_NAMESPACE}
+
+                        # Apply kustomize directory (processes kustomization.yaml, configMaps, deployment, service, ingress)
+                        microk8s kubectl apply -k k8s/dev -n ${K8S_NAMESPACE}
+
+                        # Update image to the freshly built tag
+                        microk8s kubectl set image deployment/${containerName} \
+                          ${containerName}=${IMAGE_NAME} \
+                          -n ${K8S_NAMESPACE}
+
+                        # Wait for rollout
+                        microk8s kubectl rollout status deployment/${containerName} \
+                          -n ${K8S_NAMESPACE} --timeout=300s
+                    """
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    sh """
+                        microk8s kubectl get pods -n ${K8S_NAMESPACE} -l app=${containerName}
+                        microk8s kubectl get svc -n ${K8S_NAMESPACE} -l app=${containerName}
+                        microk8s kubectl get ingress -n ${K8S_NAMESPACE}
+                    """
+                }
+            }
+        }
+
+        stage('Cleanup Old Images') {
+            steps {
+                script {
+                    sh """
+                        microk8s ctr images list | grep ${containerName} | sort -rk 2 | tail -n +4 \
+                        | awk '{print \$1":"\$2}' | xargs -r microk8s ctr images rm || true
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: mbamc-biportal-dev
+
+resources:
+  - deployment.yaml
+
+configMapGenerator:
+  - name: tableau-proxy-be-config-app
+    files:
+      - application.properties=config/application.properties
+  - name: tableau-proxy-be-config-log
+    files:
+      - log4j2.xml=config/log4j2.xml
+
+generatorOptions:
+  disableNameSuffixHash: true
+

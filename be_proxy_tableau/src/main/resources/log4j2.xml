@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%5p}--[%T-%-15.15t]
+            [%-20X{serviceMessageId}]%-40.40c{1.} :%m%n%ex
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT"
+                 follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <File name="logFile" fileName="logs/app.log" immediateFlush="true">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+        <!-- <Kafka name="KafkaAppender" topic="DC_LOGG"
+               syncsend="false">
+            <Property name="bootstrap.servers">10.10.0.37:9092</Property>
+            <JsonTemplateLayout eventTemplateUri="classpath:jsonTemplateLayout.json" >
+                <EventTemplateAdditionalField key="application" value="${bundle:application:spring.application.name}"/>
+            </JsonTemplateLayout>
+        </Kafka> -->
+    </Appenders>
+    <Loggers>
+        <AsyncLogger
+                name="com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver"
+                level="error" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <!-- <AppenderRef ref="KafkaAppender"/> -->
+            <AppenderRef ref="logFile"/>
+        </AsyncLogger>
+        <AsyncRoot level="info" includeLocation="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <!-- <AppenderRef ref="KafkaAppender"/> -->
+            <AppenderRef ref="logFile"/>
+        </AsyncRoot>
+        <logger name="filelogger" level="warn">
+            <appender-ref ref="logFile"/>
+        </logger>
+    </Loggers>
+</Configuration>

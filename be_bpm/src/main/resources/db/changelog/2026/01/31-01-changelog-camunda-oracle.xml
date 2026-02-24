@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+          http://www.liquibase.org/xml/ns/dbchangelog
+          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="create-camunda-engine-schema" author="dvson" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <not>
+                    <changeLogPropertyDefined property="multitenancy.enabled"/>
+                </not>
+                <changeLogPropertyDefined property="multitenancy.enabled" value="false"/>
+            </or>
+        </preConditions>
+        <sqlFile path="db/sql/oracle/activiti.oracle.create.engine.sql"
+                 splitStatements="true"
+                 stripComments="true"/>
+        <rollback>
+            <!-- Add rollback logic if necessary, e.g., drop tables in reverse order -->
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create-camunda-history-schema" author="dvson" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <not>
+                    <changeLogPropertyDefined property="multitenancy.enabled"/>
+                </not>
+                <changeLogPropertyDefined property="multitenancy.enabled" value="false"/>
+            </or>
+        </preConditions>
+        <sqlFile path="db/sql/oracle/activiti.oracle.create.history.sql"
+                 splitStatements="true"
+                 stripComments="true"/>
+        <rollback>
+            <!-- Add rollback logic if necessary -->
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create-camunda-identity-schema" author="dvson" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <not>
+                    <changeLogPropertyDefined property="multitenancy.enabled"/>
+                </not>
+                <changeLogPropertyDefined property="multitenancy.enabled" value="false"/>
+            </or>
+        </preConditions>
+        <sqlFile path="db/sql/oracle/activiti.oracle.create.identity.sql"
+                 splitStatements="true"
+                 stripComments="true"/>
+        <rollback>
+            <!-- Add rollback logic if necessary -->
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create-camunda-case-engine-schema" author="dvson" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <not>
+                    <changeLogPropertyDefined property="multitenancy.enabled"/>
+                </not>
+                <changeLogPropertyDefined property="multitenancy.enabled" value="false"/>
+            </or>
+        </preConditions>
+        <sqlFile path="db/sql/oracle/activiti.oracle.create.case.engine.sql"
+                 splitStatements="true"
+                 stripComments="true"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="create-camunda-case-history-schema" author="dvson" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <not>
+                    <changeLogPropertyDefined property="multitenancy.enabled"/>
+                </not>
+                <changeLogPropertyDefined property="multitenancy.enabled" value="false"/>
+            </or>
+        </preConditions>
+        <sqlFile path="db/sql/oracle/activiti.oracle.create.case.history.sql"
+                 splitStatements="true"
+                 stripComments="true"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="create-camunda-decision-engine-schema" author="dvson" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <not>
+                    <changeLogPropertyDefined property="multitenancy.enabled"/>
+                </not>
+                <changeLogPropertyDefined property="multitenancy.enabled" value="false"/>
+            </or>
+        </preConditions>
+        <sqlFile path="db/sql/oracle/activiti.oracle.create.decision.engine.sql"
+                 splitStatements="true"
+                 stripComments="true"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="create-camunda-decision-history-schema" author="dvson" dbms="oracle">
+        <preConditions onFail="MARK_RAN">
+            <or>
+                <not>
+                    <changeLogPropertyDefined property="multitenancy.enabled"/>
+                </not>
+                <changeLogPropertyDefined property="multitenancy.enabled" value="false"/>
+            </or>
+        </preConditions>
+        <sqlFile path="db/sql/oracle/activiti.oracle.create.decision.history.sql"
+                 splitStatements="true"
+                 stripComments="true"/>
+        <rollback/>
+    </changeSet>
+
+</databaseChangeLog>

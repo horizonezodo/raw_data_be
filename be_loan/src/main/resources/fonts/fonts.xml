@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+    <fontFamily name="Arial">
+        <normal><![CDATA[fonts/arial.ttf]]></normal>
+        <bold><![CDATA[fonts/arialbd.ttf]]></bold>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+    </fontFamily>
+
+    <fontFamily name="Times New Roman">
+        <normal><![CDATA[fonts/times.ttf]]></normal>
+        <bold><![CDATA[fonts/timesbd.ttf]]></bold>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+    </fontFamily>
+
+    <fontFamily name="Roboto">
+        <normal><![CDATA[fonts/Roboto-Regular.ttf]]></normal>
+        <bold><![CDATA[fonts/Roboto-Bold.ttf]]></bold>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+    </fontFamily>
+</fontFamilies>

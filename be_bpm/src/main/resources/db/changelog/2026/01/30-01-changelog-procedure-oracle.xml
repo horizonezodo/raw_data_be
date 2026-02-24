@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="procedure-SP_GET_TASK_OVERDUE" author="dvson" dbms="oracle">
+        <sqlFile path="db/sql/oracle/SP_GET_TASK_OVERDUE.sql" splitStatements="true" endDelimiter="/"/>
+        <rollback>
+            <sql>
+                DROP PROCEDURE SP_GET_TASK_OVERDUE;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="procedure-SP_GET_TASK_PERCENTAGE" author="dvson" dbms="oracle">
+        <sqlFile path="db/sql/oracle/SP_GET_TASK_PERCENTAGE.sql" splitStatements="true" endDelimiter="/"/>
+        <rollback>
+            <sql>
+                DROP PROCEDURE SP_GET_TASK_PERCENTAGE;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="procedure-SP_GET_TASK_STATUS" author="dvson" dbms="oracle">
+        <sqlFile path="db/sql/oracle/SP_GET_TASK_STATUS.sql" splitStatements="true" endDelimiter="/"/>
+        <rollback>
+            <sql>
+                DROP PROCEDURE SP_GET_TASK_STATUS;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="procedure-SP_GET_TASK_SUMMARY" author="dvson" dbms="oracle">
+        <sqlFile path="db/sql/oracle/SP_GET_TASK_SUMMARY.sql" splitStatements="true" endDelimiter="/"/>
+        <rollback>
+            <sql>
+                DROP PROCEDURE SP_GET_TASK_SUMMARY;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="procedure-SP_GET_TASKS_ASSIGNED_TO_USER" author="dvson" dbms="oracle">
+        <sqlFile path="db/sql/oracle/SP_GET_TASKS_ASSIGNED_TO_USER.sql" splitStatements="true" endDelimiter="/"/>
+        <rollback>
+-            <sql>
+                DROP PROCEDURE SP_GET_TASKS_ASSIGNED_TO_USER;
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

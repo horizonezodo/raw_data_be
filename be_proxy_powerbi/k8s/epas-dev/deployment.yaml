@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bi-proxy-be
+  namespace: epas-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bi-proxy-be
+      environment: dev
+  template:
+    metadata:
+      labels:
+        app: bi-proxy-be
+        environment: dev
+    spec:
+      containers:
+        - name: bi-proxy-be
+          image: localhost:32000/bi-proxy:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: dev
+      terminationGracePeriodSeconds: 60
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bi-proxy-be-service
+  namespace: epas-dev
+spec:
+  selector:
+    app: bi-proxy-be
+    environment: dev
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bi-proxy-be-ingress
+  namespace: epas-dev
+spec:
+  ingressClassName: public
+  rules:
+    - host: powerbi-proxy.dev.ngvgroup.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bi-proxy-be-service
+                port:
+                  number: 8080

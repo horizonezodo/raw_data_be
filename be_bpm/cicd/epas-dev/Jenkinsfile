@@ -1,0 +1,192 @@
+pipeline {
+    agent any
+
+    environment {
+        // Application Info
+        NAME_SERVICE = 'be-bpm'
+        NAME_SPACE = 'epas-dev'
+
+        // Maven & Registry
+        REGISTRY = 'localhost:32000'
+        MAVEN_IMAGE = 'maven:3.9.11-eclipse-temurin-17'
+
+        // Ingress Configuration
+        INGRESS_HOST = 'epas.dev.ngvgroup.vn'
+        INGRESS_PATH = '/api-bpm'
+
+        // Shared files
+        SHARED_DOCKERFILE = 'cicd/Dockerfile'
+        DEPLOYMENT_TEMPLATE = 'cicd/deployment.yaml'
+    }
+
+    stages {
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    env.IMAGE_NAME = "${REGISTRY}/${NAME_SERVICE}:${NAME_SPACE}"
+                    env.APP_LABEL = "${NAME_SPACE}-${NAME_SERVICE}"
+                    env.DEPLOYMENT_NAME = "${NAME_SPACE}-${NAME_SERVICE}-deployment"
+                    env.DEPLOYMENT_FILE = "cicd/${NAME_SPACE}-${NAME_SERVICE}-deployment.yaml"
+                    env.CONFIGMAP_NAME = "${NAME_SERVICE}-${NAME_SPACE}-config"
+
+                    echo "Namespace: ${NAME_SPACE}"
+                    echo "Service Name: ${NAME_SERVICE}"
+                    echo "Image Name: ${env.IMAGE_NAME}"
+                    echo "App Label: ${env.APP_LABEL}"
+                    echo "Deployment Name: ${DEPLOYMENT_NAME}"
+                    echo "Deployment File: ${env.DEPLOYMENT_FILE}"
+                    echo "ConfigMap Name: ${env.CONFIGMAP_NAME}"
+                }
+            }
+        }
+
+        stage('Clone Source') {
+            steps {
+                echo 'Cloning repository...'
+                checkout scm
+            }
+        }
+
+        stage('Generate Deployment') {
+            steps {
+                script {
+                    def template = readFile(DEPLOYMENT_TEMPLATE)
+                    def deployment = template
+                        .replace('${DEPLOYMENT_NAME}', env.DEPLOYMENT_NAME)
+                        .replace('${NAME_SPACE}', NAME_SPACE)
+                        .replace('${NAME_SERVICE}', NAME_SERVICE)
+                        .replace('${IMAGE_NAME}', env.IMAGE_NAME)
+                        .replace('${APP_LABEL}', env.APP_LABEL)
+                        .replace('${INGRESS_HOST}', INGRESS_HOST)
+                        .replace('${INGRESS_PATH}', INGRESS_PATH)
+                        .replace('${CONFIGMAP_NAME}', env.CONFIGMAP_NAME)
+
+                    writeFile file: env.DEPLOYMENT_FILE, text: deployment
+                    echo "✅ Generated deployment file: ${env.DEPLOYMENT_FILE}"
+                }
+            }
+        }
+
+        stage('Build JAR (Docker Maven)') {
+            steps {
+                script {
+                    sh """
+                        docker run --rm \
+                            -v \$(pwd):/app -w /app \
+                            -v /var/lib/jenkins/.m2:/root/.m2 \
+                            ${MAVEN_IMAGE} mvn clean verify -DskipTests --settings .mvn/settings.xml
+                    """
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build(
+                        "${env.IMAGE_NAME}",
+                        "--progress=plain -f ${SHARED_DOCKERFILE} ."
+                    )
+                }
+            }
+        }
+
+        stage('Push to MicroK8s Registry') {
+            steps {
+                script {
+                    echo 'Pushing image to MicroK8s registry...'
+                    docker.withRegistry("http://${REGISTRY}") {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    echo "Deploying image ${env.IMAGE_NAME} to Kubernetes..."
+
+                    // 1️⃣ Tạo namespace nếu chưa có
+                    sh """
+                        microk8s kubectl get ns ${NAME_SPACE} || \
+                        microk8s kubectl create ns ${NAME_SPACE}
+                    """
+
+                    // 2️⃣ Apply ConfigMap từ cicd/epas-dev/config.yml
+                    sh """
+                        microk8s kubectl create configmap ${env.CONFIGMAP_NAME} \
+                        --from-file=application-${NAME_SPACE}.yml=cicd/${NAME_SPACE}/config.yml \
+                        -n ${NAME_SPACE} \
+                        --dry-run=client -o yaml | microk8s kubectl apply -f -
+                    """
+
+                    // 3️⃣ Apply deployment
+                    sh """
+                        microk8s kubectl apply -f ${env.DEPLOYMENT_FILE} -n ${NAME_SPACE}
+                    """
+
+                    // 4️⃣ Cập nhật image
+                    sh """
+                        microk8s kubectl set image deployment/${env.DEPLOYMENT_NAME} \
+                        ${NAME_SERVICE}=${env.IMAGE_NAME} \
+                        -n ${NAME_SPACE}
+                    """
+
+                    // 5️⃣ Ép rollout để tạo pod mới dù tag không đổi
+                    sh """
+                        microk8s kubectl rollout restart deployment/${env.DEPLOYMENT_NAME} -n ${NAME_SPACE}
+                    """
+
+                    // 6️⃣ Đợi rollout xong
+                    sh "microk8s kubectl rollout status deployment/${env.DEPLOYMENT_NAME} -n ${NAME_SPACE} --timeout=300s"
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    echo 'Verifying deployment...'
+                    sh "microk8s kubectl get pods -n ${NAME_SPACE} -l app=${env.APP_LABEL}"
+                    sh "microk8s kubectl get svc -n ${NAME_SPACE} -l app=${env.APP_LABEL}"
+                    sh "microk8s kubectl get ingress -n ${NAME_SPACE}"
+                }
+            }
+        }
+
+        stage('Cleanup Old Images') {
+            steps {
+                script {
+                    sh "rm -f ${env.DEPLOYMENT_FILE} || true"
+
+                    echo 'Cleaning up old images in MicroK8s registry...'
+                    sh """
+                        microk8s ctr images ls | grep ${NAME_SERVICE} | sort -rk2 | tail -n +4 | awk '{print \$1}' | \
+                        xargs -r microk8s ctr images rm || true
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                echo 'Pipeline executed successfully!'
+                echo "✅ Application is accessible via Ingress:"
+                echo "   https://${INGRESS_HOST}${INGRESS_PATH}/"
+            }
+        }
+        failure {
+            echo 'Pipeline execution failed!'
+            script {
+                sh "microk8s kubectl logs -n ${NAME_SPACE} -l app=${env.APP_LABEL} --tail=50"
+            }
+        }
+        always {
+            sh "rm -f cicd/*-deployment.yaml || true"
+            cleanWs()
+        }
+    }
+}

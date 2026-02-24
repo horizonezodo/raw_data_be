@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: LOAN
+
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: NCF_UAT_BUSINESS
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://10.10.0.31:31090/realms/NCF_UAT
+          jwk-set-uri: http://10.10.0.31:31090/realms/NCF_UAT/protocol/openid-connect/certs
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  kafka:
+    bootstrap-servers: 10.10.0.31:9092
+    producer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  liquibase:
+    enabled: false
+    change-log: classpath:database/changelog/db.changelog-master.xml
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+bpm:
+  engine:
+    rest:
+      enabled: true
+  core:
+    cors:
+      allowed-origins:
+        - https://ncf.uat.ngvgroup.vn
+    oauth2:
+      token-uri: http://10.10.0.31:31090/realms/NCF_UAT/protocol/openid-connect/token
+      client-id: epas_service
+      client-secret: 30EiPJ7G5O9DWc8YroWViOWETiPxB29f
+      cache-token: true
+minio:
+  url: http://minio-api-ext.minio-operator.svc.cluster.local:9000
+  bucket: ncf-uat
+  access-key: admin
+  secret-key: admin123
+
+
+fac:
+  url: https://ncf.uat.ngvgroup.vn/api-fac
+
+epas-common: https://ncf.uat.ngvgroup.vn/api-common
+info-user: https://ncf.uat.ngvgroup.vn/api-common
+epas-integration: https://ncf.uat.ngvgroup.vn/api-integration

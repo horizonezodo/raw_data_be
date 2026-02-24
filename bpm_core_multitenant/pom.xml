@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ngvgroup.bpm</groupId>
+    <artifactId>bpm-core-multitenant</artifactId>
+    <version>1.0.31</version>
+    <packaging>jar</packaging>
+    <name>BPM Core Multitenant Starter</name>
+
+    <!-- Nếu bạn có parent BOM chung của tập đoàn thì dùng nó ở đây -->
+    <!-- Nếu không, dùng Spring Boot parent cho dễ quản lý dependency -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.3</version> <!-- chỉnh đúng version bạn đang dùng -->
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>17</java.version> <!-- chỉnh theo bạn -->
+    </properties>
+
+    <dependencies>
+        <!-- bắt buộc: core -->
+        <dependency>
+            <groupId>com.ngvgroup.bpm</groupId>
+            <artifactId>bpm-core-starter</artifactId>
+            <version>1.4.12</version>
+        </dependency>
+
+        <!-- để dùng @AutoConfiguration, @Conditional... -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- generate metadata cho properties (optional nhưng nên có) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Kafka: để optional (service nào dùng Kafka tự add spring-kafka) -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Liquibase: optional -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 🔧 Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.30</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <url>https://nexus.dev.ngvgroup.vn/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus</id>
+            <url>https://nexus.dev.ngvgroup.vn/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

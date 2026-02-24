@@ -1,0 +1,7 @@
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreServiceCodeAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreMultitenantAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreTenantLiquibaseAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreKafkaMultitenantAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreMultitenantUsernameNormalizerAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreSecurityMultitenantAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreFeignMultitenantAutoConfiguration

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reverse-proxy-be
+  namespace: mbamc-biportal-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reverse-proxy-be
+      environment: dev
+  template:
+    metadata:
+      labels:
+        app: reverse-proxy-be
+        environment: dev
+    spec:
+      containers:
+      - name: reverse-proxy-be
+        image: localhost:32000/reverse-proxy:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: app-config
+          mountPath: /deployment/config
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: ""
+        - name: SPRING_CONFIG_LOCATION
+          value: "classpath:/application.properties,optional:file:/deployment/config/application.properties"
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: app-config
+        projected:
+          sources:
+          - configMap:
+              name: reverse-proxy-be-config-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reverse-proxy-be-service
+  namespace: mbamc-biportal-dev
+spec:
+  selector:
+    app: reverse-proxy-be
+    environment: dev
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reverse-proxy-be-ingress
+  namespace: mbamc-biportal-dev
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /$2
+  #   nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+spec:
+  ingressClassName: public
+  rules:
+  - host: powerbi-proxy.dev.ngvgroup.vn
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: reverse-proxy-be-service
+            port:
+              number: 80

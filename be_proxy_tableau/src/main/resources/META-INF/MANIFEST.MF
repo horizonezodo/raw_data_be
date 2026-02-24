@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: vn.com.amc.qtdl.tableau_proxy.TableauProxyApplication
+

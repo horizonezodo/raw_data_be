@@ -1,0 +1,97 @@
+#!/usr/bin/env groovy
+library('cicd-shared-lib-dev@tanzu') _
+
+import java.text.SimpleDateFormat
+
+node("${NODE_INTEGRATION_TEAM_MGT}") {
+//node("${NODE_INTEGRATION_TEAM_MGT}") {    
+    // =================================================================================
+    /**
+     * TODO: Chi thay doi 2 thong tin tren tuong ung voi project
+     *
+     * project_name: Name of project
+     * kubernetes_namespace: namespace of K8S
+     */
+    def project_name = "bi-portal-tableu-proxy"
+    def kubernetes_namespace = "dev-qtdl"
+    
+    // ===================================================================================
+    def image_version = "1.0.1"
+    def chart_version = "0.1.${BUILD_NUMBER}"
+    def environment = "L01"
+    //def harbor_host = "${harbor_uat}"
+    def harbor_host = vault path: 'cicd/harbor', key: 'harbor_tanzu_dev', credentialsId: 'vault-token-dev', engineVersion: "2"
+    def helm_template = vault path: 'cicd/helm', key: 'helm_template_common', credentialsId: 'vault-token-dev', engineVersion: "2"
+    def helm_host_argocd = "argocd-helm-tanzu-dev-L01"
+    def docker_prefix = "${harbor_host}/${kubernetes_namespace}"   
+    //def helm_template ="helm-template-mbbank-argocd-prod"
+    // ===================================================================================
+    
+    /**
+     * TODO: Chon luong deploy
+     * Deploy theo luong argocd : CICD-ARGOCD
+     * Deploy theo luong helm : CICD-HELM
+     */
+    def Options = "CICD-ARGOCD"
+    def sub_path = "tanzu-dev"
+    //def capslock = ""
+    //def LowerCaseChannel = "${capslock}".toLowerCase()
+    //def ChanNel = "${LowerCaseChannel}"
+
+    // ===================================================================================
+    
+    ci_common(project_name, docker_prefix, image_version, harbor_host, helm_template, Options, sub_path)
+    try {
+        def arrProject = environment.split(' ')
+        def stages = [failFast: true]
+        if(arrProject.length > 0 ){
+            for (int i = 0; i < arrProject.length; i++) {
+                def env = arrProject[i];
+                switch(env) {
+                    case "L01":
+                        helm_host = "${helm_host_argocd}"
+                        /*
+                        * TODO : Truy thong tin cum
+                        **** dev <=> dev-tanzu01
+                        **** uat <=> uat-tanzu01
+                        **** uddn <=> tanzu-mb-dev-uddn-cluster
+                        **** paygate <=> tanzu-dev-paygate-cluster-01
+                        **** mlops <=> tanzu-mb-dev-mlops-cluster
+                        */
+                        env_argocd = "mbamccrm"
+                        break
+                    }
+                stage("Start ${arrProject[i]} Environment"){
+                    script {
+                        helm_pack_common(project_name, env, helm_host, helm_template, docker_prefix, image_version, Options, chart_version, sub_path) 
+                        cd_common(project_name, helm_host, arrProject, stages, docker_prefix, image_version, env, Options, kubernetes_namespace, env_argocd, chart_version) }
+                }
+            }
+        }
+        //parallel stages
+    } catch (Exception ex) {
+        currentBuild.result = "Failed"
+        throw ex
+    }
+}
+def ci_common(def project_name, def docker_prefix, def image_version, def harbor_host, def helm_template, def Options, def sub_path) {
+    stage(' Git Clone ') {
+        script { ci_common_java () }
+    }
+    stage(' Maven Build ') {
+        // // sh "mvn -s /opt/bpm-khdn/settings_bpm.xml -Dmaven.repo.local=/opt/bpm-khdn/repository -Dmaven.repo.local=/opt/repository dependency:purge-local-repository -DmanualInclude=vn.com.mbbank.bpm:bpm-core"
+	    // // sh "mvn -s /opt/bpm-khdn/settings_bpm.xml -Dmaven.repo.local=/opt/bpm-khdn/repository -Dmaven.repo.local=/opt/repository clean install -Dmaven.test.skip=true"
+        // sh "mvn -s /opt/bpm-khdn/settings_bpm.xml -Dmaven.repo.local=/opt/bpm-khdn/repository -Dmaven.repo.local=/opt/repository dependency:purge-local-repository -DmanualInclude=vn.com.mbbank.bpm:bpm-core"
+	    // sh "mvn -s /opt/bpm-khdn/settings_bpm.xml -Dmaven.repo.local=/opt/bpm-khdn/repository -Dmaven.repo.local=/opt/repository clean install -Dmaven.test.skip=true"
+        def mvn_home = "/sharedata/jenkin-home/tools/apache-maven-3.6.3"
+        def jdk_home = "/sharedata/jenkin-home/tools/jdk-21.0.2"
+        env.JAVA_HOME = "${jdk_home}"
+        env.PATH = "${mvn_home}/bin:${env.JAVA_HOME}/bin:${env.PATH}"
+        sh "mvn ${bpm_maven_build} dependency:purge-local-repository -DmanualInclude=vn.com.mbbank.bpm:bpm-core,vn.com.mbbank.bpm:bpm-engine,vn.com.mbbank.bpm:bpm-individual-integration,vn.com.mbbank:mbsm-generate,vn.com.mbbank.bpm:bpm-individual-common"
+        sh "mvn ${bpm_maven_build} clean install -Dmaven.test.skip=true -X"   
+
+    }
+    stage(' Docker Build ') {
+        script { docker_build_push(project_name,docker_prefix,image_version,harbor_host, sub_path) }
+    }
+}

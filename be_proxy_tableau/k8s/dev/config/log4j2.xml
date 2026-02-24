@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%5p}--[%T-%-15.15t]
+            [%-20X{serviceMessageId}]%-40.40c{1.} :%m%n%ex
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT"
+                 follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <!-- <Kafka name="KafkaAppender" topic="LOG_CMS"
+               syncsend="false">
+            <Property name="bootstrap.servers">10.215.114.20:9092</Property>
+            <JsonTemplateLayout eventTemplateUri="classpath:jsonTemplateLayout.json" >
+                <EventTemplateAdditionalField key="application" value="${bundle:application:spring.application.name}"/>
+            </JsonTemplateLayout>
+        </Kafka> -->
+    </Appenders>
+    <Loggers>
+        <!-- Chặn log Kafka client tránh gửi vào KafkaAppender -->
+        <Logger name="org.apache.kafka.clients" level="WARN" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+
+        <!-- Các logger khác riêng biệt nếu cần -->
+        <AsyncLogger name="com.netflix.discovery...." level="error" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <!-- <AppenderRef ref="KafkaAppender"/> -->
+        </AsyncLogger>
+
+        <!-- Root logger -->
+        <AsyncRoot level="info" includeLocation="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <!-- <AppenderRef ref="KafkaAppender"/> -->
+        </AsyncRoot>
+    </Loggers>
+
+</Configuration>

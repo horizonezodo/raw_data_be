@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Power BI Proxy Demo</title>
+</head>
+<body>
+<script>
+    // 🧠 Token ví dụ (JWT chứa thông tin user)
+    const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImM3N2ZkYjMxZGM4NzFiN2IwOGMwMGM2YzBhMmJhM2M4In0.eyJleHAiOjE4NjM5ODM2NTMsImNsaWVudF9ncm91cCI6InF0ZGwiLCJjbGllbnRfaWQiOiJCSVBPUlRBTCIsInVzZXJfaWQiOiJzdXBlcl9hZG1pbiIsInVzZXJfbG9naW4iOiJzdXBlcl9hZG1pbiIsInNpdGVfaWQiOiIgICAgIFZOIDAwMSAgICAwNTAzIiwidXNlcl9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6InN1cGVyX2FkbWluQG1iYW1jLmNvbS52biIsImp0aSI6Ijc5NmYwZGMwLTYwNTgtNGVmYS1iZWQyLTc2ZGU5YTU4NmM1MyJ9.lDBRoY3x3krnav9dxDSCjRbgEFnq1qcU5QNrAQeSdqGCmZV05sY3BmiHJHTTLo5MrxOv_A4cw-XNSsYyKiKWkMf-Lwn-N8RFEYJQ63ehrRnI5dOLL8ahLr-Qflg3z8GEGV4U0deXC-Csdyt-XClCB0gEsvqUIJe9eNqSEbQzpEbdw7HNd2JgjCny2B4Ndv1VwUCOlrq6EYvSbyKZ5Wiu3O2Lf2DapV6_KAG4c4e3mJdOBp_3s5bq1OTfVUIAfESJGyo66upeXd5hepdCl5CSg9ZyOo1ZizSho-6gSKM1MV0gtqYKDpX8ppQFOue6kdd1WYYu9OCuss3XXBG4bNBoyDfz_6Zs0YlREOVGQk5Oq2uAlqWQT6ddrSde4DuzUzUvfQq-zc_Yi1B6SBf5EPqEypmqRiKD_iVh8qKAvaVY6aGDpnoT20-PNNrBtdf7-Q38uCQcrJVwNP6IvQy6LMu2vOEF5w78klNEA4VEBpnCwvFqhw081pr7WZ7tg1Y-Hi-7"
+    document.cookie = `Token=${token}; path=/; SameSite=None; Secure`;
+
+    console.log("✅ Token set in cookie:", document.cookie);
+</script>
+
+<!-- 🖼️ Gọi vào backend proxy -->
+<iframe
+        src="http://localhost:8080/token"
+        width="100%"
+        height="800"
+        style="border:none;">
+</iframe>
+</body>
+</html>

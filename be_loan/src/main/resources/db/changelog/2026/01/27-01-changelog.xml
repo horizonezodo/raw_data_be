@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1769505847970-1" author="USER">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="lnm_txn_int_rate"/>
+            </not>
+        </preConditions>
+        <createTable tableName="lnm_txn_int_rate">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lnm_txn_int_rate"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="apply_type" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_status" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="record_status" type="VARCHAR(64)"/>
+            <column name="is_active" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

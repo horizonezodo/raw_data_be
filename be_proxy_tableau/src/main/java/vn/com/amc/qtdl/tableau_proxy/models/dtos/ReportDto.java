@@ -1,0 +1,15 @@
+package vn.com.amc.qtdl.tableau_proxy.models.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ReportDto {
+    private Long id;
+    private String reportCode;
+    private String reportSource;
+
+}

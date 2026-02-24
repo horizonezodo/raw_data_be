@@ -1,0 +1,4 @@
+url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+username: EPAS_DEV_LOAN
+password: 123456
+driver-class-name: oracle.jdbc.OracleDriver

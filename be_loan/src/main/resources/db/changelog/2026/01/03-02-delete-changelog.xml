@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="drop-column-EXPIRY_DATE-LNM_CFG_CAPITAL_USE_RATE" author="USER">
+        <dropColumn columnName="EXPIRY_DATE"
+                    tableName="LNM_CFG_CAPITAL_USE_RATE"/>
+    </changeSet>
+    <changeSet id="add-column-ORG_CODE-LNM_CFG_CAPITAL_USE_RATE" author="USER">
+        <addColumn tableName="LNM_CFG_CAPITAL_USE_RATE">
+            <column name="ORG_CODE"
+                    type="VARCHAR(64)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

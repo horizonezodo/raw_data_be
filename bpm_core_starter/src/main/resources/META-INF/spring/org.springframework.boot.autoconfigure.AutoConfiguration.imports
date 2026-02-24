@@ -1,0 +1,8 @@
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreKeycloakAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmCoreSecurityAutoConfiguration
+com.ngvgroup.bpm.core.autoconfigure.BpmPermissionAutoConfiguration
+
+com.ngvgroup.bpm.core.logging.audit.config.HibernateAuditAutoConfiguration
+com.ngvgroup.bpm.core.logging.audit.config.AuditAutoConfiguration
+

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet id="create-LNM_CFG_CAPITAL_USE" author="USER">
+        <createTable tableName="LNM_CFG_CAPITAL_USE">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_lnm_cfg_capital_use"/>
+            </column>
+            <column name="CREATED_DATE"
+                    type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APPROVED_DATE"
+                    type="DATETIME"/>
+            <column name="APPROVED_BY"
+                    type="VARCHAR(64)"/>
+            <column name="MODIFIED_DATE"
+                    type="DATETIME"/>
+            <column name="MODIFIED_BY"
+                    type="VARCHAR(64)"/>
+            <column name="IS_DELETE"
+                    type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION"
+                    type="VARCHAR(512)"/>
+            <column name="ORG_CODE"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CAPITAL_USE_CODE"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CAPITAL_USE_NAME"
+                    type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RECORD_STATUS"
+                    type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-LNM_CFG_CAPITAL_USE_RATE" author="USER">
+        <createTable tableName="LNM_CFG_CAPITAL_USE_RATE">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_lnm_cfg_capital_use_rate"/>
+            </column>
+            <column name="CREATED_DATE"
+                    type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APPROVED_DATE"
+                    type="DATETIME"/>
+            <column name="APPROVED_BY"
+                    type="VARCHAR(64)"/>
+            <column name="MODIFIED_DATE"
+                    type="DATETIME"/>
+            <column name="MODIFIED_BY"
+                    type="VARCHAR(64)"/>
+            <column name="IS_DELETE"
+                    type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION"
+                    type="VARCHAR(512)"/>
+            <column name="EFFECTIVE_DATE"
+                    type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPIRY_DATE"
+                    type="DATETIME"/>
+            <column name="CAPITAL_USE_CODE"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RATE_VALUE_TYPE"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USE_LEVEL"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RATE_VALUE"
+                    type="DECIMAL(*, 5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAYOUT_RATIO"
+                    type="DECIMAL(*, 5)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

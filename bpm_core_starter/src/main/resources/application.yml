@@ -1,0 +1,112 @@
+# ===================== CẤU HÌNH MẪU CHO BPM CORE STARTER =====================
+# Copy các cấu hình này vào application.yml của service sử dụng thư viện này
+
+bpm:
+  core:
+    # --- Cấu hình CORS (Cross-Origin Resource Sharing) ---
+    cors:
+      allowed-origins: ["*"]        # Danh sách domain được phép truy cập. "*" = tất cả domain
+    # --- Cấu hình web (bỏ qua các path không cần bảo mật) ---
+    web:
+      ignoring-paths:
+        - "/api/ws"
+        - "/api/ws/**"
+        - "/api-docs/**"            # Bỏ qua Swagger API docs
+        - "/swagger-ui.html"        # Bỏ qua Swagger UI
+        - "/swagger-ui/**"          # Bỏ qua tất cả Swagger UI resources
+    # --- Cấu hình Stored Procedure ---
+    # Quản lý kết nối và thực thi stored procedure
+    stored-procedure:
+      enabled: true                 # Bật/tắt tính năng gọi stored procedure
+      connectionPool:
+        initialSize: 5              # Số kết nối khởi tạo ban đầu
+        maxSize: 20                 # Số kết nối tối đa trong pool
+        minIdle: 5                  # Số kết nối nhàn rỗi tối thiểu
+        connectionTimeout: 30000    # Thời gian tối đa chờ lấy kết nối (ms)
+        idleTimeout: 600000         # Thời gian tối đa kết nối nhàn rỗi (ms)
+        maxLifetime: 1800000        # Thời gian sống tối đa của kết nối (ms)
+      timeout:
+        connection: 30000           # Timeout khi kết nối database (ms)
+        query: 60000                # Timeout khi thực thi stored procedure (ms)
+      retry:
+        maxAttempts: 3              # Số lần thử lại khi thất bại
+        backoffDelay: 1000          # Thời gian chờ giữa các lần thử lại (ms)
+        enabled: true               # Bật/tắt tính năng retry
+      logging:
+        enabled: true               # Bật/tắt log khi gọi stored procedure
+        level: "INFO"               # Mức độ log (INFO, DEBUG, ERROR...)
+        logParameters: false        # Có log tham số truyền vào stored procedure không
+        logExecutionTime: true      # Có log thời gian thực thi stored procedure không
+
+# --- Cấu hình chuyển đổi JWT (nếu dùng bảo mật OAuth2) ---
+# Dùng cho OAuth2 Resource Server để xác thực JWT token
+jwt:
+  auth:
+    converter:
+      resource-id: "your-resource-id"           # Định danh resource (API) để xác thực token
+      principal-attribute: "preferred_username" # Thuộc tính trong JWT dùng làm username
+
+# --- Cấu hình OAuth2 Security ---
+# Cấu hình chi tiết cho OAuth2 Resource Server và Client
+spring:
+  security:
+    oauth2:
+      # --- Cấu hình Resource Server ---
+      resourceserver:
+        jwt:
+          # Cấu hình JWT token
+          issuer-uri: "https://your-auth-server.com/auth/realms/your-realm"  # URI của authorization server
+          jwk-set-uri: "https://your-auth-server.com/auth/realms/your-realm/protocol/openid-connect/certs"  # JWK Set URI
+          # Hoặc sử dụng public key trực tiếp
+          # public-key-location: "classpath:public-key.pem"
+          # Hoặc sử dụng public key từ environment
+          # public-key: "${OAUTH2_PUBLIC_KEY}"
+    
+# ===================== CẤU HÌNH KHÁC =====================
+# Thêm các cấu hình khác nếu cần thiết
+
+# --- Cấu hình Database (nếu sử dụng stored procedure) ---
+# spring:
+#   datasource:
+#     url: "jdbc:oracle:thin:@localhost:1521:XE"
+#     username: "your_username"
+#     password: "your_password"
+#     driver-class-name: "oracle.jdbc.OracleDriver"
+#     hikari:
+#       maximum-pool-size: 20
+#       minimum-idle: 5
+#       connection-timeout: 30000
+#       idle-timeout: 600000
+#       max-lifetime: 1800000
+#       connection-test-query: "SELECT 1 FROM DUAL"
+#       validation-timeout: 5000
+#       leak-detection-threshold: 60000
+
+# --- Cấu hình Server ---
+# server:
+#   port: 8080
+#   servlet:
+#     context-path: "/api"
+
+# --- Cấu hình File Upload ---
+# spring:
+#   servlet:
+#     multipart:
+#       enabled: true
+#       max-file-size: 10MB
+#       max-request-size: 10MB
+
+# --- Cấu hình Swagger/OpenAPI ---
+# springdoc:
+#   api-docs:
+#     path: /api-docs
+#   swagger-ui:
+#     path: /swagger-ui.html
+#   info:
+#     title: "BPM Core API"
+#     description: "API documentation for BPM Core Starter"
+#     version: "1.0.0"
+
+logging:
+  level:
+    com.ngvgroup.bpm.core.audit: DEBUG

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ngvgroup.com</groupId>
+  <artifactId>bpm-client</artifactId>
+  <version>1.0.19</version>
+  <name>bpm-client</name>
+  <description>NGV BPM Client library for integrating business services with Camunda remote engine</description>
+  <packaging>jar</packaging>
+
+  <properties>
+    <java.version>17</java.version>
+    <spring-boot.version>3.3.4</spring-boot.version>
+    <spring-cloud.version>2024.0.1</spring-cloud.version>
+    <lombok.version>1.18.34</lombok.version>
+    <camunda.external-task-client.version>7.20.0</camunda.external-task-client.version>
+    <minio.version>8.5.9</minio.version>
+    <poi.version>5.2.5</poi.version>
+    <okhttp.version>4.12.0</okhttp.version>
+    <commons-io.version>2.18.0</commons-io.version>
+    <bpm-core-multitenant.version>1.0.26</bpm-core-multitenant.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Required (per your requirement) -->
+    <dependency>
+      <groupId>com.ngvgroup.bpm</groupId>
+      <artifactId>bpm-core-multitenant</artifactId>
+      <version>${bpm-core-multitenant.version}</version>
+    </dependency>
+
+    <!-- Spring / Feign / OAuth2 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Camunda external task client -->
+    <dependency>
+      <groupId>org.camunda.bpm.springboot</groupId>
+      <artifactId>camunda-bpm-spring-boot-starter-external-task-client</artifactId>
+      <version>${camunda.external-task-client.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- JSON -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+
+    <!-- Optional runtime features -->
+    <dependency>
+      <groupId>io.minio</groupId>
+      <artifactId>minio</artifactId>
+      <version>${minio.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>${poi.version}</version>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Existing transitive helpers used by current implementation -->
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>${okhttp.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <encoding>UTF-8</encoding>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>nexus</id>
+      <name>Releases</name>
+      <url>https://nexus.dev.ngvgroup.vn/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus</id>
+      <name>Snapshots</name>
+      <url>https://nexus.dev.ngvgroup.vn/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+</project>
