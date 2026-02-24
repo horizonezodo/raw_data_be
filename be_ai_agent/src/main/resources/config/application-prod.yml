@@ -1,0 +1,98 @@
+spring:
+  application:
+    name: demo
+
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:1521/dbwr
+    username: DEV_AI_AGENT
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+bpm:
+  engine:
+    rest:
+      enabled: true
+  core:
+    cors:
+      allowed-origins:
+        - http://localhost:4303
+        - http://localhost:8303
+        - http://localhost:4306
+        - https://10.10.0.37:4306
+        - https://epas-dev.ngvgroup.vn
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allowed-headers:
+        - "*"
+      exposed-headers:
+        - Authorization
+      allow-credentials: true
+      max-age: 3600
+    oauth2:
+      token-uri: http://10.10.0.37:8765/realms/EPAS_DEV/protocol/openid-connect/token
+      client-id: epas_service
+      client-secret: 30EiPJ7G5O9DWc8YroWViOWETiPxB29f
+      cache-token: true
+    web:
+      ignoring-paths:
+        - /api-docs/**
+        - /swagger-ui.html
+        - /swagger-ui/**
+        - /h2-console/**
+        - /actuator/**
+    stored-procedure:
+      enabled: true
+      connection-pool:
+        initial-size: 5
+        max-size: 20
+        min-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+      timeout:
+        connection: 30000
+        query: 60000
+      retry:
+        enabled: true
+        max-attempts: 3
+        backoff-delay: 1000
+# Cấu hình Swagger
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+    filter: true
+  packages-to-scan: om.ngvgroup.bpm.engine, org.camunda.bpm.engine.rest, com.ngvgroup.bpm.beaiagent
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://10.10.0.37:8765/realms/EPAS_DEV
+          jwk-set-uri: http://10.10.0.37:8765/realms/EPAS_DEV/protocol/openid-connect/certs
+
+server:
+  port: 8308
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+
+service:
+  common:
+    url: http://10.10.0.37:8100/api-common
+  bus-pcf:
+    url: http://10.10.0.37:8203
