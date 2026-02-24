@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOYMENT_NAME}
+  namespace: ${NAME_SPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APP_LABEL}
+      environment: ${NAME_SPACE}
+  template:
+    metadata:
+      labels:
+        app: ${APP_LABEL}
+        environment: ${NAME_SPACE}
+    spec:
+      containers:
+        - name: ${NAME_SERVICE}
+          image: ${IMAGE_NAME}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "${NAME_SPACE}"
+            - name: SPRING_CONFIG_LOCATION
+              value: "classpath:/,file:/app/config/"
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config
+              readOnly: true
+      volumes:
+        - name: app-config
+          configMap:
+            name: ${CONFIGMAP_NAME}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${DEPLOYMENT_NAME}-service
+  namespace: ${NAME_SPACE}
+spec:
+  selector:
+    app: ${APP_LABEL}
+    environment: ${NAME_SPACE}
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${DEPLOYMENT_NAME}-ingress
+  namespace: ${NAME_SPACE}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/websocket-services: "${DEPLOYMENT_NAME}-service"
+    nginx.ingress.kubernetes.io/proxy-body-size: "1g"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+spec:
+  ingressClassName: public
+  rules:
+    - host: ${INGRESS_HOST}
+      http:
+        paths:
+          - path: ${INGRESS_PATH}(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: ${DEPLOYMENT_NAME}-service
+                port:
+                  number: 8080

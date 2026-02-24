@@ -1,0 +1,71 @@
+server:
+  port: 8305
+#logging:
+#  config: classpath:log4j.xml
+spring:
+  application:
+    name: naasCccd
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 500
+  datasource:
+    url: 113.190.234.241:31521/ORCLPDB1
+    driver-class-name: oracle.jdbc.OracleDriver
+    username: EPAS_DEV_CCCD
+    password: 123456
+  hikari:
+    connection-timeout: 1800000
+    max-lifetime: 1800000
+    idle-timeout: 600000
+    maximum-pool-size: 20
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${app.keycloak.serverUrl}/realms/${app.keycloak.realm}
+
+app:
+  keycloak:
+    realm: EPAS_DEV
+    serverUrl: http://10.10.0.31:31094
+  feign:
+    config:
+      name: eidas-api
+      url: https://ekyc.eidas.vn/
+  client:
+    app-id: 'com.vgv.pro'
+    private-key: '-----BEGIN PRIVATE KEY-----
+    MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC8KNSOVW9qZD4U
+    AkEdvAuaRvPyQmXCZXYqC46OF02leoy5tWfr4RgtLfux7NR7vIA+SUobLSJ5iC9U
+    DoqjfRcPAP+zll8ndKFBiPoEMuqYRHQ6yEA3TCvdapd/hzNng26UmWNsq39CXFcX
+    AJ00jgJ7/ocb1cldpdLnfCMauho/DOeCP1v1vDuMS2ZeK4tlIDhtDQMB/ycCw5TE
+    5SouVMPIuNEDVGY/fKEBzAkcA9bAORzUW8YT6IdATxkxMqsi3J37EIJhqyWZEQfz
+    IvlG0e8hql963ASxrFiQ1/OazAtUKLTmOrB7SHSnDRK4YM6+5qTKBmx/QewQ2t5y
+    ZycVuWFJAgMBAAECggEAHMj6S5QSaWpQfOsjXxMni0CTjVpPCwBOpXwDIQW7oTcw
+    VDDGZzWWZ0MDoGKk1xEtZVn89k9fWMxWwTtARmaaonb6p1S31ednzAjShtXrQcQn
+    K976w/rpMwRdjOr4GDvpLN6ScUuDOnm58RDs+99FzgZQURfRqHv32eYJ0MrrvP1O
+    5+/I1JXWbqryvZWii8UmWqHisrSWp1wtCmyxN83AsMb+cSkde+Iz3PPgV2uq6zec
+    SPAQOv2+qCNEWhxhOEV+vRboKFRDOrLjXE0XEz/kHVU5TMyRp6bfGrICJSWz2wAO
+    4Iz3xiSPRGEyv6WvoUvmf3zt7M6fK4/UADc2M44JqQKBgQDyotKDr9/h7O193KND
+    a7hq6tcw4Rruy81hhEUpyLpn6rGaam6uUKYSe1YOZlPT60OZ3QMbzQOgeImyxJtg
+    6GLAnMyKlXb0mGIL9H11Ei/qSwIZerTuGsiUCu/2pX0P8k3AHzvkSnwMsiPuPDcJ
+    MrNmpJeDMPX7Co8K5ZqEgJ3h8wKBgQDGheL+qn9HlThjkHxG6sHHsUnBDpOZzjOf
+    tDJroBnpg6Wx3p2LRlMDl8eAKpSHOgHvAqykEiRwJ3kX2PzuSnEbPyyzVgYJtRnd
+    1a3bNyldABb4lQRZ1t0O/XosEFO0ot23iDzWBKr43IouA1O3YH+lAuAXYA3YJnFs
+    Snuu0arC0wKBgBpi2I/XlXpFQMJ6NwsC8Og3p7U6Faq4YRpkvvy/Rn48iJnpTyYH
+    wTerT/165UzbfduCrG7eibFuylK1jMwqGWsm4huEC46n76mrKeWMV8eb5puMu5ZV
+    NVDcK6Jf9szAJfJpsyKtcvYSfVPQGpAWgmn8JjnvHiDx0gJ2W6pjLkg/AoGAQbSw
+    k69knxGhbzq0F1i9uFVSXuZvLdnUtkgS5BJCYUpkPgG7TQyCj07eBeqR7EvjtfLB
+    pzAmBUTbTGxSEqBq3STEq7qOFwpsvEJr34FbXF+aOr4/iWiXE84LcKgavE+naIZb
+    9E3pNKLxzRbmz2vN85SHDNWK336hzcC9PPhCN2cCgYAiIeGDu/6bbAHmL9xLdXJE
+    tcShRcL/0dPr2f9rhkrSdbLGiMSVc0J8M9IFIFr79o4azHZ3FJ8rTsFzJv0OG/Zt
+    nxeNeypWNmIgHnwRdxTI1pnqh+/4flLNFKUU2Nohl16f5hNeGaSMOvowXq0z+N8r
+    aekbg+AN1FQTe24+zdtejA==
+    -----END PRIVATE KEY-----'
