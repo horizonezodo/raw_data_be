@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet id="1767782174468-5" author="quynv" dbms="oracle">
+        <sql> CREATE OR REPLACE EDITIONABLE SYNONYM COM_CFG_COMMON FOR "${common_schema}".COM_CFG_COMMON; </sql>
+    </changeSet>
+    <changeSet id="1767782174468-6" author="quynv" dbms="oracle">
+        <sql> CREATE OR REPLACE EDITIONABLE SYNONYM COM_INF_ORGANIZATION FOR "${common_schema}".COM_INF_ORGANIZATION; </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,5 @@
+url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+username: EPAS_DEV_HRM
+password: 123456
+driver-class-name: oracle.jdbc.OracleDriver #org.postgresql.Driver
+changeLogFile: src/main/resources/db/db.changelog-master.xml

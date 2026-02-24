@@ -1,0 +1,154 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+
+spring:
+  application:
+    name: HRM
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 1024MB
+
+  datasource:
+    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+    username: TENANT_NGV_DEMO
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  liquibase:
+    enabled: false
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+  sql:
+    init:
+      mode: never
+
+  kafka:
+    bootstrap-servers: 10.10.0.31:9092
+    producer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: 10.10.0.31:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
+
+#security
+security:
+  keycloak:
+    base-url: http://10.10.0.31:31090
+    realm: EPAS_DEV
+    token-uri: http://10.10.0.31:31090/realms/EPAS_DEV/protocol/openid-connect/token
+    auth-uri: http://10.10.0.31:31090/realms/EPAS_DEV/protocol/openid-connect/auth
+    client-id: epas_service
+    client-secret: R4lYzWDlyAwp5V2lwetT6RYvBfvkweLT
+    redirect-uri: https://epas.dev.ngvgroup.vn/auth/callback
+    admin-realms-path: '/admin/realms/'
+    scope-openid-email-profile: 'openid email profile organization'
+
+#bpm
+bpm:
+  core:
+    security:
+      permission:
+        use-db: false
+    logging-toggle:
+      enabled: true
+      remote-base-url: https://epas.dev.ngvgroup.vn/api/setting/get-config-log
+      cache-ttl-seconds: 30
+    activity-log-enabled: true
+    cors:
+      allowed-origins:
+        - https://epas.dev.ngvgroup.vn
+        - https://demo.dev.ngvgroup.vn
+        - http://localhost:4200
+    web:
+      ignoring-paths:
+        - /assets/**
+        - /favicon.ico
+        - /tenant/check-multitenancy
+        - /tenant/check-tenant-exist
+      public-paths:
+        - /remotes/url
+        - /remotes/module
+        - /setting/layout-public
+        - /setting/captcha-public
+        - /setting/get-config-log
+        - /auth/login
+        - /auth/token
+        - /auth/exchange-code
+        - /auth/refresh-token
+        - /auth/list-branch
+        - /auth/update-branch
+        - /auth/get-kc-login-url
+        - /captcha/**
+        - /public/**
+        - /tenant/search-tenant
+    #        - /actuator/**
+    #        - /camunda/**
+    stored-procedure:
+      enabled: true
+  liquibase:
+    tenant:
+      enabled: true
+      migrate-on-startup: true
+      change-log: classpath:db/changelog/db.changelog-master.xml
+      schema-targets:
+        common_schema: COMMON
+#minio
+minio:
+  bucket: epas
+  url: http://minio-api-ext.minio-operator.svc.cluster.local:9000
+  access-key: admin
+  secret-key: admin123
+
+
+#multitenancy
+multitenancy:
+  enabled: true
+  tenant-claim: tenant_id
+  tenant-header: X-Tenant-Id
+  kafka:
+    topic: EVENT-CREATED-TENANT
+    group: ${spring.application.name}
+  schema:
+    password: 123456
+  organizations:
+    enabled: true
+    claim: organization              # claim name trong token
+    tenantAttribute: tenant_id       # attribute bạn set ở A3
+    preferTenantAttribute: true      # ưu tiên attribute (tenant_id) hơn alias
+    selectHeader: X-Org-Alias        # dùng khi user thuộc nhiều org
+
+#logging
+logging:
+  kafka:
+    topic:
+      activity: COM_INF_LOG_ACTIVITY_TOPIC   # trùng với topic bên producer
+      audit: COM_INF_LOG_AUDIT_TOPIC
+
+
+service:
+  bpm:
+    url: https://epas.dev.ngvgroup.vn/api-bpm
+  common:
+    url: https://epas.dev.ngvgroup.vn/api-common
+camunda:
+  bpm:
+    client:
+      base-url: https://epas.dev.ngvgroup.vn/api-bpm/api/engine-rest

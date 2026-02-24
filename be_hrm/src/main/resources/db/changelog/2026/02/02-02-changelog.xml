@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1770024690487-1" author="toann">
+        <createTable tableName="hrm_inf_employee_auth">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_hrm_inf_employee_auth"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auth_employee_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auth_from_employee_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auth_decision_no" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auth_from_position_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auth_from_position_name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auth_content" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_from" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_to" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1770024690487-2" author="toann">
+        <createTable tableName="hrm_inf_employee_edu">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_hrm_inf_employee_edu"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employee_code" type="VARCHAR(128)"/>
+            <column name="edu_level_code" type="VARCHAR(32)"/>
+            <column name="edu_type_code" type="VARCHAR(128)"/>
+            <column name="school_name" type="VARCHAR(256)"/>
+            <column name="faculty_name" type="VARCHAR(256)"/>
+            <column name="major_code" type="VARCHAR(128)"/>
+            <column name="major_name" type="VARCHAR(256)"/>
+            <column name="major_desc" type="VARCHAR(256)"/>
+            <column name="from_year" type="INT"/>
+            <column name="to_year" type="INT"/>
+            <column name="is_graduated" type="INT"/>
+            <column name="classification_code" type="VARCHAR(128)"/>
+            <column name="graduation_year" type="INT"/>
+            <column name="cert_issue_date" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1770024690487-3" author="toann">
+        <createTable tableName="hrm_inf_employee_family">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_hrm_inf_employee_family"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employee_code" type="VARCHAR(128)"/>
+            <column name="relation_code" type="VARCHAR(64)"/>
+            <column name="full_name" type="VARCHAR(256)"/>
+            <column name="gender_code" type="VARCHAR(16)"/>
+            <column name="date_of_birth" type="DATETIME"/>
+            <column name="is_die" type="INT"/>
+            <column name="identification_id" type="VARCHAR(128)"/>
+            <column name="issue_date" type="DATETIME"/>
+            <column name="expiry_date" type="DATETIME"/>
+            <column name="issue_place" type="VARCHAR(256)"/>
+            <column name="address" type="VARCHAR(512)"/>
+            <column name="workplace" type="VARCHAR(128)"/>
+            <column name="work_address" type="VARCHAR(256)"/>
+            <column name="job_title" type="VARCHAR(64)"/>
+            <column name="email" type="VARCHAR(256)"/>
+            <column name="mobile_number" type="VARCHAR(128)"/>
+            <column name="is_dependent" type="INT"/>
+            <column name="effective_date" type="DATETIME"/>
+            <column name="end_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1770024690487-4" author="toann">
+        <createTable tableName="hrm_inf_employee_position">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_hrm_inf_employee_position"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_unit_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employee_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position_code" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_from" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_to" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
