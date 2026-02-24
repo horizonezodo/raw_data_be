@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0ehby9a" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.43.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.24.0">
+  <bpmn:process id="CRM.201.01" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="Event_11jlagw" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${afterStartListener}" event="start" />
+        <camunda:properties>
+          <camunda:property name="is_fullscreen" value="1" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0kelpuj</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="CRM.201.01.01" name="Phê duyệt điều chỉnh khách hàng" camunda:asyncBefore="true" camunda:formKey="/crm/customer/adjust/approve" camunda:candidateGroups="KS_QHKH">
+      <bpmn:extensionElements>
+        <camunda:taskListener delegateExpression="${taskCreateListener}" event="create" />
+        <camunda:properties>
+          <camunda:property name="path_complete" value="/api-crm/api/bpm-client/task/submit" />
+          <camunda:property name="form_action" value="APPROVE,REJECT" />
+        </camunda:properties>
+        <camunda:taskListener delegateExpression="${taskAssignmentListener}" event="assignment" />
+        <camunda:taskListener delegateExpression="${taskCompleteListener}" event="complete" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0kelpuj</bpmn:incoming>
+      <bpmn:incoming>send_approve</bpmn:incoming>
+      <bpmn:incoming>Flow_Error_Approve</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lw0u0g</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1frxw4g">
+      <bpmn:incoming>Flow_10ed1qx</bpmn:incoming>
+      <bpmn:outgoing>approve</bpmn:outgoing>
+      <bpmn:outgoing>reject</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Activity_1gwnvqw" name="Cập nhật thông tin kết thúc luồng" camunda:type="external" camunda:topic="CRM_201_EXTERNAL_TASK_END_PROCESS">
+      <bpmn:incoming>approve</bpmn:incoming>
+      <bpmn:incoming>cancel</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zq9o49</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1y9cs3l" name="Thông báo email từ chối phê duyệt" camunda:delegateExpression="${sendEmailListener}">
+      <bpmn:incoming>reject</bpmn:incoming>
+      <bpmn:outgoing>Flow_06q2qjp</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="CRM.201.01.02" name="Chỉnh sửa thông tin khách hàng" camunda:formKey="/crm/customer/adjust/edit" camunda:candidateGroups="CB_QHKH">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="path_complete" value="/api-crm/api/bpm-client/task/submit" />
+          <camunda:property name="form_action" value="CANCEL" />
+        </camunda:properties>
+        <camunda:taskListener delegateExpression="${taskCreateListener}" event="create" />
+        <camunda:taskListener delegateExpression="${taskAssignmentListener}" event="assignment" />
+        <camunda:taskListener delegateExpression="${taskCompleteListener}" event="complete" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06q2qjp</bpmn:incoming>
+      <bpmn:incoming>Flow_Error_Edit</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wzdsq6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1wzpfvi">
+      <bpmn:incoming>Flow_0ykndc7</bpmn:incoming>
+      <bpmn:outgoing>send_approve</bpmn:outgoing>
+      <bpmn:outgoing>cancel</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_0lc2wsc">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${processEndListener}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zq9o49</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_11xnf23" name="Cật nhật trạng bản ghi" camunda:type="external" camunda:topic="CRM_201_EXTERNAL_TASK_APPROVE">
+      <bpmn:incoming>Flow_1lw0u0g</bpmn:incoming>
+      <bpmn:outgoing>Flow_10ed1qx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_046jaos" name="Cật nhật trạng bản ghi" camunda:type="external" camunda:topic="CRM_201_EXTERNAL_TASK_EDIT">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1wzdsq6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ykndc7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_Boundary_Approve" attachedToRef="Activity_11xnf23">
+      <bpmn:outgoing>Flow_Error_Approve</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_Approve" errorRef="Error_Logic" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_Boundary_Edit" attachedToRef="Activity_046jaos">
+      <bpmn:outgoing>Flow_Error_Edit</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_Edit" errorRef="Error_0q88pst" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0kelpuj" sourceRef="Event_11jlagw" targetRef="CRM.201.01.01" />
+    <bpmn:sequenceFlow id="send_approve" name="Trình phê duyệt" sourceRef="Gateway_1wzpfvi" targetRef="CRM.201.01.01">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approvalResult == 'SEND_APPROVE'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Error_Approve" sourceRef="Event_Boundary_Approve" targetRef="CRM.201.01.01" />
+    <bpmn:sequenceFlow id="Flow_1lw0u0g" sourceRef="CRM.201.01.01" targetRef="Activity_11xnf23" />
+    <bpmn:sequenceFlow id="Flow_10ed1qx" sourceRef="Activity_11xnf23" targetRef="Gateway_1frxw4g" />
+    <bpmn:sequenceFlow id="approve" name="Phê duyệt" sourceRef="Gateway_1frxw4g" targetRef="Activity_1gwnvqw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approvalResult == 'APPROVE'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="reject" name="Từ chối" sourceRef="Gateway_1frxw4g" targetRef="Activity_1y9cs3l">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approvalResult == 'REJECT'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="cancel" name="Từ chối" sourceRef="Gateway_1wzpfvi" targetRef="Activity_1gwnvqw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approvalResult == 'CANCEL'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0zq9o49" sourceRef="Activity_1gwnvqw" targetRef="Event_0lc2wsc">
+      <bpmn:extensionElements />
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_06q2qjp" sourceRef="Activity_1y9cs3l" targetRef="CRM.201.01.02" />
+    <bpmn:sequenceFlow id="Flow_Error_Edit" sourceRef="Event_Boundary_Edit" targetRef="CRM.201.01.02" />
+    <bpmn:sequenceFlow id="Flow_1wzdsq6" sourceRef="CRM.201.01.02" targetRef="Activity_046jaos" />
+    <bpmn:sequenceFlow id="Flow_0ykndc7" sourceRef="Activity_046jaos" targetRef="Gateway_1wzpfvi" />
+  </bpmn:process>
+  <bpmn:error id="Error_Logic" name="Logic Error" errorCode="LOGIC_ERROR" />
+  <bpmn:error id="Error_0q88pst" name="Logic Error" errorCode="LOGIC_ERROR" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CRM.201.01">
+      <bpmndi:BPMNShape id="Event_11jlagw_di" bpmnElement="Event_11jlagw">
+        <dc:Bounds x="152" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04lc2ph_di" bpmnElement="CRM.201.01.01">
+        <dc:Bounds x="280" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1frxw4g_di" bpmnElement="Gateway_1frxw4g" isMarkerVisible="true">
+        <dc:Bounds x="665" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gwnvqw_di" bpmnElement="Activity_1gwnvqw">
+        <dc:Bounds x="830" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1y9cs3l_di" bpmnElement="Activity_1y9cs3l">
+        <dc:Bounds x="640" y="330" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p81eef_di" bpmnElement="CRM.201.01.02">
+        <dc:Bounds x="830" y="330" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1wzpfvi_di" bpmnElement="Gateway_1wzpfvi" isMarkerVisible="true">
+        <dc:Bounds x="855" y="605" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0lc2wsc_di" bpmnElement="Event_0lc2wsc">
+        <dc:Bounds x="862" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11xnf23_di" bpmnElement="Activity_11xnf23">
+        <dc:Bounds x="470" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_046jaos_di" bpmnElement="Activity_046jaos">
+        <dc:Bounds x="830" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Boundary_Edit_di" bpmnElement="Event_Boundary_Edit">
+        <dc:Bounds x="912" y="482" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Boundary_Approve_di" bpmnElement="Event_Boundary_Approve">
+        <dc:Bounds x="502" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0kelpuj_di" bpmnElement="Flow_0kelpuj">
+        <di:waypoint x="188" y="210" />
+        <di:waypoint x="280" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12yjnth_di" bpmnElement="send_approve">
+        <di:waypoint x="855" y="630" />
+        <di:waypoint x="330" y="630" />
+        <di:waypoint x="330" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="554" y="612" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Error_Approve_di" bpmnElement="Flow_Error_Approve">
+        <di:waypoint x="520" y="152" />
+        <di:waypoint x="520" y="120" />
+        <di:waypoint x="330" y="120" />
+        <di:waypoint x="330" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lw0u0g_di" bpmnElement="Flow_1lw0u0g">
+        <di:waypoint x="380" y="210" />
+        <di:waypoint x="470" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10ed1qx_di" bpmnElement="Flow_10ed1qx">
+        <di:waypoint x="570" y="210" />
+        <di:waypoint x="665" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cnwiar_di" bpmnElement="approve">
+        <di:waypoint x="715" y="210" />
+        <di:waypoint x="830" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="747" y="192" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_191p56v_di" bpmnElement="reject">
+        <di:waypoint x="690" y="235" />
+        <di:waypoint x="690" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="701" y="274" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09vodyf_di" bpmnElement="cancel">
+        <di:waypoint x="905" y="630" />
+        <di:waypoint x="1030" y="630" />
+        <di:waypoint x="1030" y="210" />
+        <di:waypoint x="930" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1041" y="419" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zq9o49_di" bpmnElement="Flow_0zq9o49">
+        <di:waypoint x="880" y="170" />
+        <di:waypoint x="880" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06q2qjp_di" bpmnElement="Flow_06q2qjp">
+        <di:waypoint x="740" y="370" />
+        <di:waypoint x="830" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Error_Edit_di" bpmnElement="Flow_Error_Edit">
+        <di:waypoint x="948" y="500" />
+        <di:waypoint x="968" y="500" />
+        <di:waypoint x="968" y="370" />
+        <di:waypoint x="930" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wzdsq6_di" bpmnElement="Flow_1wzdsq6">
+        <di:waypoint x="880" y="410" />
+        <di:waypoint x="880" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ykndc7_di" bpmnElement="Flow_0ykndc7">
+        <di:waypoint x="880" y="540" />
+        <di:waypoint x="880" y="605" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,1057 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1769134275367-1" author="Hoang Hiep">
+        <createTable tableName="crm_cfg_project_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_cfg_project_type"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="project_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_type_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-2" author="Hoang Hiep">
+        <createTable tableName="crm_cfg_project_type_template">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_cfg_project_type_template"/>
+            </column>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="template_code" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_code" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_required" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-3" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="area_code" type="VARCHAR(128)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_name" type="VARCHAR(256)"/>
+            <column name="customer_type" type="VARCHAR(32)"/>
+            <column name="tax_code" type="VARCHAR(64)"/>
+            <column name="email" type="VARCHAR(256)"/>
+            <column name="mobile_number" type="VARCHAR(128)"/>
+            <column name="phone_number" type="VARCHAR(128)"/>
+            <column name="economic_type_code" type="VARCHAR(64)"/>
+            <column name="industry_code" type="VARCHAR(64)"/>
+            <column name="is_insurance" type="INT"/>
+            <column name="cif_number" type="VARCHAR(64)"/>
+            <column name="fax" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-4" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="area_code" type="VARCHAR(128)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_name" type="VARCHAR(256)"/>
+            <column name="customer_type" type="VARCHAR(32)"/>
+            <column name="tax_code" type="VARCHAR(64)"/>
+            <column name="email" type="VARCHAR(256)"/>
+            <column name="mobile_number" type="VARCHAR(128)"/>
+            <column name="phone_number" type="VARCHAR(128)"/>
+            <column name="economic_type_code" type="VARCHAR(64)"/>
+            <column name="industry_code" type="VARCHAR(64)"/>
+            <column name="is_insurance" type="INT"/>
+            <column name="cif_number" type="VARCHAR(64)"/>
+            <column name="fax" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-5" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_addr">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_addr"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_code" type="VARCHAR(128)"/>
+            <column name="province_code" type="VARCHAR(128)"/>
+            <column name="ward_code" type="VARCHAR(128)"/>
+            <column name="address" type="VARCHAR(512)"/>
+            <column name="is_primary" type="INT"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-6" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_addr_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_addr_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_code" type="VARCHAR(128)"/>
+            <column name="province_code" type="VARCHAR(128)"/>
+            <column name="ward_code" type="VARCHAR(128)"/>
+            <column name="address" type="VARCHAR(512)"/>
+            <column name="is_primary" type="INT"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-7" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_corp">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_corp"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="corp_name" type="VARCHAR(256)"/>
+            <column name="corp_short_name" type="VARCHAR(128)"/>
+            <column name="legal_rep_name" type="VARCHAR(128)"/>
+            <column name="legal_rep_title" type="VARCHAR(128)"/>
+            <column name="legal_rep_id_no" type="VARCHAR(128)"/>
+            <column name="business_license_no" type="VARCHAR(128)"/>
+            <column name="business_license_date" type="DATE"/>
+            <column name="issued_by" type="VARCHAR(512)"/>
+            <column name="established_date" type="DATE"/>
+            <column name="industry_detail" type="VARCHAR(512)"/>
+            <column name="website" type="VARCHAR(128)"/>
+            <column name="remark" type="VARCHAR(256)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-8" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_corp_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_corp_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="corp_name" type="VARCHAR(256)"/>
+            <column name="corp_short_name" type="VARCHAR(128)"/>
+            <column name="legal_rep_name" type="VARCHAR(128)"/>
+            <column name="legal_rep_title" type="VARCHAR(128)"/>
+            <column name="legal_rep_id_no" type="VARCHAR(128)"/>
+            <column name="business_license_no" type="VARCHAR(128)"/>
+            <column name="business_license_date" type="DATE"/>
+            <column name="issued_by" type="VARCHAR(512)"/>
+            <column name="established_date" type="DATE"/>
+            <column name="industry_detail" type="VARCHAR(512)"/>
+            <column name="website" type="VARCHAR(128)"/>
+            <column name="remark" type="VARCHAR(256)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-9" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_doc">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_doc"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="identification_type" type="VARCHAR(32)"/>
+            <column name="identification_id" type="VARCHAR(128)"/>
+            <column name="identification_id_old" type="VARCHAR(16)"/>
+            <column name="issue_date" type="DATE"/>
+            <column name="issue_place" type="VARCHAR(256)"/>
+            <column name="expiry_date" type="DATE"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-10" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_doc_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_doc_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="identification_type" type="VARCHAR(32)"/>
+            <column name="identification_id" type="VARCHAR(128)"/>
+            <column name="identification_id_old" type="VARCHAR(16)"/>
+            <column name="issue_date" type="DATE"/>
+            <column name="issue_place" type="VARCHAR(256)"/>
+            <column name="expiry_date" type="DATE"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-11" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_indv">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_indv"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="DATE"/>
+            <column name="place_of_birth" type="VARCHAR(128)"/>
+            <column name="gender_code" type="VARCHAR(16)"/>
+            <column name="ethnicity_code" type="VARCHAR(32)"/>
+            <column name="profession_type_code" type="VARCHAR(64)"/>
+            <column name="edu_background_code" type="VARCHAR(32)"/>
+            <column name="edu_level_code" type="VARCHAR(32)"/>
+            <column name="marital_status" type="VARCHAR(64)"/>
+            <column name="is_poor_household" type="INT"/>
+            <column name="poor_household_book_no" type="VARCHAR(64)"/>
+            <column name="profession" type="VARCHAR(256)"/>
+            <column name="workplace" type="VARCHAR(128)"/>
+            <column name="work_address" type="VARCHAR(256)"/>
+            <column name="job_title" type="VARCHAR(64)"/>
+            <column name="work_years" type="INT"/>
+            <column name="work_months" type="INT"/>
+            <column name="contract_type" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-12" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_indv_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_indv_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="DATE"/>
+            <column name="place_of_birth" type="VARCHAR(128)"/>
+            <column name="gender_code" type="VARCHAR(16)"/>
+            <column name="ethnicity_code" type="VARCHAR(32)"/>
+            <column name="profession_type_code" type="VARCHAR(64)"/>
+            <column name="edu_background_code" type="VARCHAR(32)"/>
+            <column name="edu_level_code" type="VARCHAR(32)"/>
+            <column name="marital_status" type="VARCHAR(64)"/>
+            <column name="is_poor_household" type="INT"/>
+            <column name="poor_household_book_no" type="VARCHAR(64)"/>
+            <column name="profession" type="VARCHAR(256)"/>
+            <column name="workplace" type="VARCHAR(128)"/>
+            <column name="work_address" type="VARCHAR(256)"/>
+            <column name="job_title" type="VARCHAR(64)"/>
+            <column name="work_years" type="INT"/>
+            <column name="work_months" type="INT"/>
+            <column name="contract_type" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-13" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_kyc">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_kyc"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kyc_type_code" type="VARCHAR(64)"/>
+            <column name="kyc_reason_code" type="VARCHAR(64)"/>
+            <column name="kyc_result_code" type="VARCHAR(64)"/>
+            <column name="kyc_risk_score" type="DECIMAL(7, 4)"/>
+            <column name="kyc_risk_level" type="VARCHAR(64)"/>
+            <column name="sanction_result" type="VARCHAR(64)"/>
+            <column name="is_pep" type="INT"/>
+            <column name="kyc_date" type="DATETIME"/>
+            <column name="next_review_date" type="DATE"/>
+            <column name="internal_note" type="VARCHAR(512)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-14" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_kyc_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_kyc_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kyc_type_code" type="VARCHAR(64)"/>
+            <column name="kyc_reason_code" type="VARCHAR(64)"/>
+            <column name="kyc_result_code" type="VARCHAR(64)"/>
+            <column name="kyc_risk_score" type="DECIMAL(7, 4)"/>
+            <column name="kyc_risk_level" type="VARCHAR(64)"/>
+            <column name="sanction_result" type="VARCHAR(64)"/>
+            <column name="is_pep" type="INT"/>
+            <column name="kyc_date" type="DATETIME"/>
+            <column name="next_review_date" type="DATE"/>
+            <column name="internal_note" type="VARCHAR(512)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-15" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_link">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_link"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_code" type="VARCHAR(32)"/>
+            <column name="source_customer_id" type="VARCHAR(128)"/>
+            <column name="link_status" type="VARCHAR(64)"/>
+            <column name="external_ref_code" type="VARCHAR(128)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-16" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_link_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_link_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_code" type="VARCHAR(32)"/>
+            <column name="source_customer_id" type="VARCHAR(128)"/>
+            <column name="link_status" type="VARCHAR(64)"/>
+            <column name="external_ref_code" type="VARCHAR(128)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-17" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_reln">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_reln"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="related_customer_code" type="VARCHAR(128)"/>
+            <column name="relation_code" type="VARCHAR(64)"/>
+            <column name="relation_group_code" type="VARCHAR(64)"/>
+            <column name="reciprocal_relation_code" type="VARCHAR(64)"/>
+            <column name="relation_status" type="VARCHAR(64)"/>
+            <column name="cif_number" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-18" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_reln_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_reln_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="related_customer_code" type="VARCHAR(128)"/>
+            <column name="relation_code" type="VARCHAR(64)"/>
+            <column name="relation_group_code" type="VARCHAR(64)"/>
+            <column name="reciprocal_relation_code" type="VARCHAR(64)"/>
+            <column name="relation_status" type="VARCHAR(64)"/>
+            <column name="cif_number" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-19" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_seg">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_seg"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="segment_type" type="VARCHAR(64)"/>
+            <column name="segment_code" type="VARCHAR(64)"/>
+            <column name="segment_rank_code" type="VARCHAR(32)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-20" author="Hoang Hiep">
+        <createTable tableName="crm_inf_cust_seg_a">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_inf_cust_seg_a"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="segment_type" type="VARCHAR(64)"/>
+            <column name="segment_code" type="VARCHAR(64)"/>
+            <column name="segment_rank_code" type="VARCHAR(32)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="data_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-21" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="area_code" type="VARCHAR(128)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_name" type="VARCHAR(256)"/>
+            <column name="customer_type" type="VARCHAR(32)"/>
+            <column name="tax_code" type="VARCHAR(64)"/>
+            <column name="email" type="VARCHAR(256)"/>
+            <column name="mobile_number" type="VARCHAR(128)"/>
+            <column name="phone_number" type="VARCHAR(128)"/>
+            <column name="economic_type_code" type="VARCHAR(64)"/>
+            <column name="industry_code" type="VARCHAR(64)"/>
+            <column name="is_insurance" type="INT"/>
+            <column name="cif_number" type="VARCHAR(64)"/>
+            <column name="fax" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_type_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_status" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-22" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust_addr">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust_addr"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_code" type="VARCHAR(128)"/>
+            <column name="province_code" type="VARCHAR(128)"/>
+            <column name="ward_code" type="VARCHAR(128)"/>
+            <column name="address" type="VARCHAR(512)"/>
+            <column name="is_primary" type="INT"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-23" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust_corp">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust_corp"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="corp_name" type="VARCHAR(256)"/>
+            <column name="corp_short_name" type="VARCHAR(128)"/>
+            <column name="legal_rep_name" type="VARCHAR(128)"/>
+            <column name="legal_rep_title" type="VARCHAR(128)"/>
+            <column name="legal_rep_id_no" type="VARCHAR(128)"/>
+            <column name="business_license_no" type="VARCHAR(128)"/>
+            <column name="business_license_date" type="DATE"/>
+            <column name="issued_by" type="VARCHAR(512)"/>
+            <column name="established_date" type="DATE"/>
+            <column name="industry_detail" type="VARCHAR(512)"/>
+            <column name="website" type="VARCHAR(128)"/>
+            <column name="remark" type="VARCHAR(256)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-24" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust_doc">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust_doc"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="identification_type" type="VARCHAR(32)"/>
+            <column name="identification_id" type="VARCHAR(128)"/>
+            <column name="identification_id_old" type="VARCHAR(16)"/>
+            <column name="issue_date" type="DATE"/>
+            <column name="issue_place" type="VARCHAR(256)"/>
+            <column name="expiry_date" type="DATE"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-25" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust_indv">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust_indv"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="DATE"/>
+            <column name="place_of_birth" type="VARCHAR(128)"/>
+            <column name="gender_code" type="VARCHAR(16)"/>
+            <column name="ethnicity_code" type="VARCHAR(32)"/>
+            <column name="profession_type_code" type="VARCHAR(64)"/>
+            <column name="edu_background_code" type="VARCHAR(32)"/>
+            <column name="edu_level_code" type="VARCHAR(32)"/>
+            <column name="marital_status" type="VARCHAR(64)"/>
+            <column name="is_poor_household" type="INT"/>
+            <column name="poor_household_book_no" type="VARCHAR(64)"/>
+            <column name="profession" type="VARCHAR(256)"/>
+            <column name="workplace" type="VARCHAR(128)"/>
+            <column name="work_address" type="VARCHAR(256)"/>
+            <column name="job_title" type="VARCHAR(64)"/>
+            <column name="work_years" type="INT"/>
+            <column name="work_months" type="INT"/>
+            <column name="contract_type" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-26" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust_kyc">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust_kyc"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kyc_type_code" type="VARCHAR(64)"/>
+            <column name="kyc_reason_code" type="VARCHAR(64)"/>
+            <column name="kyc_result_code" type="VARCHAR(64)"/>
+            <column name="kyc_risk_score" type="DECIMAL(7, 4)"/>
+            <column name="kyc_risk_level" type="VARCHAR(64)"/>
+            <column name="sanction_result" type="VARCHAR(64)"/>
+            <column name="is_pep" type="INT"/>
+            <column name="kyc_date" type="DATETIME"/>
+            <column name="next_review_date" type="DATE"/>
+            <column name="internal_note" type="VARCHAR(512)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-27" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust_link">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust_link"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_code" type="VARCHAR(32)"/>
+            <column name="source_customer_id" type="VARCHAR(128)"/>
+            <column name="link_status" type="VARCHAR(64)"/>
+            <column name="external_ref_code" type="VARCHAR(128)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-28" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust_reln">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust_reln"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="related_customer_code" type="VARCHAR(128)"/>
+            <column name="relation_code" type="VARCHAR(64)"/>
+            <column name="relation_group_code" type="VARCHAR(64)"/>
+            <column name="reciprocal_relation_code" type="VARCHAR(64)"/>
+            <column name="relation_status" type="VARCHAR(64)"/>
+            <column name="cif_number" type="VARCHAR(64)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1769134275367-29" author="Hoang Hiep">
+        <createTable tableName="crm_txn_cust_seg">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crm_txn_cust_seg"/>
+            </column>
+            <column name="org_code" type="VARCHAR(64)"/>
+            <column name="customer_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="segment_type" type="VARCHAR(64)"/>
+            <column name="segment_code" type="VARCHAR(64)"/>
+            <column name="segment_rank_code" type="VARCHAR(32)"/>
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_date" type="DATETIME"/>
+            <column name="approved_by" type="VARCHAR(64)"/>
+            <column name="modified_date" type="DATETIME"/>
+            <column name="modified_by" type="VARCHAR(64)"/>
+            <column name="is_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(512)"/>
+            <column name="txn_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_code" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

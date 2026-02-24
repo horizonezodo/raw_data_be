@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet id="create-synonym" author="Hoang Hiep">
+        <sqlFile path="db/changelog/oracle/sql/synonym.sql"
+                 relativeToChangelogFile="false"
+                 stripComments="false"
+                 splitStatements="true"
+                 endDelimiter=";"
+                 dbms="oracle"/>
+    </changeSet>
+</databaseChangeLog>
