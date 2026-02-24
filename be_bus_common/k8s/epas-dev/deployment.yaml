@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: epas-dev-bus-common-be-deployment
+  namespace: epas-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: epas-dev-bus-common-be
+      environment: epas-dev
+  template:
+    metadata:
+      labels:
+        app: epas-dev-bus-common-be
+        environment: epas-dev
+    spec:
+      containers:
+      - name: epas-bus-common-be
+        image: localhost:32000/epas-bus-common-be:epas-dev
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "epas-dev"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: epas-dev-bus-common-be-service
+  namespace: epas-dev
+spec:
+  selector:
+    app: epas-dev-bus-common-be
+    environment: epas-dev
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: epas-dev-bus-common-be-ingress
+  namespace: epas-dev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: public
+  rules:
+  - host: epas.dev.ngvgroup.vn
+    http:
+      paths:
+      - path: /api-bus-common(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: epas-dev-bus-common-be-service
+            port:
+              number: 8080

@@ -1,0 +1,92 @@
+pipeline {
+    agent any
+
+    environment {
+        containerName   = 'epas-bus-common-be'
+        ENV             = 'ncf'
+        REGISTRY        = 'registry.dev.ngvgroup.vn'
+        IMAGE_NAME      = ''
+        K8S_NAMESPACE   = 'epas-ncf'
+        K8S_DEPLOYMENT  = 'epas-bus-common-be-ncf'
+    }
+
+    stages {
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    IMAGE_NAME = "${REGISTRY}/${containerName}:${ENV}-latest"
+                    echo "Image Name: ${IMAGE_NAME}"
+                    echo "Namespace: ${K8S_NAMESPACE}"
+                    echo "Deployment: ${K8S_DEPLOYMENT}"
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    echo "Deploying image ${IMAGE_NAME} to Kubernetes..."
+
+                    // 1️⃣ Tạo namespace nếu chưa có
+                    sh """
+                        microk8s kubectl get ns ${K8S_NAMESPACE} || \
+                        microk8s kubectl create ns ${K8S_NAMESPACE}
+                    """
+
+                    // 2️⃣ Apply deployment
+                    sh """
+                        microk8s kubectl apply -f k8s/ncf/deploy/deployment.yaml -n ${K8S_NAMESPACE}
+                    """
+
+                    // 3️⃣ Force restart deployment để đảm bảo dùng image mới nhất
+                    sh """
+                        microk8s kubectl rollout restart deployment/${K8S_DEPLOYMENT} -n ${K8S_NAMESPACE}
+                    """
+                    
+                    // 4️⃣ Cập nhật image bằng set image (đảm bảo dùng image mới nhất)
+                    sh """
+                        microk8s kubectl set image deployment/${K8S_DEPLOYMENT} \
+                        ${containerName}=${IMAGE_NAME} \
+                        -n ${K8S_NAMESPACE}
+                    """
+
+                    // 5️⃣ Đợi rollout xong
+                    sh "microk8s kubectl rollout status deployment/${K8S_DEPLOYMENT} -n ${K8S_NAMESPACE} --timeout=300s"
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    echo 'Verifying deployment...'
+                    sh "microk8s kubectl get pods -n ${K8S_NAMESPACE} -l app=${containerName}"
+                    sh "microk8s kubectl get svc -n ${K8S_NAMESPACE} -l app=${containerName}"
+                    sh "microk8s kubectl get ingress -n ${K8S_NAMESPACE}"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment pipeline executed successfully!'
+            script {
+                echo "✅ Application deployed successfully!"
+                echo "   Image: ${IMAGE_NAME}"
+                echo "   Namespace: ${K8S_NAMESPACE}"
+                echo "   Deployment: ${K8S_DEPLOYMENT}"
+                echo "   Application accessible via: https://epas.ncf.com.vn/api-bus-common/"
+            }
+        }
+        failure {
+            echo 'Deployment pipeline execution failed!'
+            script {
+                sh "microk8s kubectl logs -n ${K8S_NAMESPACE} -l app=${containerName} --tail=50"
+            }
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
