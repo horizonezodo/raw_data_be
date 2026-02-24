@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: epas-category-be-ncf
+  namespace: epas-ncf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: epas-category-be
+      environment: ncf
+  template:
+    metadata:
+      labels:
+        app: epas-category-be
+        environment: ncf
+    spec:
+      containers:
+      - name: epas-category-be
+        image: registry.dev.ngvgroup.vn/epas-category-be:ncf-latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "k8s-ncf"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Djdk.disableLastCgroupV2=true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: epas-category-be-ncf-service
+  namespace: epas-ncf
+spec:
+  selector:
+    app: epas-category-be
+    environment: ncf
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: epas-category-be-ncf-ingress
+  namespace: epas-ncf
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: public
+  tls:
+  - hosts:
+    - epas.ncf.com.vn
+    secretName: epas-ncf-tls
+  rules:
+  - host: epas.ncf.com.vn
+    http:
+      paths:
+      - path: /api-category(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: epas-category-be-ncf-service
+            port:
+              number: 8080
+

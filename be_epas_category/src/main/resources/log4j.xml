@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n
+        </Property>
+    </Properties>
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- Kafka Appender for DC-LOG -->
+        <Kafka name="KafkaAppenderDCLOG" topic="DC_LOGG">
+            <Property name="bootstrap.servers">10.10.0.37:9092</Property>
+            <Property name="acks">all</Property>
+            <JsonTemplateLayout eventTemplateUri="classpath:jsonTemplateLayout.json">
+                <EventTemplateAdditionalField key="application" value="${spring:spring.application.name}"/>
+            </JsonTemplateLayout>
+        </Kafka>
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger for root -->
+        <Root level="info">
+            <AppenderRef ref="KafkaAppenderDCLOG"/>
+            <AppenderRef ref="ConsoleAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>

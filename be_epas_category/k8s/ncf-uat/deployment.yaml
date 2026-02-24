@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ncf-uat-category-be-deployment
+  namespace: ncf-uat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ncf-uat-category-be
+      environment: ncf-uat
+  template:
+    metadata:
+      labels:
+        app: ncf-uat-category-be
+        environment: ncf-uat
+    spec:
+      containers:
+      - name: epas-category-be
+        image: localhost:32000/epas-category-be:ncf-uat
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "ncf-uat"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ncf-uat-category-be-service
+  namespace: ncf-uat
+spec:
+  selector:
+    app: ncf-uat-category-be
+    environment: ncf-uat
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ncf-uat-category-be-ingress
+  namespace: ncf-uat
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: public
+  rules:
+  - host: ncf.uat.ngvgroup.vn
+    http:
+      paths:
+      - path: /api-category(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ncf-uat-category-be-service
+            port:
+              number: 8080

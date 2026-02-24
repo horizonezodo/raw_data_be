@@ -1,0 +1,102 @@
+pipeline {
+    agent any
+
+    environment {
+        dockerImage     = ''
+        containerName   = 'epas-category-be'
+        ENV             = 'ncf'
+        REGISTRY        = 'registry.dev.ngvgroup.vn'
+        IMAGE_NAME      = ''
+        MAVEN_IMAGE     = 'maven:3.9.11-eclipse-temurin-17' // Maven + JDK 17
+    }
+
+    stages {
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    IMAGE_NAME = "${REGISTRY}/${containerName}:${ENV}-latest"
+                    echo "Image Name: ${IMAGE_NAME}"
+                }
+            }
+        }
+
+        stage('Clone source') {
+            steps {
+                echo 'Cloning repository...'
+                checkout scm
+            }
+        }
+
+        stage('Build JAR (Docker Maven)') {
+            steps {
+                script {
+                    sh """
+                        docker run --rm \
+                            -v \$(pwd):/app -w /app \
+                            -v /var/lib/jenkins/.m2:/root/.m2 \
+                            ${MAVEN_IMAGE} mvn clean verify -DskipTests --settings .mvn/settings.xml
+                    """
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    dockerImage = docker.build("${IMAGE_NAME}", "-f k8s/ncf/build/Dockerfile .")
+                }
+            }
+        }
+
+        stage('Push to Registry') {
+            steps {
+                script {
+                    echo 'Pushing image to registry...'
+                    docker.withRegistry("https://${REGISTRY}") {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
+        stage('Cleanup Old Images') {
+            steps {
+                script {
+                    echo 'Cleaning up old images in Docker (Jenkins host)...'
+                    sh """
+                        # Giữ lại 3 bản mới nhất, bao gồm cả bản vừa build
+                        docker images '${REGISTRY}/${containerName}' --format '{{.Repository}}:{{.Tag}} {{.CreatedAt}}' \
+                        | sort -rk2 | tail -n +4 | awk '{print \$1}' | xargs -r docker rmi || true
+
+                        # Dọn dangling images (không gắn tag)
+                        docker image prune -f || true
+                    """
+
+                    echo 'Cleaning up old images in MicroK8s containerd (optional)...'
+                    sh """
+                        microk8s ctr images list | grep ${containerName} \
+                        | sort -rk 2 | tail -n +4 | awk '{print \$1":"\$2}' \
+                        | xargs -r microk8s ctr images rm || true
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build pipeline executed successfully!'
+            script {
+                echo "✅ Docker image built and pushed: ${IMAGE_NAME}"
+            }
+        }
+        failure {
+            echo 'Build pipeline execution failed!'
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
+
