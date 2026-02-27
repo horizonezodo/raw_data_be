@@ -1,17 +1,14 @@
 package com.naas.admin_service.features.setting.service.impl;
 
 import com.naas.admin_service.core.contants.Constant;
+import com.naas.admin_service.core.provider.IdentityStoreService;
 import com.naas.admin_service.features.setting.dto.SecurityConfigDto;
 import com.naas.admin_service.features.setting.service.KeyCloakService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.RealmRepresentation;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +16,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class KeyCloakServiceImpl implements KeyCloakService {
-    @Value("${security.keycloak.realm}")
-    private String realm;
 
-    private final Keycloak keycloak;
+    private final IdentityStoreService identityStoreService;
 
     @Override
     public SecurityConfigDto getSecurityConfig() {
-        RealmResource realmResource = keycloak.realm(realm);
-        RealmRepresentation rep = realmResource.toRepresentation();
+        RealmRepresentation rep = identityStoreService.getRealmRepresentation();
         SecurityConfigDto dto = new SecurityConfigDto();
         // Parse password policy
         String passwordPolicy = rep.getPasswordPolicy();
@@ -67,8 +61,7 @@ public class KeyCloakServiceImpl implements KeyCloakService {
 
     @Override
     public void updateSecurityConfig(SecurityConfigDto dto) {
-        RealmResource realmResource = keycloak.realm(realm);
-        RealmRepresentation rep = realmResource.toRepresentation();
+        RealmRepresentation rep = identityStoreService.getRealmRepresentation();
         // Build password policy string
         List<String> rules = new ArrayList<>();
         if (dto.getMinLength() != null && dto.getMinLength() > 0)
@@ -91,7 +84,7 @@ public class KeyCloakServiceImpl implements KeyCloakService {
         rep.setBruteForceProtected(dto.getLockOnFailure());
         rep.setFailureFactor(dto.getMaxFailedAttempts());
         rep.setSsoSessionIdleTimeout(dto.getSessionTimeoutSeconds());
-        realmResource.update(rep);
+        identityStoreService.updateRealm(rep);
     }
 
     private Integer parsePolicyInt(String policy, String key) {

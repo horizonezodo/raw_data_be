@@ -5,7 +5,7 @@ import java.util.*;
 
 import com.naas.admin_service.core.contants.CommonErrorCode;
 import com.naas.admin_service.features.setting.dto.AppConfigResponseDto;
-import com.naas.admin_service.features.tenant.service.TenantDbConfigService;
+import com.naas.admin_service.features.tenant.service.ComCfgTenantService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class ComCfgSettingServiceImpl implements ComCfgSettingService {
     private final MinIOService minIOService;
     private final CtgComCommonRepository repo;
     private final EntityManager entityManager;
-    private final TenantDbConfigService tenantDbConfigService;
+    private final ComCfgTenantService comCfgTenantService;
 
     @Transactional
     public void createOrUpdateSettings(List<ComCfgSettingReqDto> requests) {
@@ -293,7 +293,7 @@ public class ComCfgSettingServiceImpl implements ComCfgSettingService {
         config.setCaptchaEnabled(captchaEnabled);
 
         // Lấy multitenancy enabled status
-        boolean multitenancyEnabled = tenantDbConfigService.isMultitenancyEnabled();
+        boolean multitenancyEnabled = comCfgTenantService.isMultitenancyEnabled();
         config.setMultitenancyEnabled(multitenancyEnabled);
 
         return config;

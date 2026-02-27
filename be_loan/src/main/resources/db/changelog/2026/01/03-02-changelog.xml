@@ -102,11 +102,11 @@
                 <constraints nullable="false"/>
             </column>
             <column name="RATE_VALUE"
-                    type="DECIMAL(*, 5)">
+                    type="DECIMAL(7, 5)">
                 <constraints nullable="false"/>
             </column>
             <column name="PAYOUT_RATIO"
-                    type="DECIMAL(*, 5)">
+                    type="DECIMAL(7, 5)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

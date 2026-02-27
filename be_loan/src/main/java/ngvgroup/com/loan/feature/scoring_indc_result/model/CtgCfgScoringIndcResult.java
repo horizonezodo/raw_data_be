@@ -22,11 +22,11 @@ public class CtgCfgScoringIndcResult extends BaseEntity {
     private String indicatorCode;
     @Column(name = "RESULT_NAME", length = 128)
     private String resultName;
-    @Column(name = "SCORE_VALUE", length = 7,scale = 4)
+    @Column(name = "SCORE_VALUE", precision = 7,scale = 4)
     private BigDecimal scoreValue;
-    @Column(name = "SCORE_VALUE_MIN", length = 7,scale = 4)
+    @Column(name = "SCORE_VALUE_MIN", precision = 7,scale = 4)
     private BigDecimal scoreValueMin;
-    @Column(name = "SCORE_VALUE_MAX", length = 7,scale = 4)
+    @Column(name = "SCORE_VALUE_MAX", precision = 7,scale = 4)
     private BigDecimal scoreValueMax;
     @Column(name = "CONDITION_EXPRESSION", length = 256)
     private String conditionExpression;

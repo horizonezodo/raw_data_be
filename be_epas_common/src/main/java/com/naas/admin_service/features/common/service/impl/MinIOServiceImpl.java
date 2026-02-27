@@ -20,9 +20,12 @@ import java.util.Map;
 @Service
 @Slf4j
 public class MinIOServiceImpl implements MinIOService {
+
     private final MinioClient minioClient;
+
     @Value("${minio.bucket}")
     private String bucket;
+
     @Value("${minio.public-url}")
     private String minioPublicUrl;
 
@@ -35,21 +38,10 @@ public class MinIOServiceImpl implements MinIOService {
         try {
             checkAndCreateBucket(bucket);
 
-            String fileName = file.getOriginalFilename();
-            String objectName = prefixPath;
-            if (objectName != null && !objectName.isEmpty()) {
-                if (!objectName.endsWith("/")) {
-                    objectName += "/";
-                }
-                objectName += fileName;
-            } else {
-                objectName = fileName;
-            }
+            String fileName = safeOriginalFilename(file);
+            String objectName = buildObjectName(prefixPath, fileName);
 
-            String contentType = file.getContentType();
-            if (contentType == null || contentType.isBlank()) {
-                contentType = detectContentTypeByExtension(fileName);
-            }
+            String contentType = resolveContentType(file, fileName);
 
             log.info("Uploading file to MinIO - Bucket: {}, Object: {}, Size: {}, ContentType: {}",
                     bucket, objectName, file.getSize(), contentType);
@@ -60,10 +52,10 @@ public class MinIOServiceImpl implements MinIOService {
                             .object(objectName)
                             .stream(file.getInputStream(), file.getSize(), -1)
                             .contentType(contentType)
-                            .build());
+                            .build()
+            );
 
             String fileUrl = minioPublicUrl + "/" + objectName;
-            log.info("File uploaded successfully. URL: {}", fileUrl);
 
             return FileUploadResponse.builder()
                     .url(fileUrl)
@@ -76,8 +68,55 @@ public class MinIOServiceImpl implements MinIOService {
                     .uploadTime(LocalDateTime.now())
                     .message("Upload file thành công!")
                     .build();
+
         } catch (Exception e) {
             log.error("Error uploading file to MinIO: {}", e.getMessage(), e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR,
+                    "Không thể upload file lên MinIO: " + e.getMessage());
+        }
+    }
+
+    /**
+     * ✅ Upload theo objectName cố định (overwrite nếu đã tồn tại).
+     * Ví dụ objectName: avatars/<userId>/avatar.png
+     */
+    @Override
+    public void uploadFileWithObjectName(String objectName, MultipartFile file) {
+        try {
+            checkAndCreateBucket(bucket);
+
+            String normalizedObjectName = normalizeObjectName(objectName);
+            String fileName = safeOriginalFilename(file);
+            String contentType = resolveContentType(file, fileName);
+
+            log.info("Uploading file to MinIO - Bucket: {}, Object: {}, Size: {}, ContentType: {}",
+                    bucket, normalizedObjectName, file.getSize(), contentType);
+
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucket)
+                            .object(normalizedObjectName)
+                            .stream(file.getInputStream(), file.getSize(), -1)
+                            .contentType(contentType)
+                            .build()
+            );
+
+            String fileUrl = minioPublicUrl + "/" + normalizedObjectName;
+
+            FileUploadResponse.builder()
+                    .url(fileUrl)
+                    .fileName(fileName)
+                    .originalFileName(fileName)
+                    .path(normalizedObjectName)
+                    .bucket(bucket)
+                    .fileSize(file.getSize())
+                    .contentType(contentType)
+                    .uploadTime(LocalDateTime.now())
+                    .message("Upload file thành công!")
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Error uploading file with objectName to MinIO: {}", e.getMessage(), e);
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR,
                     "Không thể upload file lên MinIO: " + e.getMessage());
         }
@@ -87,14 +126,14 @@ public class MinIOServiceImpl implements MinIOService {
     public void deleteFile(String pathFile) {
         try {
             String objectName = extractObjectName(pathFile);
-
             checkObjectExists(bucket, objectName);
 
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(bucket)
                             .object(objectName)
-                            .build());
+                            .build()
+            );
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
@@ -106,28 +145,32 @@ public class MinIOServiceImpl implements MinIOService {
     @Override
     public byte[] downloadFile(String pathFile) {
         try {
-            InputStream stream = minioClient.getObject(
+            String objectName = extractObjectName(pathFile);
+
+            try (InputStream stream = minioClient.getObject(
                     GetObjectArgs.builder()
                             .bucket(bucket)
-                            .object(pathFile)
-                            .build());
-            return stream.readAllBytes();
+                            .object(objectName)
+                            .build()
+            )) {
+                return stream.readAllBytes();
+            }
         } catch (Exception e) {
             throw new BusinessException(CommonErrorCode.ERROR_DOWNLOAD_FILE);
         }
     }
 
-    private void checkAndCreateBucket(String bucketName) throws BusinessException {
-        try {
-            log.info("Checking if bucket '{}' exists...", bucketName);
-            boolean isExist = minioClient.bucketExists(
-                    BucketExistsArgs.builder().bucket(bucketName).build());
-            log.info("Bucket '{}' exists: {}", bucketName, isExist);
+    // =========================
+    // Helpers
+    // =========================
 
+    private void checkAndCreateBucket(String bucketName) {
+        try {
+            boolean isExist = minioClient.bucketExists(
+                    BucketExistsArgs.builder().bucket(bucketName).build()
+            );
             if (!isExist) {
-                log.info("Creating bucket '{}'...", bucketName);
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-                log.info("Bucket '{}' created successfully", bucketName);
             }
         } catch (Exception e) {
             log.error("Error checking/creating bucket '{}': {}", bucketName, e.getMessage(), e);
@@ -135,8 +178,52 @@ public class MinIOServiceImpl implements MinIOService {
         }
     }
 
+    private String safeOriginalFilename(MultipartFile file) {
+        String fn = file != null ? file.getOriginalFilename() : null;
+        if (fn == null || fn.isBlank()) {
+            return "file";
+        }
+        return fn;
+    }
+
+    private String buildObjectName(String prefixPath, String fileName) {
+        if (prefixPath == null || prefixPath.isBlank()) {
+            return normalizeObjectName(fileName);
+        }
+        String p = prefixPath.trim();
+        p = p.startsWith("/") ? p.substring(1) : p;
+        p = p.endsWith("/") ? p.substring(0, p.length() - 1) : p;
+        return p + "/" + fileName;
+    }
+
+    private String normalizeObjectName(String objectName) {
+        if (objectName == null || objectName.isBlank()) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "objectName không hợp lệ");
+        }
+        String o = objectName.trim();
+        o = o.startsWith("/") ? o.substring(1) : o;
+        // tránh // trong url/path
+        while (o.contains("//")) o = o.replace("//", "/");
+        return o;
+    }
+
+    private String resolveContentType(MultipartFile file, String fileName) {
+        String contentType = file != null ? file.getContentType() : null;
+        if (contentType == null || contentType.isBlank()) {
+            contentType = detectContentTypeByExtension(fileName);
+        }
+        return contentType;
+    }
+
     private String detectContentTypeByExtension(String fileName) {
-        String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+        String ext = "bin";
+        if (fileName != null) {
+            int idx = fileName.lastIndexOf('.');
+            if (idx >= 0 && idx < fileName.length() - 1) {
+                ext = fileName.substring(idx + 1).toLowerCase();
+            }
+        }
+
         Map<String, String> mimeTypes = new HashMap<>();
         mimeTypes.put("doc", "application/msword");
         mimeTypes.put("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
@@ -146,38 +233,42 @@ public class MinIOServiceImpl implements MinIOService {
         mimeTypes.put("png", "image/png");
         mimeTypes.put("jpeg", "image/jpeg");
         mimeTypes.put("jpg", "image/jpeg");
+        mimeTypes.put("webp", "image/webp");
         mimeTypes.put("ppt", "application/vnd.ms-powerpoint");
         mimeTypes.put("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
 
-        return mimeTypes.getOrDefault(extension, "application/octet-stream");
+        return mimeTypes.getOrDefault(ext, "application/octet-stream");
     }
 
     private String extractObjectName(String pathFile) {
-        String objectName = pathFile;
-        if (objectName.startsWith(minioPublicUrl + "/")) {
-            objectName = objectName.substring(minioPublicUrl.length() + 1);
+        if (pathFile == null || pathFile.isBlank()) {
+            throw new BusinessException(CommonErrorCode.NOT_FOUND_FILE);
         }
+        String objectName = pathFile.trim();
+        String prefix = minioPublicUrl + "/";
+        if (objectName.startsWith(prefix)) {
+            objectName = objectName.substring(prefix.length());
+        }
+        objectName = objectName.startsWith("/") ? objectName.substring(1) : objectName;
+        while (objectName.contains("//")) objectName = objectName.replace("//", "/");
         return objectName;
     }
 
-    private void checkObjectExists(String bucket, String objectName) throws BusinessException {
+    private void checkObjectExists(String bucket, String objectName) {
         try {
             minioClient.statObject(
                     StatObjectArgs.builder()
                             .bucket(bucket)
                             .object(objectName)
-                            .build());
+                            .build()
+            );
         } catch (ErrorResponseException e) {
             if ("NoSuchKey".equals(e.errorResponse().code())) {
-                throw new BusinessException(
-                        CommonErrorCode.NOT_FOUND_FILE);
+                throw new BusinessException(CommonErrorCode.NOT_FOUND_FILE);
             }
-            throw new BusinessException(
-                    CommonErrorCode.ERROR_MINIO, e.errorResponse().message());
-
+            throw new BusinessException(CommonErrorCode.ERROR_MINIO, e.errorResponse().message());
         } catch (Exception e) {
-            throw new BusinessException(
-                    CommonErrorCode.INTERNAL_SERVER_ERROR);
+            throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 }

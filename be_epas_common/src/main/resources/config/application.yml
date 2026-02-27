@@ -26,13 +26,14 @@ spring:
       password: Ngv@123456
   datasource:
     url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
-    username: TENANT_NGV_DEMO
+#   username: TENANT_NGV_DEMO
+    username: EPAS_MASTER
     password: 123456
     driver-class-name: oracle.jdbc.OracleDriver
-#    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
-#    username: EPAS_DEV_COMMON
-#    password: 123456
-#    driver-class-name: oracle.jdbc.OracleDriver
+  #    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
+  #    username: EPAS_DEV_COMMON
+  #    password: 123456
+  #    driver-class-name: oracle.jdbc.OracleDriver
   application:
     name: COMMON
   kafka:
@@ -63,7 +64,6 @@ spring:
     init:
       mode: never
 
-
 security:
   keycloak:
     base-url: http://10.10.0.31:31090
@@ -86,16 +86,16 @@ server:
 bpm:
   liquibase:
     tenant:
-#      enabled: true
-#      migrate-on-startup: true
+      #      enabled: true
+      #      migrate-on-startup: true
       change-log: classpath:db/changelog/db.changelog-master.xml
-#      schema-targets:
-#        common_schema: COMMON
-#        hrm_schema: HRM
+  #      schema-targets:
+  #        common_schema: COMMON
+  #        hrm_schema: HRM
   core:
     security:
       permission:
-        use-db: true
+        use-db: false
     activity-log-enabled: true
     cors:
       allowed-origins:
@@ -124,15 +124,15 @@ bpm:
         - /public/**
         - /tenant/search-tenant
         - /tenant/exist
-#        - /actuator/**
-#        - /camunda/**
+    #        - /actuator/**
+    #        - /camunda/**
     stored-procedure:
       enabled: true
 
 logging:
   kafka:
     topic:
-      activity: COM_INF_LOG_ACTIVITY_TOPIC   # trùng với topic bên producer
+      activity: COM_INF_LOG_ACTIVITY_TOPIC # trùng với topic bên producer
       audit: COM_INF_LOG_AUDIT_TOPIC
     consumer-group: activity-log-consumer
   config: classpath:log4j.xml
@@ -150,7 +150,7 @@ stat:
 job:
   kafka:
     topic:
-      id: JOB-ID        # Đảm bảo giá trị này là hợp lệ, không để placeholder.
+      id: JOB-ID # Đảm bảo giá trị này là hợp lệ, không để placeholder.
       status: JOB-STATUS
     consumer-group:
       clear-activity: ADMIN_CLEAR_ACTIVITY_GROUP
@@ -166,9 +166,9 @@ minio:
   secret-key: admin123
 multitenancy:
   enabled: true
-#  enabled: false
-#  tenant-claim: tenant_id
-#  tenant-header: X-Tenant-Id
+  #  enabled: false
+  #  tenant-claim: tenant_id
+  #  tenant-header: X-Tenant-Id
   kafka:
     topic: EVENT-CREATED-TENANT
     group: ${spring.application.name}
@@ -192,5 +192,4 @@ multitenancy:
 #    interval-ms: 300000
 
 #
-
 

@@ -19,7 +19,6 @@ public interface UserService {
 
     void updateUser(String userId, UserDto userDto);
 
-
     List<UserRepresentation> listUser();
 
     PageResponse<UserRepresentation> pageUser(SearchFilterRequest request);
@@ -27,6 +26,7 @@ public interface UserService {
     UserResource getUser(String userId);
 
     List<InfUserDto> getUserInfoList(List<String> userIds);
+
     List<InfUserDto> getUsernameList(List<String> listUserName);
 
     void deleteUser(String userId);
@@ -35,17 +35,19 @@ public interface UserService {
 
     List<GroupRepresentation> getUserGroups(String userId);
 
-    void assignRole(String userId ,List<String> roleNames);
+    void assignRole(String userId, List<String> roleNames);
 
-    void unAssignRole(String userId ,List<String> roleNames);
+    void unAssignRole(String userId, List<String> roleNames);
 
     void joinGroups(String userId, List<String> groupIds);
+
     void leaveGroups(String userId, List<String> groupIds);
 
     ResponseEntity<byte[]> exportExcel(String fileName, ExportExcelRequest request);
 
     void updateBranchCode(String username, String branchCode);
+
     String getUserId(String username);
 
-    void changePass(String userName,String newPass);
+    void changePass(String userName, String newPass);
 }

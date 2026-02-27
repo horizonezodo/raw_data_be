@@ -31,9 +31,9 @@ public class CtgCfgScoringBenchmark extends BaseEntity {
     private String benchmarkValue;
     @Column(name = "BENCHMARK_DESC", length = 4000 ,nullable = false)
     private String benchmarkDesc;
-    @Column(name = "SCORE_VALUE_MIN", length = 7,scale = 4 ,nullable = false)
+    @Column(name = "SCORE_VALUE_MIN", precision = 7,scale = 4 ,nullable = false)
     private BigDecimal scoreValueMin;
-    @Column(name = "SCORE_VALUE_MAX", length = 7,scale = 4)
+    @Column(name = "SCORE_VALUE_MAX", precision = 7,scale = 4)
     private BigDecimal scoreValueMax;
     @Column(name = "CONDITION_EXPRESSION", length = 256)
     private String conditionExpression;

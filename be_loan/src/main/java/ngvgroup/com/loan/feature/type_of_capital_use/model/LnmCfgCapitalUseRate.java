@@ -26,8 +26,8 @@ public class LnmCfgCapitalUseRate extends BaseEntity {
     private String rateValueType;
     @Column(name = "USE_LEVEL", length = 64, nullable = false)
     private String useLevel;
-    @Column(name = "RATE_VALUE", length = 7 , scale = 5, nullable = false)
+    @Column(name = "RATE_VALUE", precision = 7 , scale = 5, nullable = false)
     private BigDecimal rateValue;
-    @Column(name = "PAYOUT_RATIO", length = 7 , scale = 5, nullable = false)
+    @Column(name = "PAYOUT_RATIO", precision = 7 , scale = 5, nullable = false)
     private BigDecimal payoutRatio;
 }

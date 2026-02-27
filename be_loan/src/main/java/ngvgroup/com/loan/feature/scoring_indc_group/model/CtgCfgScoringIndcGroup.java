@@ -27,7 +27,7 @@ public class CtgCfgScoringIndcGroup extends BaseEntity {
     private String scoringIndcGroupName;
     @Column(name = "SCORING_INDC_GROUP_TYPE", length = 128)
     private String scoringIndcGroupType;
-    @Column(name = "WEIGHT_SCORE", length = 7, scale = 4)
+    @Column(name = "WEIGHT_SCORE", precision = 7, scale = 4)
     private BigDecimal weightScore;
     @Column(name = "RECORD_STATUS", length = 64)
     private String recordStatus = "approval";

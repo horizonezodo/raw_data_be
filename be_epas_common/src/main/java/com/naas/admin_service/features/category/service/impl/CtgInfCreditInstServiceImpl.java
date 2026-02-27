@@ -14,9 +14,7 @@ import com.ngvgroup.bpm.core.common.exception.BusinessException;
 import com.ngvgroup.bpm.core.common.exception.ErrorCode;
 import com.ngvgroup.bpm.core.persistence.service.storedprocedure.BaseStoredProcedureService;
 
-
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +30,8 @@ public class CtgInfCreditInstServiceImpl extends BaseStoredProcedureService impl
     private final CtgInfCreditInstMapper mapper;
     private final ExcelService service;
 
-    protected CtgInfCreditInstServiceImpl(CtgInfCreditInstRepository repo, CtgInfCreditInstMapper mapper, ExcelService service) {
+    protected CtgInfCreditInstServiceImpl(CtgInfCreditInstRepository repo, CtgInfCreditInstMapper mapper,
+            ExcelService service) {
         super();
         this.repo = repo;
         this.mapper = mapper;
@@ -41,7 +40,7 @@ public class CtgInfCreditInstServiceImpl extends BaseStoredProcedureService impl
 
     @Override
     public Page<CtgInfCreditInstDTO> search(String keyword, Pageable pageable) {
-        return repo.search(keyword,pageable);
+        return repo.search(keyword, pageable);
     }
 
     @Override
@@ -53,13 +52,13 @@ public class CtgInfCreditInstServiceImpl extends BaseStoredProcedureService impl
     @Override
     public void updateCreditInst(CtgInfCreditInstDTO dto, String creditInstCode) {
         CtgInfCreditInst ctgInfCreditInst = repo.findByCreditInstCode(creditInstCode);
-        if(ctgInfCreditInst != null){
-            mapper.updateEntityFromDto(dto,ctgInfCreditInst);
+        if (ctgInfCreditInst != null) {
+            mapper.updateEntityFromDto(dto, ctgInfCreditInst);
             ctgInfCreditInst.setDescription(dto.getDescription());
             ctgInfCreditInst.setIsDelete(0);
             ctgInfCreditInst.setIsActive(dto.getIsDelete());
             repo.save(ctgInfCreditInst);
-        }else{
+        } else {
             throw new BusinessException(ErrorCode.NOT_FOUND, creditInstCode);
         }
     }
@@ -69,9 +68,9 @@ public class CtgInfCreditInstServiceImpl extends BaseStoredProcedureService impl
     @Override
     public void deleteCredistInst(String creditInstCode) {
         CtgInfCreditInst ctgInfCreditInst = repo.findByCreditInstCode(creditInstCode);
-        if(ctgInfCreditInst != null){
+        if (ctgInfCreditInst != null) {
             repo.delete(ctgInfCreditInst);
-        }else{
+        } else {
             throw new BusinessException(ErrorCode.NOT_FOUND, creditInstCode);
         }
     }
@@ -79,13 +78,13 @@ public class CtgInfCreditInstServiceImpl extends BaseStoredProcedureService impl
     @Override
     public void createCreditInst(CtgInfCreditInstDTO dto) {
         CtgInfCreditInst c = repo.findCreditInts(dto.getCreditInstCode(), dto.getCreditInstName(), 1);
-        if(c != null){
+        if (c != null) {
             mapper.updateEntityFromDto(dto, c);
             c.setIsDelete(0);
             c.setIsActive(dto.getIsDelete());
             c.setDescription(dto.getDescription());
             repo.save(c);
-        }else if (!repo.existsByCreditInstCode(dto.getCreditInstCode())){
+        } else if (!repo.existsByCreditInstCode(dto.getCreditInstCode())) {
             CtgInfCreditInst ctgInfCreditInst = mapper.toE(dto);
             ctgInfCreditInst.setApprovedBy(getCurrentUserName());
             ctgInfCreditInst.setIsDelete(0);
@@ -93,7 +92,7 @@ public class CtgInfCreditInstServiceImpl extends BaseStoredProcedureService impl
             ctgInfCreditInst.setDescription(dto.getDescription());
             ctgInfCreditInst.setRecordStatus(Constant.APPROVAL);
             repo.save(ctgInfCreditInst);
-        }else{
+        } else {
             throw new BusinessException(CommonErrorCode.EXIST_CREDIT_INST_ID, dto.getCreditInstCode());
         }
     }
@@ -101,11 +100,11 @@ public class CtgInfCreditInstServiceImpl extends BaseStoredProcedureService impl
     @Override
     public ResponseEntity<ByteArrayResource> exportExcel(ExportExcelDTO dto) {
         List<ExportCtgInfCreditInstDTO> lst = repo.exportData();
-        return service.exportToExcel(lst,dto.getLabels(),ExportCtgInfCreditInstDTO.class,dto.getFileName());
+        return service.exportToExcel(lst, dto.getLabels(), ExportCtgInfCreditInstDTO.class, dto.getFileName());
     }
 
     @Override
-    public  boolean checkExist(String code){
+    public boolean checkExist(String code) {
         CtgInfCreditInst ctgInfCreditInst = repo.findByCreditInstCode(code);
         return ctgInfCreditInst != null;
     }

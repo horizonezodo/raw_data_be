@@ -8,6 +8,7 @@
 
     <changeSet id="create-generate-next-sequence-proc"
                author="hau"
+               dbms="oracle"
                runInTransaction="false">
 
         <sqlFile

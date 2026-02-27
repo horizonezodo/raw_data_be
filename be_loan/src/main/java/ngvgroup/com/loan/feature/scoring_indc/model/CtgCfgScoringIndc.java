@@ -21,7 +21,7 @@ public class CtgCfgScoringIndc extends BaseEntity {
     private String indicatorCode;
     @Column(name = "INDICATOR_NAME", length = 256)
     private String indicatorName;
-    @Column(name = "WEIGHT_SCORE", length = 7, scale = 4)
+    @Column(name = "WEIGHT_SCORE", precision = 7, scale = 4)
     private BigDecimal weightScore;
     @Column(name = "SQL_EXECUTE", length = 512)
     private String sqlExecute;

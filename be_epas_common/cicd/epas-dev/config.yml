@@ -26,7 +26,7 @@ spring:
       password: Ngv@123456
   datasource:
     url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1
-    username: TENANT_NGV_DEMO
+    username: EPAS_MASTER
     password: 123456
     driver-class-name: oracle.jdbc.OracleDriver
   #    url: jdbc:oracle:thin:@113.190.234.241:31521/ORCLPDB1

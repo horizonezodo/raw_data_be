@@ -282,7 +282,7 @@
         <dependency>
             <groupId>com.ngvgroup.bpm</groupId>
             <artifactId>bpm-core-multitenant</artifactId>
-            <version>1.0.26</version>
+            <version>1.0.51</version>
         </dependency>
 
         <dependency>

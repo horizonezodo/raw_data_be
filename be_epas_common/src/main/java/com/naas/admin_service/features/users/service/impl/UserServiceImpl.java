@@ -1,15 +1,12 @@
 package com.naas.admin_service.features.users.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naas.admin_service.core.contants.CommonErrorCode;
-import com.naas.admin_service.core.contants.KeycloakErrorConstants;
 import com.naas.admin_service.core.excel.dto.request.ExportExcelRequest;
 import com.naas.admin_service.core.excel.dto.request.SearchFilterRequest;
 import com.naas.admin_service.core.excel.dto.response.PageResponse;
 import com.naas.admin_service.core.excel.service.ExcelService;
-import com.naas.admin_service.features.permission.repository.ComCfgPermissionMapRepository;
-import com.naas.admin_service.features.permission.service.PermissionService;
+import com.naas.admin_service.core.provider.IdentityStoreService;
+import com.naas.admin_service.features.common.tenant.TenantUsernameResolver;
 import com.naas.admin_service.features.users.dto.ExportExcelUserDto;
 import com.naas.admin_service.features.users.dto.InfUserDto;
 import com.naas.admin_service.features.users.dto.RoleResponseDto;
@@ -17,35 +14,22 @@ import com.naas.admin_service.features.users.dto.UserDto;
 import com.naas.admin_service.features.users.mapper.ExportExcelUserMapper;
 import com.naas.admin_service.features.users.service.UserService;
 import com.ngvgroup.bpm.core.common.exception.BusinessException;
-import com.ngvgroup.bpm.core.common.exception.ErrorCode;
 import com.ngvgroup.bpm.core.persistence.config.MultitenancyProperties;
 import com.ngvgroup.bpm.core.persistence.config.OrganizationContext;
 import com.ngvgroup.bpm.core.persistence.config.TenantContext;
-import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.keycloak.admin.client.CreatedResponseUtil;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.GroupsResource;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.OrganizationRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,24 +39,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    @Value("${security.keycloak.realm}")
-    private String realm;
-
-    @Value("${security.keycloak.base-url}")
-    private String keycloakBaseUrl;
-
-    @Value("${bpm.core.security.permission.use-db:false}")
-    private boolean isUsingDb;
-
-    private final Keycloak keycloak;
+    private final TenantUsernameResolver usernameResolver;
+    private final IdentityStoreService identityStoreService;
     private final ExcelService excelService;
     private final ExportExcelUserMapper exportExcelUserMapper;
-    private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
-    private final PermissionService permissionService;
-    private final ComCfgPermissionMapRepository permissionMapRepository;
 
-    // ✅ MultitenancyProperties có thể KHÔNG tồn tại khi enabled=false -> dùng ObjectProvider để không crash startup
+    // ✅ MultitenancyProperties có thể KHÔNG tồn tại khi enabled=false -> dùng
+    // ObjectProvider để không crash startup
     private final ObjectProvider<MultitenancyProperties> mtPropsProvider;
 
     // ✅ Fallback flags (luôn đọc được dù bean MultitenancyProperties không tồn tại)
@@ -82,25 +55,16 @@ public class UserServiceImpl implements UserService {
     @Value("${multitenancy.organizations.enabled:false}")
     private boolean organizationsEnabledFlag;
 
-    @Value("${security.keycloak.admin-realms-path:/admin/realms/}")
-    private String adminRealmsPath;
-
-    
     // Constants (Sonar-friendly)
     private static final int KC_PAGE_SIZE = 200;
 
-    private String adminRealmBaseUrl() {
-        return keycloakBaseUrl + adminRealmsPath + realm;
-    }
-
-    
     // READ APIs
-    
 
     /**
      * LIST:
      * - enabled=false: trả all users (như cũ), không suffix/tenant/org
-     * - enabled=true : query theo Organization members, và strip ".tenant" khi response
+     * - enabled=true : query theo Organization members, và strip ".tenant" khi
+     * response
      */
     @Override
     public List<UserRepresentation> listUser() {
@@ -126,8 +90,8 @@ public class UserServiceImpl implements UserService {
 
         // Single mode: giữ như cũ
         if (isSingleMode()) {
-            List<UserRepresentation> page = getUsersResource().search(filter, offset, size);
-            int total = searchAllUsersPaged(filter).size();
+            List<UserRepresentation> page = identityStoreService.searchUsers(filter, offset, size);
+            int total = identityStoreService.searchUsers(filter).size();
 
             List<UserRepresentation> resp = (page == null ? List.<UserRepresentation>of() : page)
                     .stream()
@@ -173,9 +137,7 @@ public class UserServiceImpl implements UserService {
         return new PageResponse<>(resp, pageIdx, size, total);
     }
 
-    
     // WRITE APIs
-    
 
     /**
      * CREATE:
@@ -194,20 +156,18 @@ public class UserServiceImpl implements UserService {
 
         UserRepresentation userRepresentation = getUserRepresentation(userDto);
 
-        UsersResource usersResource = getUsersResource();
-        RealmResource realmResource = keycloak.realm(realm);
-
-        String createdUserId = createKeycloakUser(usersResource, userRepresentation);
+        String createdUserId = identityStoreService.createUser(userRepresentation);
 
         // org-mode tắt => xong luôn
-        if (!isOrgMode()) return;
+        if (!isOrgMode())
+            return;
 
         String orgAlias = requireOrgAlias();
         try {
-            String orgId = requireOrgId(realmResource, orgAlias);
-            addMemberToOrganization(realmResource, orgId, createdUserId);
+            String orgId = requireOrgId(orgAlias);
+            addMemberToOrganization(orgId, createdUserId);
         } catch (RuntimeException ex) {
-            safeDeleteUser(realmResource, createdUserId);
+            safeDeleteUser(createdUserId);
             throw ex;
         }
     }
@@ -218,13 +178,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void updateUser(String userId, UserDto userDto) {
-        UsersResource usersResource = getUsersResource();
-
         UserRepresentation current;
         try {
-            current = usersResource.get(userId).toRepresentation();
+            current = identityStoreService.getUser(userId).toRepresentation();
         } catch (Exception e) {
-            throw new BusinessException(ErrorCode.NOT_FOUND, userId);
+            throw new BusinessException(CommonErrorCode.USER_ID_NOT_FOUND, userId);
         }
 
         ensureUserBelongsToCurrentTenant(current);
@@ -237,14 +195,14 @@ public class UserServiceImpl implements UserService {
         current.setUsername(userDto.getUsername());
         current.setEmail(userDto.getEmail());
 
-        usersResource.get(userId).update(current);
+        identityStoreService.updateUser(userId, current);
     }
 
     @Override
     public String getUserId(String username) {
         String effective = effectiveUsername(username);
 
-        List<UserRepresentation> users = keycloak.realm(realm).users().search(effective);
+        List<UserRepresentation> users = identityStoreService.searchUsers(effective);
         return users.stream()
                 .filter(u -> u.getUsername() != null && u.getUsername().equalsIgnoreCase(effective))
                 .findFirst()
@@ -254,42 +212,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePass(String userName, String newPass) {
-        String userId = this.getUserId(userName);
-        if (userId == null) {
-            throw new BusinessException(ErrorCode.NOT_FOUND, userName);
+        if (newPass == null || newPass.isBlank()) {
+            throw new BusinessException(CommonErrorCode.INVALID_NEW_PASSWORD);
         }
 
-        CredentialRepresentation newPassword = new CredentialRepresentation();
-        newPassword.setType(CredentialRepresentation.PASSWORD);
-        newPassword.setTemporary(false);
-        newPassword.setValue(newPass);
+        String userId = getUserId(userName);
+        if (userId == null) {
+            throw new BusinessException(CommonErrorCode.USER_NOT_FOUND);
+        }
 
-        keycloak.realm(realm)
-                .users()
-                .get(userId)
-                .resetPassword(newPassword);
+        try {
+            UserRepresentation rep = identityStoreService.getUser(userId).toRepresentation();
+            ensureUserBelongsToCurrentTenant(rep);
+        } catch (Exception e) {
+            throw new BusinessException(CommonErrorCode.USER_NOT_FOUND);
+        }
+
+        CredentialRepresentation cr = new CredentialRepresentation();
+        cr.setType(CredentialRepresentation.PASSWORD);
+        cr.setTemporary(false);
+        cr.setValue(newPass);
+
+        identityStoreService.resetUserPassword(userId, cr);
     }
 
     @Override
     public void updateBranchCode(String username, String branchCode) {
         String effective = effectiveUsername(username);
 
-        List<UserRepresentation> candidates = keycloak.realm(realm).users().search(effective);
+        List<UserRepresentation> candidates = identityStoreService.searchUsers(effective);
 
         UserRepresentation target = candidates.stream()
                 .filter(u -> u.getUsername() != null && u.getUsername().equalsIgnoreCase(effective))
                 .findFirst()
                 .orElse(null);
 
-        if (target == null) return;
+        if (target == null)
+            return;
 
         ensureUserBelongsToCurrentTenant(target);
 
-        UserResource userResource = keycloak.realm(realm).users().get(target.getId());
-        UserRepresentation user = userResource.toRepresentation();
+        UserRepresentation user = identityStoreService.getUser(target.getId()).toRepresentation();
 
         Map<String, List<String>> attributes = user.getAttributes();
-        if (attributes == null) attributes = new HashMap<>();
+        if (attributes == null)
+            attributes = new HashMap<>();
 
         if (branchCode == null || branchCode.isBlank()) {
             attributes.remove("branchCode");
@@ -298,12 +265,10 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setAttributes(attributes);
-        userResource.update(user);
+        identityStoreService.updateUser(target.getId(), user);
     }
 
-    
     // DTO APIs
-    
 
     @Override
     public List<InfUserDto> getUserInfoList(List<String> userIds) {
@@ -345,9 +310,7 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    
     // EXCEL export
-    
 
     @Override
     public ResponseEntity<byte[]> exportExcel(String fileName, ExportExcelRequest request) {
@@ -377,86 +340,60 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    
     // OTHER APIs
-    
 
     @Override
     public void deleteUser(String userId) {
         this.checkUserIdExist(userId);
-        getUsersResource().delete(userId);
+        identityStoreService.deleteUser(userId);
     }
 
     @Override
     public UserResource getUser(String userId) {
-        return getUsersResource().get(userId);
+        return identityStoreService.getUser(userId);
     }
 
     @Override
     public List<RoleResponseDto> getUserRoles(String userId) {
         this.checkUserIdExist(userId);
-        if (isUsingDb) {
-            return permissionMapRepository.findPermissionInfoByUserId(userId);
-        } else {
-            return getUser(userId).roles().realmLevel().listAll().stream()
-                    .map(r -> new RoleResponseDto(r.getName(), r.getDescription()))
-                    .toList();
-        }
+        return identityStoreService.getUserRoles(userId);
     }
 
     @Override
     public List<GroupRepresentation> getUserGroups(String userId) {
         this.checkUserIdExist(userId);
-        return getUser(userId).groups();
+        return identityStoreService.getUserGroups(userId);
     }
 
     @Override
     public void assignRole(String userId, List<String> roleNames) {
         this.checkUserIdExist(userId);
         this.checkRoleNamesExist(roleNames);
-        if (isUsingDb) {
-            permissionService.assignRolesToUser(userId, roleNames);
-        } else {
-            List<RoleRepresentation> rolesToAssign = roleNames.stream()
-                    .map(roleName -> getRolesResource().get(roleName).toRepresentation())
-                    .toList();
-            getUser(userId).roles().realmLevel().add(rolesToAssign);
-        }
+        identityStoreService.assignRoleToUser(userId, roleNames);
     }
 
     @Override
     public void unAssignRole(String userId, List<String> roleNames) {
         this.checkUserIdExist(userId);
         this.checkRoleNamesExist(roleNames);
-        if (isUsingDb) {
-            permissionService.unAssignRolesFromUser(userId, roleNames);
-        } else {
-            List<RoleRepresentation> roles = roleNames.stream()
-                    .map(roleName -> getRolesResource().get(roleName).toRepresentation())
-                    .toList();
-            getUser(userId).roles().realmLevel().remove(roles);
-        }
+        identityStoreService.unAssignRoleFromUser(userId, roleNames);
     }
 
     @Override
     public void joinGroups(String userId, List<String> groupIds) {
         this.checkUserIdExist(userId);
         this.checkGroupIdsExist(groupIds);
-        UserResource user = getUser(userId);
-        groupIds.forEach(user::joinGroup);
+        identityStoreService.joinGroups(userId, groupIds);
     }
 
     @Override
     public void leaveGroups(String userId, List<String> groupIds) {
         this.checkUserIdExist(userId);
         this.checkGroupIdsExist(groupIds);
-        UserResource user = getUser(userId);
-        groupIds.forEach(user::leaveGroup);
+        identityStoreService.leaveGroups(userId, groupIds);
     }
 
-    
     // Multitenancy mode helpers
-    
 
     private boolean isSingleEnabled() {
         MultitenancyProperties p = mtPropsProvider.getIfAvailable();
@@ -468,7 +405,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean isOrgMode() {
-        if (isSingleEnabled()) return false;
+        if (isSingleEnabled())
+            return false;
 
         MultitenancyProperties p = mtPropsProvider.getIfAvailable();
         if (p != null) {
@@ -491,31 +429,21 @@ public class UserServiceImpl implements UserService {
      * - enabled=true : name.tenant (chống double append)
      */
     private String effectiveUsername(String rawUsername) {
-        if (rawUsername == null) return null;
-
-        String u = rawUsername.trim();
-        if (u.isEmpty()) return u;
-
-        if (isSingleMode()) return u;
-
+        if (rawUsername == null)
+            return null;
+        if (isSingleMode())
+            return rawUsername.trim();
         String tenantId = currentTenantIdRequired();
-        String suffix = "." + tenantId;
-
-        if (u.toLowerCase().endsWith(suffix.toLowerCase())) return u;
-        return u + suffix;
+        return usernameResolver.effectiveUsername(rawUsername, true, tenantId);
     }
 
     private String stripTenantFromUsername(String username) {
-        if (username == null || username.isBlank()) return username;
-        if (isSingleMode()) return username;
-
+        if (username == null)
+            return null;
+        if (isSingleMode())
+            return username.trim();
         String tenantId = currentTenantIdRequired();
-        String suffix = "." + tenantId;
-
-        if (username.toLowerCase().endsWith(suffix.toLowerCase())) {
-            return username.substring(0, username.length() - suffix.length());
-        }
-        return username;
+        return usernameResolver.stripTenantSuffix(username, true, tenantId);
     }
 
     /**
@@ -524,31 +452,36 @@ public class UserServiceImpl implements UserService {
      * - enabled=true + org-mode: check membership bằng REST (1 call)
      */
     private boolean belongsToCurrentTenant(UserRepresentation u) {
-        if (isSingleMode()) return true;
-        if (u == null) return false;
+        if (isSingleMode())
+            return true;
+        if (u == null)
+            return false;
 
         if (isOrgMode()) {
             String userId = u.getId();
-            if (userId == null || userId.isBlank()) return false;
+            if (userId == null || userId.isBlank())
+                return false;
 
             String orgId = currentOrgIdRequired();
             return isMemberOfOrg(orgId, userId);
         }
 
         // fallback suffix tenant
-        if (u.getUsername() == null) return false;
+        if (u.getUsername() == null)
+            return false;
         String tenantId = currentTenantIdRequired();
         return u.getUsername().toLowerCase().endsWith(("." + tenantId).toLowerCase());
     }
 
     private void ensureUserBelongsToCurrentTenant(UserRepresentation u) {
         if (!belongsToCurrentTenant(u)) {
-            throw new BusinessException(ErrorCode.NOT_FOUND, "User not in current tenant/org");
+            throw new BusinessException(CommonErrorCode.USER_NOT_IN_TENANT);
         }
     }
 
     private UserRepresentation stripTenantInUserRep(UserRepresentation u) {
-        if (u == null) return null;
+        if (u == null)
+            return null;
         u.setUsername(stripTenantFromUsername(u.getUsername()));
         return u;
     }
@@ -574,62 +507,18 @@ public class UserServiceImpl implements UserService {
     }
 
     private String buildEffectiveSearchFilter(String rawFilter) {
-        if (rawFilter == null) return null;
+        if (rawFilter == null)
+            return null;
         String f = rawFilter.trim();
         return f.isEmpty() ? "" : f;
     }
 
     private List<UserRepresentation> listAllUsersPaged() {
-        UsersResource users = getUsersResource();
-        List<UserRepresentation> all = new ArrayList<>();
-
-        int first = 0;
-        boolean hasMore = true;
-
-        while (hasMore) {
-            List<UserRepresentation> page;
-
-            try {
-                // KC mới: có list(first, max)
-                page = users.list(first, KC_PAGE_SIZE);
-            } catch (Exception ex) {
-                // KC cũ: không support paging -> fallback list() 1 lần
-                List<UserRepresentation> once = users.list();
-                return once == null ? List.of() : once;
-            }
-
-            if (page == null || page.isEmpty()) {
-                hasMore = false;
-            } else {
-                all.addAll(page);
-                first += KC_PAGE_SIZE;
-                hasMore = page.size() == KC_PAGE_SIZE;
-            }
-        }
-
-        return all;
+        return identityStoreService.listAllUsersPaged();
     }
 
     private List<UserRepresentation> searchAllUsersPaged(String filter) {
-        UsersResource users = getUsersResource();
-        List<UserRepresentation> all = new ArrayList<>();
-
-        int first = 0;
-        boolean hasMore = true;
-
-        while (hasMore) {
-            List<UserRepresentation> page = users.search(filter, first, KC_PAGE_SIZE);
-
-            if (page == null || page.isEmpty()) {
-                hasMore = false;
-            } else {
-                all.addAll(page);
-                first += KC_PAGE_SIZE;
-                hasMore = page.size() == KC_PAGE_SIZE;
-            }
-        }
-
-        return all;
+        return identityStoreService.searchAllUsersPaged(filter);
     }
 
     /**
@@ -637,7 +526,7 @@ public class UserServiceImpl implements UserService {
      */
     private List<UserRepresentation> searchTenantAwarePage(String filter, int tenantOffset, int size) {
         if (isSingleMode()) {
-            return getUsersResource().search(filter, tenantOffset, size);
+            return identityStoreService.searchUsers(filter, tenantOffset, size);
         }
 
         TenantPageCollector collector = new TenantPageCollector(tenantOffset, size);
@@ -646,7 +535,7 @@ public class UserServiceImpl implements UserService {
         boolean hasMore = true;
 
         while (collector.needsMore() && hasMore) {
-            List<UserRepresentation> page = getUsersResource().search(filter, first, KC_PAGE_SIZE);
+            List<UserRepresentation> page = identityStoreService.searchUsers(filter, first, KC_PAGE_SIZE);
 
             collector.acceptPage(page, this::belongsToCurrentTenant);
 
@@ -662,7 +551,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private int searchTenantAwareCount(String filter) {
-        if (isSingleMode()) return searchAllUsersPaged(filter).size();
+        if (isSingleMode())
+            return searchAllUsersPaged(filter).size();
         return (int) searchAllUsersPaged(filter).stream()
                 .filter(this::belongsToCurrentTenant)
                 .count();
@@ -685,7 +575,7 @@ public class UserServiceImpl implements UserService {
     private String currentOrgIdRequired() {
         // chỉ gọi khi org-mode bật
         String orgAlias = requireOrgAlias();
-        String orgId = resolveOrgIdByAlias(keycloak.realm(realm), orgAlias);
+        String orgId = resolveOrgIdByAlias(orgAlias);
         if (orgId == null || orgId.isBlank()) {
             throw new BusinessException(CommonErrorCode.KEYCLOAK_UNKNOWN_ERROR);
         }
@@ -693,95 +583,39 @@ public class UserServiceImpl implements UserService {
     }
 
     private List<UserRepresentation> listOrgMembersPaged(String orgId) {
-        if (orgId == null || orgId.isBlank()) return List.of();
-
-        List<UserRepresentation> all = new ArrayList<>();
-        String token = keycloak.tokenManager().getAccessTokenString();
-
-        int first = 0;
-        boolean hasMore = true;
-
-        while (hasMore) {
-            String url = adminRealmBaseUrl()
-                    + "/organizations/" + orgId
-                    + "/members?first=" + first + "&max=" + KC_PAGE_SIZE;
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(token);
-            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-            ResponseEntity<UserRepresentation[]> resp = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    new HttpEntity<>(headers),
-                    UserRepresentation[].class
-            );
-
-            UserRepresentation[] body = resp.getBody();
-            int len = (body == null) ? 0 : body.length;
-
-            if (len == 0) {
-                hasMore = false;
-            } else {
-                all.addAll(Arrays.asList(body));
-                first += KC_PAGE_SIZE;
-                hasMore = len == KC_PAGE_SIZE;
-            }
-        }
-
-        return all;
+        return identityStoreService.listOrgMembersPaged(orgId);
     }
 
     private boolean isMemberOfOrg(String orgId, String userId) {
-        try {
-            String token = keycloak.tokenManager().getAccessTokenString();
-
-            String url = adminRealmBaseUrl()
-                    + "/organizations/" + orgId
-                    + "/members/" + userId;
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(token);
-            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-            ResponseEntity<String> resp = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    new HttpEntity<>(headers),
-                    String.class
-            );
-
-            return resp.getStatusCode().is2xxSuccessful();
-        } catch (HttpClientErrorException.NotFound ex) {
-            return false;
-        } catch (Exception ex) {
-            log.error("Error checking org member orgId={}, userId={}, err={}", orgId, userId, ex.toString());
-            return false;
-        }
+        return identityStoreService.isMemberOfOrg(orgId, userId);
     }
 
     // Organization resolve alias -> id
 
-    private String resolveOrgIdByAlias(RealmResource realmResource, String orgAlias) {
+    private String resolveOrgIdByAlias(String orgAlias) {
         String alias = normalizeAlias(orgAlias);
-        if (alias == null) return null;
+        if (alias == null)
+            return null;
 
         int max = 200;
         for (int first = 0; first <= 10_000; first += max) {
-            List<OrganizationRepresentation> page = loadOrganizationPage(realmResource, first, max);
-            if (page.isEmpty()) return null;
+            List<OrganizationRepresentation> page = loadOrganizationPage(first, max);
+            if (page.isEmpty())
+                return null;
 
             String found = findOrgIdInPage(page, alias);
-            if (found != null) return found;
+            if (found != null)
+                return found;
 
-            if (page.size() < max) return null;
+            if (page.size() < max)
+                return null;
         }
         return null;
     }
 
-    private List<OrganizationRepresentation> loadOrganizationPage(RealmResource realmResource, int first, int max) {
+    private List<OrganizationRepresentation> loadOrganizationPage(int first, int max) {
         try {
-            List<OrganizationRepresentation> page = realmResource.organizations().search("", false, first, max);
+            List<OrganizationRepresentation> page = identityStoreService.searchOrganizations("", false, first, max);
             return page == null ? List.of() : page;
         } catch (Exception e) {
             log.warn("organizations().search failed, fallback REST. first={}, max={}, err={}",
@@ -792,7 +626,8 @@ public class UserServiceImpl implements UserService {
 
     private String findOrgIdInPage(List<OrganizationRepresentation> page, String alias) {
         for (OrganizationRepresentation o : page) {
-            if (o == null) continue;
+            if (o == null)
+                continue;
             String a = o.getAlias();
             if (a != null && a.equalsIgnoreCase(alias)) {
                 return o.getId();
@@ -802,109 +637,28 @@ public class UserServiceImpl implements UserService {
     }
 
     private List<OrganizationRepresentation> fetchOrganizationsByRest(int first, int max) {
-        try {
-            String url = adminRealmBaseUrl() + "/organizations?first=" + first + "&max=" + max;
-
-            String token = keycloak.tokenManager().getAccessTokenString();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(token);
-            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-            ResponseEntity<OrganizationRepresentation[]> resp = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    new HttpEntity<>(headers),
-                    OrganizationRepresentation[].class
-            );
-
-            OrganizationRepresentation[] body = resp.getBody();
-            return body == null ? List.of() : Arrays.asList(body);
-        } catch (HttpClientErrorException.Forbidden ex) {
-            log.error("FORBIDDEN when listing organizations. Need service-account roles. err={}", ex.getMessage());
-            return List.of();
-        } catch (Exception ex) {
-            log.error("Error fetching organizations by REST: {}", ex.toString());
-            return List.of();
-        }
+        return identityStoreService.fetchOrganizationsByRest(first, max);
     }
 
     private String normalizeAlias(String orgAlias) {
-        if (orgAlias == null || orgAlias.isBlank()) return null;
+        if (orgAlias == null || orgAlias.isBlank())
+            return null;
         return orgAlias.trim();
     }
 
     // Keycloak create + error map
 
-    private String createKeycloakUser(UsersResource usersResource, UserRepresentation rep) {
-        try (Response response = usersResource.create(rep)) {
-            if (response.getStatus() == 201) {
-                return requireCreatedUserId(response);
-            }
-            String errorBody = readEntitySafe(response);
-            throw toBusinessException(errorBody);
-        }
-    }
-
-    private String requireCreatedUserId(Response response) {
-        String createdUserId = CreatedResponseUtil.getCreatedId(response);
-        if (createdUserId == null || createdUserId.isBlank()) {
-            throw new BusinessException(CommonErrorCode.KEYCLOAK_UNKNOWN_ERROR);
-        }
-        return createdUserId;
-    }
-
-    private String requireOrgId(RealmResource realmResource, String orgAlias) {
-        String orgId = resolveOrgIdByAlias(realmResource, orgAlias);
+    private String requireOrgId(String orgAlias) {
+        String orgId = resolveOrgIdByAlias(orgAlias);
         if (orgId == null || orgId.isBlank()) {
             throw new BusinessException(CommonErrorCode.KEYCLOAK_UNKNOWN_ERROR);
         }
         return orgId;
     }
 
-    private void addMemberToOrganization(RealmResource realmResource, String orgId, String userId) {
-        try (Response resp = realmResource.organizations().get(orgId).members().addMember(userId)) {
-            int st = resp.getStatus();
-            if (st != 201 && st != 204) {
-                throw new BusinessException(CommonErrorCode.KEYCLOAK_UNKNOWN_ERROR);
-            }
-        }
+    private void addMemberToOrganization(String orgId, String userId) {
+        identityStoreService.addMemberToOrganization(orgId, userId);
     }
-
-    private String readEntitySafe(Response response) {
-        try {
-            return (response != null && response.hasEntity()) ? response.readEntity(String.class) : "";
-        } catch (Exception ignored) {
-            return "";
-        }
-    }
-
-    private BusinessException toBusinessException(String errorBody) {
-        KeycloakErrorPayload payload = parseKeycloakErrorPayload(errorBody);
-        ErrorCode errorCode = mapToErrorCode(payload.errorKey());
-
-        if (errorCode == CommonErrorCode.KEYCLOAK_MIN_LENGTH) {
-            String minLength = extractNumber(payload.errorDescription());
-            return new BusinessException(errorCode, minLength);
-        }
-        return new BusinessException(errorCode);
-    }
-
-    private KeycloakErrorPayload parseKeycloakErrorPayload(String errorBody) {
-        if (errorBody == null || errorBody.isBlank()) return new KeycloakErrorPayload(null, null);
-
-        try {
-            Map<String, Object> errorMap = objectMapper.readValue(errorBody, new TypeReference<>() {});
-            return new KeycloakErrorPayload(
-                    (String) errorMap.get("error"),
-                    (String) errorMap.get("error_description")
-            );
-        } catch (Exception e) {
-            return new KeycloakErrorPayload(null, null);
-        }
-    }
-
-    private record KeycloakErrorPayload(String errorKey, String errorDescription) {}
 
     @NotNull
     private static UserRepresentation getUserRepresentation(UserDto userDto) {
@@ -925,39 +679,20 @@ public class UserServiceImpl implements UserService {
         return userRepresentation;
     }
 
-    private void safeDeleteUser(RealmResource realmResource, String userId) {
-        if (userId == null || userId.isBlank()) return;
+    private void safeDeleteUser(String userId) {
+        if (userId == null || userId.isBlank())
+            return;
         try {
-            realmResource.users().get(userId).remove();
+            identityStoreService.deleteUser(userId);
         } catch (Exception ignored) {
             // best-effort rollback
         }
     }
 
-    private ErrorCode mapToErrorCode(String keycloakErrorKey) {
-        if (keycloakErrorKey == null) {
-            return CommonErrorCode.KEYCLOAK_UNKNOWN_ERROR;
-        }
-
-        return switch (keycloakErrorKey) {
-            case KeycloakErrorConstants.ERROR_MIN_LOWER_CASE -> CommonErrorCode.KEYCLOAK_MIN_LOWER_CASE;
-            case KeycloakErrorConstants.ERROR_MIN_UPPER_CASE -> CommonErrorCode.KEYCLOAK_MIN_UPPER_CASE;
-            case KeycloakErrorConstants.ERROR_MIN_DIGITS -> CommonErrorCode.KEYCLOAK_MIN_DIGITS;
-            case KeycloakErrorConstants.ERROR_MIN_SPECIAL_CHARS -> CommonErrorCode.KEYCLOAK_MIN_SPECIAL_CHARS;
-            case KeycloakErrorConstants.ERROR_MIN_LENGTH -> CommonErrorCode.KEYCLOAK_MIN_LENGTH;
-            default -> CommonErrorCode.KEYCLOAK_UNKNOWN_ERROR;
-        };
-    }
-
-    private String extractNumber(String text) {
-        if (text == null) return "0";
-        String number = text.replaceAll("\\D", "");
-        return number.isEmpty() ? "0" : number;
-    }
-
     // CONFLICT checks
 
-    private void checkUserExist(List<UserRepresentation> userList, UserDto userDto, boolean isUpdate, String excludeUserId) {
+    private void checkUserExist(List<UserRepresentation> userList, UserDto userDto, boolean isUpdate,
+            String excludeUserId) {
         if (isUpdate) {
             checkUpdateUserExist(userList, userDto, excludeUserId);
         } else {
@@ -976,8 +711,10 @@ public class UserServiceImpl implements UserService {
                         && userDto.getEmail() != null
                         && user.getEmail().equalsIgnoreCase(userDto.getEmail()));
 
-        if (usernameExist) throw new BusinessException(ErrorCode.CONFLICT, true);
-        if (emailExist) throw new BusinessException(ErrorCode.CONFLICT, true);
+        if (usernameExist)
+            throw new BusinessException(CommonErrorCode.USER_USERNAME_EXIST, true);
+        if (emailExist)
+            throw new BusinessException(CommonErrorCode.USER_EMAIL_EXIST, true);
     }
 
     private void checkUpdateUserExist(List<UserRepresentation> userList, UserDto userDto, String excludeUserId) {
@@ -993,8 +730,10 @@ public class UserServiceImpl implements UserService {
                         && userDto.getEmail() != null
                         && user.getEmail().equalsIgnoreCase(userDto.getEmail()));
 
-        if (usernameExist) throw new BusinessException(ErrorCode.CONFLICT, true);
-        if (emailExist) throw new BusinessException(ErrorCode.CONFLICT, true);
+        if (usernameExist)
+            throw new BusinessException(CommonErrorCode.USER_USERNAME_EXIST, true);
+        if (emailExist)
+            throw new BusinessException(CommonErrorCode.USER_EMAIL_EXIST, true);
     }
 
     private void checkUserIdExist(String userId) {
@@ -1002,13 +741,11 @@ public class UserServiceImpl implements UserService {
             UserRepresentation rep = getUser(userId).toRepresentation();
             ensureUserBelongsToCurrentTenant(rep);
         } catch (Exception e) {
-            throw new BusinessException(ErrorCode.NOT_FOUND, userId);
+            throw new BusinessException(CommonErrorCode.USER_ID_NOT_FOUND, userId);
         }
     }
 
-    
     // GROUP/ROLE validation
-    
 
     private void checkGroupIdsExist(List<String> groupIds) {
         List<GroupRepresentation> groupList = this.listGroups();
@@ -1030,93 +767,24 @@ public class UserServiceImpl implements UserService {
 
     private void checkRoleNamesExist(List<String> roleNames) {
         List<String> errors = new ArrayList<>();
-        if (isUsingDb) {
-            for (String roleName : roleNames) {
-                try {
-                    permissionService.getPermissionByCode(roleName);
-                } catch (BusinessException e) {
-                    errors.add(roleName);
-                }
-            }
-        } else {
-            RolesResource rolesResource = getRolesResource();
-            for (String roleName : roleNames) {
-                try {
-                    rolesResource.get(roleName).toRepresentation();
-                } catch (Exception e) {
-                    errors.add(roleName);
-                }
+        for (String roleName : roleNames) {
+            try {
+                identityStoreService.getRole(roleName);
+            } catch (Exception e) {
+                errors.add(roleName);
             }
         }
 
         if (!errors.isEmpty()) {
-            throw new BusinessException(CommonErrorCode.EXISTS, "Role name không tồn tại: " + String.join(", ", errors));
+            throw new BusinessException(CommonErrorCode.EXISTS,
+                    "Role name không tồn tại: " + String.join(", ", errors));
         }
     }
 
-    
     // Keycloak resources
-    
-
-    private UsersResource getUsersResource() {
-        return keycloak.realm(realm).users();
-    }
-
-    private RolesResource getRolesResource() {
-        return keycloak.realm(realm).roles();
-    }
-
-    private GroupsResource getGroupResource() {
-        return keycloak.realm(realm).groups();
-    }
 
     public List<GroupRepresentation> listGroups() {
-        GroupsResource groupsResource = getGroupResource();
-        List<GroupRepresentation> allGroups = new ArrayList<>();
-        List<GroupRepresentation> topGroups = groupsResource.groups();
-        for (GroupRepresentation group : topGroups) {
-            allGroups.add(group);
-            getChildGroupsRecursively(group.getId(), allGroups);
-        }
-        return allGroups;
-    }
-
-    private void getChildGroupsRecursively(String parentId, List<GroupRepresentation> result) {
-        List<GroupRepresentation> subGroups = getChildrenGroupsByParentId(parentId);
-        for (GroupRepresentation subGroup : subGroups) {
-            result.add(subGroup);
-            getChildGroupsRecursively(subGroup.getId(), result);
-        }
-    }
-
-    private List<GroupRepresentation> getChildrenGroupsByParentId(String parentId) {
-        String url = adminRealmBaseUrl() + "/groups/" + parentId + "/children";
-
-        String token = ((JwtAuthenticationToken) SecurityContextHolder.getContext()
-                .getAuthentication()).getToken().getTokenValue();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        try {
-            ResponseEntity<GroupRepresentation[]> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    entity,
-                    GroupRepresentation[].class
-            );
-            GroupRepresentation[] body = response.getBody();
-            return body == null ? List.of() : Arrays.asList(body);
-        } catch (HttpClientErrorException.Forbidden ex) {
-            log.error("Permission denied when accessing group children for parentId {}: {}", parentId, ex.getMessage());
-            return List.of();
-        } catch (Exception ex) {
-            log.error("Error when fetching group children for parentId {}: {}", parentId, ex.getMessage());
-            return List.of();
-        }
+        return identityStoreService.listGroups();
     }
 
     private static final class TenantPageCollector {
@@ -1145,17 +813,19 @@ public class UserServiceImpl implements UserService {
         }
 
         void acceptPage(List<UserRepresentation> page,
-                        java.util.function.Predicate<UserRepresentation> belongsPredicate) {
-            if (done || page == null || page.isEmpty()) return;
+                java.util.function.Predicate<UserRepresentation> belongsPredicate) {
+            if (done || page == null || page.isEmpty())
+                return;
 
             for (UserRepresentation u : page) {
-                if (done) return;
+                if (done)
+                    return;
                 done = acceptUser(u, belongsPredicate);
             }
         }
 
         private boolean acceptUser(UserRepresentation u,
-                                   java.util.function.Predicate<UserRepresentation> belongsPredicate) {
+                java.util.function.Predicate<UserRepresentation> belongsPredicate) {
             if (u == null || !belongsPredicate.test(u)) {
                 return false;
             }

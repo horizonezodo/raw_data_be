@@ -1,7 +1,6 @@
 package com.naas.admin_service.core.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naas.admin_service.core.kafka.dto.KafkaDto;
 import com.naas.admin_service.core.kafka.dto.MailProcessRequestDto;
 import com.naas.admin_service.core.kafka.dto.MailStatusDto;
 import com.naas.admin_service.features.mail.service.MailService;
@@ -17,7 +16,7 @@ public class MessageConsumer {
     private final MessageProducer messageProducer;
     private final MailService mailService;
 
-    public MessageConsumer( MessageProducer messageProducer, MailService mailService) {
+    public MessageConsumer(MessageProducer messageProducer, MailService mailService) {
         this.messageProducer = messageProducer;
         this.mailService = mailService;
     }

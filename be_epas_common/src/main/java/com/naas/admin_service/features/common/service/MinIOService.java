@@ -10,4 +10,6 @@ public interface MinIOService {
     void deleteFile(String pathFile);
 
     byte[] downloadFile(String pathFile);
+
+    void uploadFileWithObjectName(String objectName, MultipartFile file);
 }

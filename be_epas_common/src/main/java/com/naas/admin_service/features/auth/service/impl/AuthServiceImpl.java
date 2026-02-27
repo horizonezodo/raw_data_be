@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naas.admin_service.core.contants.CommonErrorCode;
 import com.naas.admin_service.core.contants.Constant;
 import com.naas.admin_service.core.contants.SettingCode;
+import com.naas.admin_service.core.provider.IdentityStoreService;
 import com.naas.admin_service.core.utils.JwtLite;
 import com.naas.admin_service.core.utils.Utils;
 import com.naas.admin_service.features.auth.dto.KeycloakLoginResposeDto;
@@ -20,16 +21,15 @@ import com.naas.admin_service.features.setting.model.ComCfgSetting;
 import com.naas.admin_service.features.setting.repository.ComCfgSettingRepository;
 import com.naas.admin_service.features.users.dto.ctgcfgresourcemapping.ListResourceMappingDto;
 import com.naas.admin_service.features.users.repository.CtgCfgResourceMappingRepository;
+import com.naas.admin_service.features.common.tenant.TenantUsernameResolver;
 import com.ngvgroup.bpm.core.common.exception.BusinessException;
-import com.ngvgroup.bpm.core.common.exception.ErrorCode;
 import com.ngvgroup.bpm.core.persistence.config.MultitenancyProperties;
 import com.ngvgroup.bpm.core.persistence.config.TenantContext;
 import lombok.RequiredArgsConstructor;
-import org.keycloak.admin.client.Keycloak;
+
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -49,23 +48,20 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final RestTemplate restTemplate;
     private final CtgCfgResourceMappingRepository ctgCfgResourceMappingRepository;
     private final CaptchaService captchaService;
     private final ComCfgSettingRepository settingRepository;
-    private final Keycloak keycloak;
+    private final IdentityStoreService identityStoreService;
     private final ObjectMapper objectMapper;
 
     private final ComCfgPermissionService comCfgPermissionService;
     private final PermissionCacheWriter permissionCacheWriter;
 
     private final ObjectProvider<MultitenancyProperties> multitenancyPropsProvider;
+    private final TenantUsernameResolver usernameResolver;
 
     @Value("${multitenancy.enabled:false}")
     private boolean multitenancyEnabledFlag;
-
-    @Value("${security.keycloak.base-url}")
-    private String baseUrl;
 
     @Value("${security.keycloak.client-id}")
     private String clientId;
@@ -76,25 +72,32 @@ public class AuthServiceImpl implements AuthService {
     @Value("${security.keycloak.redirect-uri}")
     private String redirectUri;
 
-    @Value("${security.keycloak.realm}")
-    private String realm;
-
     @Value("${security.keycloak.auth-uri}")
     private String keycloakBaseUrl;
 
     @Value("${security.keycloak.scope-openid-email-profile}")
     private String scope;
 
-    private static final ParameterizedTypeReference<Map<String, Object>> MAP_TYPE =
-            new ParameterizedTypeReference<>() {};
-
-    private static final TypeReference<Map<String, Object>> MAP_REF = new TypeReference<>() {};
+    private static final TypeReference<Map<String, Object>> MAP_REF = new TypeReference<>() {
+    };
 
     // =========================================================
     // Login entry
     // =========================================================
     @Override
     public Object login(LoginDto loginDto) {
+        // ✅ System mode:
+        // - Layout_Login_SSO = 1 => ONLY allow SSO (authorization_code)
+        // - Layout_Login_SSO != 1 => ONLY allow username/password
+        if (isSsoOnlyMode() && loginDto.getTypeLogin() == null) {
+            throw new BusinessException(CommonErrorCode.SSO_LOGIN_ONLY);
+        }
+
+        if (!isSsoOnlyMode() && loginDto.getTypeLogin() != null) {
+            // typeLogin != null => service-to-service (client credentials)
+            // vẫn cho phép, vì đây không phải user login
+        }
+
         // 1) captcha
         VerifyCaptchaDto verifyCaptchaDto = loginDto.getVerifyCaptcha();
         ComCfgSetting setting = settingRepository.findBySettingCode(SettingCode.CAPTCHA.IS_APPLY).orElse(null);
@@ -128,8 +131,8 @@ public class AuthServiceImpl implements AuthService {
     /**
      * ✅ Cache theo userId = sub (bạn muốn quản lý theo userId)
      * Redis keys:
-     *  - perm:user:{sub}
-     *  - perm:group:{groupName}
+     * - perm:user:{sub}
+     * - perm:group:{groupName}
      */
     private void cachePermissionsIfPossible(Object res) {
         try {
@@ -138,11 +141,13 @@ public class AuthServiceImpl implements AuthService {
                     ? node.get("access_token").asText()
                     : null;
 
-            if (accessToken == null || accessToken.isBlank()) return;
+            if (accessToken == null || accessToken.isBlank())
+                return;
 
             // userId = sub
             String userId = JwtLite.getSub(accessToken);
-            if (userId == null || userId.isBlank()) return;
+            if (userId == null || userId.isBlank())
+                return;
 
             Duration ttl = ttlFromResponse(node, accessToken);
 
@@ -156,7 +161,8 @@ public class AuthServiceImpl implements AuthService {
             // 2) cache permissions theo GROUP_NAME (nếu có groups)
             if (!groups.isEmpty()) {
                 for (String g : groups) {
-                    if (g == null || g.isBlank()) continue;
+                    if (g == null || g.isBlank())
+                        continue;
                     Set<String> gp = comCfgPermissionService.findPermissionCodesByGroupName(g);
                     permissionCacheWriter.putGroup(g, gp, ttl);
                 }
@@ -167,13 +173,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Extract "groups" claim từ JWT payload (không cần verify signature, chỉ để cache).
+     * Extract "groups" claim từ JWT payload (không cần verify signature, chỉ để
+     * cache).
      * JWT: header.payload.signature (Base64URL)
      */
     private List<String> extractGroupsFromJwt(String jwt) {
         try {
             String[] parts = jwt.split("\\.");
-            if (parts.length < 2) return Collections.emptyList();
+            if (parts.length < 2)
+                return Collections.emptyList();
 
             String payloadJson = new String(Base64.getUrlDecoder().decode(parts[1]), StandardCharsets.UTF_8);
             Map<String, Object> payload = objectMapper.readValue(payloadJson, MAP_REF);
@@ -182,7 +190,8 @@ public class AuthServiceImpl implements AuthService {
             if (groupsObj instanceof Collection<?> c) {
                 List<String> out = new ArrayList<>();
                 for (Object o : c) {
-                    if (o != null) out.add(String.valueOf(o));
+                    if (o != null)
+                        out.add(String.valueOf(o));
                 }
                 return out;
             }
@@ -196,13 +205,15 @@ public class AuthServiceImpl implements AuthService {
         // 1) expires_in
         if (node != null && node.hasNonNull("expires_in")) {
             long seconds = node.get("expires_in").asLong();
-            if (seconds > 5) return Duration.ofSeconds(seconds);
+            if (seconds > 5)
+                return Duration.ofSeconds(seconds);
         }
         // 2) fallback exp - now
         Instant exp = JwtLite.getExp(accessToken);
         if (exp != null) {
             long seconds = exp.getEpochSecond() - Instant.now().getEpochSecond();
-            if (seconds > 5) return Duration.ofSeconds(seconds);
+            if (seconds > 5)
+                return Duration.ofSeconds(seconds);
         }
         // 3) default
         return Duration.ofMinutes(15);
@@ -213,24 +224,24 @@ public class AuthServiceImpl implements AuthService {
     // =========================================================
     public void checkUserBruteForceStatus(String username) {
         String userId = this.getUserIdByUsername(username);
-        if (userId == null || userId.isBlank()) return;
+        if (userId == null || userId.isBlank())
+            return;
 
-        Map<String, Object> bruteForceStatus = keycloak.realm(realm)
-                .attackDetection()
-                .bruteForceUserStatus(userId);
+        Map<String, Object> bruteForceStatus = identityStoreService.bruteForceUserStatus(userId);
 
         if (bruteForceStatus != null && Boolean.TRUE.equals(bruteForceStatus.get("disabled"))) {
             Object notBefore = bruteForceStatus.get("failedLoginNotBefore");
             String failedLoginNotBefore = notBefore == null ? "" : Utils.convertUnixTimestamp(notBefore.toString());
-            throw new BusinessException(ErrorCode.LOCKED, ".Vui lòng đợi tới " + failedLoginNotBefore + " để tiếp tục!");
+            throw new BusinessException(CommonErrorCode.USER_LOCKED_WAIT, failedLoginNotBefore);
         }
     }
 
     public String getUserIdByUsername(String username) {
-        if (username == null || username.isBlank()) return null;
+        if (username == null || username.isBlank())
+            return null;
 
         String u = username.trim();
-        List<UserRepresentation> users = keycloak.realm(realm).users().search(u);
+        List<UserRepresentation> users = identityStoreService.searchUsers(u);
         return users.stream()
                 .filter(x -> x.getUsername() != null && x.getUsername().equalsIgnoreCase(u))
                 .findFirst()
@@ -243,8 +254,9 @@ public class AuthServiceImpl implements AuthService {
     // =========================================================
     @Override
     public Object exchangeCode(String code) {
-        String authUrl = baseUrl + Constant.REALMS + realm + Constant.OPENID_CONNECT_TOKEN;
-
+        if (!isSsoOnlyMode()) {
+            throw new BusinessException(CommonErrorCode.SSO_LOGIN_DISABLED);
+        }
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add(Constant.GRANT_TYPE, "authorization_code");
         body.add("code", code);
@@ -252,7 +264,7 @@ public class AuthServiceImpl implements AuthService {
         body.add(Constant.CLIENT_SECRET, clientSecret);
         body.add("redirect_uri", redirectUri);
 
-        ResponseEntity<Map<String, Object>> response = postFormForMap(authUrl, body);
+        ResponseEntity<Map<String, Object>> response = identityStoreService.exchangeAuthToken(body);
 
         // ✅ nếu bạn muốn cache luôn cho flow SSO exchangeCode
         Object res = response.getBody();
@@ -263,8 +275,6 @@ public class AuthServiceImpl implements AuthService {
 
     public Object loginUsingUser(LoginDto loginDto) {
         try {
-            String authUrl = baseUrl + Constant.REALMS + realm + Constant.OPENID_CONNECT_TOKEN;
-
             MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
             form.add(Constant.GRANT_TYPE, "password");
             form.add(Constant.CLIENT_ID, clientId);
@@ -273,7 +283,7 @@ public class AuthServiceImpl implements AuthService {
             form.add("password", loginDto.getPassword());
             form.add(Constant.SCOPE, scope);
 
-            ResponseEntity<Map<String, Object>> response = postFormForMap(authUrl, form);
+            ResponseEntity<Map<String, Object>> response = identityStoreService.exchangeAuthToken(form);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 return response.getBody();
@@ -289,15 +299,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public Object loginUsingClientCredentials(LoginDto loginDto) {
-        String authUrl = baseUrl + Constant.REALMS + realm + Constant.OPENID_CONNECT_TOKEN;
-
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add(Constant.GRANT_TYPE, "client_credentials");
         form.add(Constant.CLIENT_ID, loginDto.getUsername());
         form.add(Constant.CLIENT_SECRET, loginDto.getPassword());
         form.add(Constant.SCOPE, scope);
 
-        ResponseEntity<Map<String, Object>> response = postFormForMap(authUrl, form);
+        ResponseEntity<Map<String, Object>> response = identityStoreService.exchangeAuthToken(form);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
@@ -307,15 +315,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Object loginScret(SecretDto secretDto) {
-        String authUrl = baseUrl + Constant.REALMS + realm + Constant.OPENID_CONNECT_TOKEN;
-
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add(Constant.GRANT_TYPE, "client_credentials");
         form.add(Constant.CLIENT_ID, secretDto.getClientId());
         form.add(Constant.CLIENT_SECRET, secretDto.getClientSecret());
         form.add(Constant.SCOPE, scope);
 
-        ResponseEntity<Map<String, Object>> response = postFormForMap(authUrl, form);
+        ResponseEntity<Map<String, Object>> response = identityStoreService.exchangeAuthToken(form);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
@@ -324,15 +330,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public Object refreshToken(String refreshToken) {
-        String authUrl = baseUrl + Constant.REALMS + realm + Constant.OPENID_CONNECT_TOKEN;
-
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add(Constant.GRANT_TYPE, "refresh_token");
         form.add(Constant.CLIENT_ID, clientId);
+        form.add(Constant.CLIENT_SECRET, clientSecret);
         form.add("refresh_token", refreshToken);
         form.add(Constant.SCOPE, scope);
 
-        ResponseEntity<Map<String, Object>> response = postFormForMap(authUrl, form);
+        ResponseEntity<Map<String, Object>> response = identityStoreService.exchangeAuthToken(form);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             Object res = response.getBody();
@@ -352,19 +357,7 @@ public class AuthServiceImpl implements AuthService {
                 .getToken()
                 .getTokenValue();
 
-        String url = baseUrl + Constant.REALMS + realm + "/protocol/openid-connect/userinfo";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                MAP_TYPE
-        );
+        ResponseEntity<Map<String, Object>> response = identityStoreService.getUserInfo(token);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
@@ -380,7 +373,7 @@ public class AuthServiceImpl implements AuthService {
         String effective = effectiveUsername(username);
         String userId = this.getUserIdByUsername(effective);
         if (userId == null) {
-            throw new BusinessException(ErrorCode.NOT_FOUND, username);
+            throw new BusinessException(CommonErrorCode.USERNAME_NOT_FOUND, username);
         }
         return this.ctgCfgResourceMappingRepository.findAllListResourceMappingDto(userId);
     }
@@ -390,6 +383,9 @@ public class AuthServiceImpl implements AuthService {
     // =========================================================
     @Override
     public KeycloakLoginResposeDto getLoginUrl() {
+        if (!isSsoOnlyMode()) {
+            throw new BusinessException(CommonErrorCode.SSO_LOGIN_DISABLED);
+        }
         String stateParam = "";
         if (isMultitenancyEnabled()) {
             String tenant = currentTenantIdRequired();
@@ -404,10 +400,20 @@ public class AuthServiceImpl implements AuthService {
                 Constant.RESPONSE_TYPE,
                 scope,
                 redirectUri,
-                stateParam
-        );
+                stateParam);
 
         return new KeycloakLoginResposeDto(url);
+    }
+
+    // =========================================================
+    // System login mode helper (global setting)
+    // =========================================================
+    private boolean isSsoOnlyMode() {
+        return settingRepository.findBySettingCode(SettingCode.LAYOUT.SSO)
+                .map(ComCfgSetting::getSettingValue)
+                .map(String::trim)
+                .map(v -> v.equalsIgnoreCase("1") || v.equalsIgnoreCase("true") || v.equalsIgnoreCase("y"))
+                .orElse(false);
     }
 
     // =========================================================
@@ -415,12 +421,14 @@ public class AuthServiceImpl implements AuthService {
     // =========================================================
     private boolean isMultitenancyEnabled() {
         MultitenancyProperties p = multitenancyPropsProvider.getIfAvailable();
-        if (p != null) return p.isEnabled();
+        if (p != null)
+            return p.isEnabled();
         return multitenancyEnabledFlag;
     }
 
     private String currentTenantIdRequired() {
-        if (!isMultitenancyEnabled()) return null;
+        if (!isMultitenancyEnabled())
+            return null;
 
         String t = TenantContext.getTenantId();
         if (t == null || t.isBlank()) {
@@ -430,34 +438,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private String effectiveUsername(String rawUsername) {
-        if (rawUsername == null) return null;
-
-        String u = rawUsername.trim();
-        if (u.isEmpty()) return u;
-
-        if (!isMultitenancyEnabled()) return u;
-
-        String tenantId = currentTenantIdRequired();
-        String suffix = "." + tenantId;
-
-        if (u.toLowerCase().endsWith(suffix.toLowerCase())) return u;
-        return u + suffix;
+        boolean enabled = isMultitenancyEnabled();
+        String tenantId = enabled ? currentTenantIdRequired() : null;
+        return usernameResolver.effectiveUsername(rawUsername, enabled, tenantId);
     }
 
-    // =========================================================
-    // RestTemplate helper
-    // =========================================================
-    private ResponseEntity<Map<String, Object>> postFormForMap(String url, MultiValueMap<String, String> form) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(form, headers);
-
-        return restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                entity,
-                MAP_TYPE
-        );
-    }
 }

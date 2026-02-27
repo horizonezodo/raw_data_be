@@ -11,9 +11,7 @@ import com.naas.admin_service.features.users.dto.ctgcfgresourcemaster.CtgCfgReso
 import com.naas.admin_service.features.users.dto.ctgcfgresourcemaster.CtgCfgResourceMasterDtoV2;
 import com.ngvgroup.bpm.core.persistence.service.storedprocedure.BaseStoredProcedureService;
 
-
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +23,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService implements CtgCfgResourceMappingService {
+public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService
+        implements CtgCfgResourceMappingService {
     private final CtgCfgResourceMappingRepository repository;
     private final ComCfgResourceMappingMapper mapper;
 
-    protected CtgCfgResourceMappingServiceImpl(CtgCfgResourceMappingRepository repository, ComCfgResourceMappingMapper mapper) {
+    protected CtgCfgResourceMappingServiceImpl(CtgCfgResourceMappingRepository repository,
+            ComCfgResourceMappingMapper mapper) {
         super();
         this.repository = repository;
         this.mapper = mapper;
@@ -62,8 +62,8 @@ public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService
         Map<String, List<CtgCfgResourceMapping>> oldMappingsByType = loadOldUserMappingsByResourceType(
                 userId, updateResourceCodes.keySet().stream().toList());
 
-        updateResourceCodes.forEach((rsTypeCode, lst) ->
-                processUserResourceType(userId, rsTypeCode, lst, oldMappingsByType));
+        updateResourceCodes
+                .forEach((rsTypeCode, lst) -> processUserResourceType(userId, rsTypeCode, lst, oldMappingsByType));
     }
 
     private Map<String, List<CtgCfgResourceMasterDtoV2>> buildUpdateResourceCodesMap(
@@ -82,7 +82,7 @@ public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService
     }
 
     private void processUserResourceType(String userId, String rsTypeCode, List<CtgCfgResourceMasterDtoV2> lst,
-                                         Map<String, List<CtgCfgResourceMapping>> oldMappingsByType) {
+            Map<String, List<CtgCfgResourceMapping>> oldMappingsByType) {
         if (oldMappingsByType.containsKey(rsTypeCode)) {
             processExistingUserResourceType(userId, rsTypeCode, lst, oldMappingsByType.get(rsTypeCode));
         } else {
@@ -91,8 +91,8 @@ public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService
     }
 
     private void processExistingUserResourceType(String userId, String rsTypeCode,
-                                                  List<CtgCfgResourceMasterDtoV2> lst,
-                                                  List<CtgCfgResourceMapping> oldMappingsList) {
+            List<CtgCfgResourceMasterDtoV2> lst,
+            List<CtgCfgResourceMapping> oldMappingsList) {
         Map<String, CtgCfgResourceMasterDtoV2> lstUpdate = lst.stream()
                 .collect(Collectors.toMap(CtgCfgResourceMasterDtoV2::getResourceCode, rs -> rs));
         Map<String, CtgCfgResourceMapping> lstOld = oldMappingsList.stream()
@@ -103,8 +103,8 @@ public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService
     }
 
     private void applyRequestedUserMappings(String userId, String rsTypeCode,
-                                            Map<String, CtgCfgResourceMasterDtoV2> lstUpdate,
-                                            Map<String, CtgCfgResourceMapping> lstOld) {
+            Map<String, CtgCfgResourceMasterDtoV2> lstUpdate,
+            Map<String, CtgCfgResourceMapping> lstOld) {
         lstUpdate.forEach((rsCode, v) -> {
             if (!lstOld.containsKey(rsCode)) {
                 saveNewUserMapping(userId, rsTypeCode, v);
@@ -155,22 +155,23 @@ public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService
         Map<String, List<CtgCfgResourceMapping>> oldMappingsByType = loadOldGroupMappingsByResourceType(
                 groupId, updateResourceCodes.keySet().stream().toList());
 
-        updateResourceCodes.forEach((rsTypeCode, lst) ->
-                processGroupResourceType(groupId, rsTypeCode, lst, oldMappingsByType));
+        updateResourceCodes
+                .forEach((rsTypeCode, lst) -> processGroupResourceType(groupId, rsTypeCode, lst, oldMappingsByType));
     }
 
     private Map<String, List<CtgCfgResourceMapping>> loadOldGroupMappingsByResourceType(
             String groupId, List<String> resourceTypeCodes) {
         Map<String, List<CtgCfgResourceMapping>> result = new HashMap<>();
         resourceTypeCodes.forEach(code -> {
-            List<CtgCfgResourceMapping> list = repository.findByGroupIdAndResourceTypeCodeAndIsActive(groupId, code, null);
+            List<CtgCfgResourceMapping> list = repository.findByGroupIdAndResourceTypeCodeAndIsActive(groupId, code,
+                    null);
             result.put(code, list);
         });
         return result;
     }
 
     private void processGroupResourceType(String groupId, String rsTypeCode, List<CtgCfgResourceMasterDtoV2> lst,
-                                          Map<String, List<CtgCfgResourceMapping>> oldMappingsByType) {
+            Map<String, List<CtgCfgResourceMapping>> oldMappingsByType) {
         if (oldMappingsByType.containsKey(rsTypeCode)) {
             processExistingGroupResourceType(groupId, rsTypeCode, lst, oldMappingsByType.get(rsTypeCode));
         } else {
@@ -179,8 +180,8 @@ public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService
     }
 
     private void processExistingGroupResourceType(String groupId, String rsTypeCode,
-                                                   List<CtgCfgResourceMasterDtoV2> lst,
-                                                   List<CtgCfgResourceMapping> oldMappingsList) {
+            List<CtgCfgResourceMasterDtoV2> lst,
+            List<CtgCfgResourceMapping> oldMappingsList) {
         Map<String, CtgCfgResourceMasterDtoV2> lstUpdate = lst.stream()
                 .collect(Collectors.toMap(CtgCfgResourceMasterDtoV2::getResourceCode, rs -> rs));
         Map<String, CtgCfgResourceMapping> lstOld = oldMappingsList.stream()
@@ -191,8 +192,8 @@ public class CtgCfgResourceMappingServiceImpl extends BaseStoredProcedureService
     }
 
     private void applyRequestedGroupMappings(String groupId, String rsTypeCode,
-                                             Map<String, CtgCfgResourceMasterDtoV2> lstUpdate,
-                                             Map<String, CtgCfgResourceMapping> lstOld) {
+            Map<String, CtgCfgResourceMasterDtoV2> lstUpdate,
+            Map<String, CtgCfgResourceMapping> lstOld) {
         lstUpdate.forEach((rsCode, v) -> {
             if (!lstOld.containsKey(rsCode)) {
                 saveNewGroupMapping(groupId, rsTypeCode, v);

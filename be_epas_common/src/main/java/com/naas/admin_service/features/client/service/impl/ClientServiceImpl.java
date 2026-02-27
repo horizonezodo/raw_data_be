@@ -1,6 +1,7 @@
 package com.naas.admin_service.features.client.service.impl;
 
 import com.naas.admin_service.core.contants.CommonErrorCode;
+import com.naas.admin_service.core.provider.IdentityStoreService;
 import com.naas.admin_service.features.client.dto.ClientRequest;
 import com.naas.admin_service.features.client.dto.RoleDto;
 import com.naas.admin_service.features.client.service.ClientService;
@@ -8,12 +9,10 @@ import com.ngvgroup.bpm.core.common.exception.BusinessException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,10 +23,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class ClientServiceImpl implements ClientService {
-    private final Keycloak keycloak;
-
-    @Value("${security.keycloak.realm}")
-    private String realm;
+    private final IdentityStoreService identityStoreService;
 
     @Override
     public List<ClientRepresentation> listClients() {
@@ -42,7 +38,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void createClient(ClientRequest request){
+    public void createClient(ClientRequest request) {
         this.checkClientIdExist(request.getClientId());
         ClientRepresentation clientRepresentation = new ClientRepresentation();
         clientRepresentation.setClientId(request.getClientId());
@@ -106,14 +102,12 @@ public class ClientServiceImpl implements ClientService {
                         role.isComposite(),
                         role.getClientRole(),
                         role.getContainerId(),
-                        clientId
-                );
+                        clientId);
                 allRoles.add(roleDto);
             }
         }
         return allRoles;
     }
-
 
     @Override
     public RoleRepresentation getClientRole(String containerId, String roleName) {
@@ -121,7 +115,6 @@ public class ClientServiceImpl implements ClientService {
         RolesResource rolesResource = clientResource.roles();
         return rolesResource.get(roleName).toRepresentation();
     }
-
 
     @Override
     public void createClientRole(String id, String roleName, String description) {
@@ -174,8 +167,8 @@ public class ClientServiceImpl implements ClientService {
         RolesResource rolesResource = clientResource.roles();
         RoleRepresentation roleRepresentation = rolesResource.get(roleName).toRepresentation();
 
-        UsersResource usersResource = keycloak.realm(realm).users();
-        usersResource.get(userId).roles()
+        UserResource userResource = identityStoreService.getUser(userId);
+        userResource.roles()
                 .clientLevel(clientId).add(Collections.singletonList(roleRepresentation));
     }
 
@@ -186,9 +179,7 @@ public class ClientServiceImpl implements ClientService {
                 .map(roleName -> getRolesResource().get(roleName).toRepresentation())
                 .toList();
 
-        keycloak.realm(realm)
-                .users()
-                .get(serviceAccount.getId())
+        identityStoreService.getUser(serviceAccount.getId())
                 .roles()
                 .realmLevel()
                 .add(rolesToAssign);
@@ -197,9 +188,7 @@ public class ClientServiceImpl implements ClientService {
     public void unAssignServiceAccountRoles(String clientId, List<String> roleNames) {
         ClientResource clientResource = getClientResource(clientId);
         UserRepresentation serviceAccount = clientResource.getServiceAccountUser();
-        UserResource userResource = keycloak.realm(realm)
-                .users()
-                .get(serviceAccount.getId());
+        UserResource userResource = identityStoreService.getUser(serviceAccount.getId());
 
         List<RoleRepresentation> rolesToUnAssign = roleNames.stream()
                 .map(roleName -> getRolesResource().get(roleName).toRepresentation())
@@ -207,18 +196,14 @@ public class ClientServiceImpl implements ClientService {
         userResource.roles().realmLevel().remove(rolesToUnAssign);
     }
 
-
     public List<RoleRepresentation> getServiceAccountRoles(String clientId) {
         ClientResource clientResource = getClientResource(clientId);
         UserRepresentation serviceAccount = clientResource.getServiceAccountUser();
-        return keycloak.realm(realm)
-                .users()
-                .get(serviceAccount.getId())
+        return identityStoreService.getUser(serviceAccount.getId())
                 .roles()
                 .realmLevel()
                 .listAll();
     }
-
 
     private void checkClientIdExist(String clientId) {
         List<ClientRepresentation> listClients = listClients();
@@ -229,14 +214,14 @@ public class ClientServiceImpl implements ClientService {
     }
 
     private ClientResource getClientResource(String id) {
-        return keycloak.realm(realm).clients().get(id);
+        return identityStoreService.getClientResource(id);
     }
 
     private ClientsResource getClientsResource() {
-        return keycloak.realm(realm).clients();
+        return identityStoreService.getClientsResource();
     }
 
     private RolesResource getRolesResource() {
-        return keycloak.realm(realm).roles();
+        return identityStoreService.getRolesResource();
     }
 }

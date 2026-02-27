@@ -267,10 +267,10 @@
             <column name="benchmark_desc" type="VARCHAR(4000)">
                 <constraints nullable="false"/>
             </column>
-            <column name="score_value_min" type="DECIMAL(*, 4)">
+            <column name="score_value_min" type="DECIMAL(7, 4)">
                 <constraints nullable="false"/>
             </column>
-            <column name="score_value_max" type="DECIMAL(*, 4)"/>
+            <column name="score_value_max" type="DECIMAL(7, 4)"/>
             <column name="condition_expression" type="VARCHAR(256)"/>
             <column name="record_status" type="VARCHAR(64)"/>
             <column name="is_active" type="INT">
@@ -304,7 +304,7 @@
             <column name="description" type="VARCHAR(512)"/>
             <column name="indicator_code" type="VARCHAR(128)"/>
             <column name="indicator_name" type="VARCHAR(256)"/>
-            <column name="weight_score" type="DECIMAL(*, 4)"/>
+            <column name="weight_score" type="DECIMAL(7, 4)"/>
             <column name="sql_execute" type="VARCHAR(512)"/>
             <column name="control_type" type="VARCHAR(128)"/>
             <column name="data_type" type="VARCHAR(4000)"/>
@@ -347,7 +347,7 @@
             </column>
             <column name="scoring_indc_group_name" type="VARCHAR(256)"/>
             <column name="scoring_indc_group_type" type="VARCHAR(128)"/>
-            <column name="weight_score" type="DECIMAL(*, 4)"/>
+            <column name="weight_score" type="DECIMAL(7, 4)"/>
             <column name="record_status" type="VARCHAR(64)"/>
             <column name="is_active" type="INT">
                 <constraints nullable="false"/>
@@ -420,9 +420,9 @@
             <column name="sort_number" type="INT"/>
             <column name="indicator_code" type="VARCHAR(128)"/>
             <column name="result_name" type="VARCHAR(128)"/>
-            <column name="score_value" type="DECIMAL(*, 4)"/>
-            <column name="score_value_min" type="DECIMAL(*, 4)"/>
-            <column name="score_value_max" type="DECIMAL(*, 4)"/>
+            <column name="score_value" type="DECIMAL(7, 4)"/>
+            <column name="score_value_min" type="DECIMAL(7, 4)"/>
+            <column name="score_value_max" type="DECIMAL(7, 4)"/>
             <column name="condition_expression" type="VARCHAR(256)"/>
             <column name="record_status" type="VARCHAR(64)"/>
             <column name="is_active" type="INT">

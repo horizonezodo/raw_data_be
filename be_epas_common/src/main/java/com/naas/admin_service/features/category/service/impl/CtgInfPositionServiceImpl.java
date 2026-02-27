@@ -16,9 +16,7 @@ import com.ngvgroup.bpm.core.common.exception.BusinessException;
 import com.ngvgroup.bpm.core.common.exception.ErrorCode;
 import com.ngvgroup.bpm.core.persistence.service.storedprocedure.BaseStoredProcedureService;
 
-
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +34,8 @@ public class CtgInfPositionServiceImpl extends BaseStoredProcedureService implem
     private final ExcelService service;
     private final CtgInfTitleRepository titleRepo;
 
-    protected CtgInfPositionServiceImpl(CtgInfPositionRepository repo, CtgInfPositionMapper mapper, ExcelService service, CtgInfTitleRepository titleRepo) {
+    protected CtgInfPositionServiceImpl(CtgInfPositionRepository repo, CtgInfPositionMapper mapper,
+            ExcelService service, CtgInfTitleRepository titleRepo) {
         super();
         this.repo = repo;
         this.mapper = mapper;
@@ -46,14 +45,14 @@ public class CtgInfPositionServiceImpl extends BaseStoredProcedureService implem
 
     @Override
     public void createPosition(CtgInfPositionDTO dto) {
-        CtgInfPosition position = repo.checkPosition(dto.getPositionCode(), dto.getPositionName(),1);
-        if(position != null){
-            mapper.updateEntityFromDto(dto,position);
+        CtgInfPosition position = repo.checkPosition(dto.getPositionCode(), dto.getPositionName(), 1);
+        if (position != null) {
+            mapper.updateEntityFromDto(dto, position);
             position.setIsDelete(0);
             position.setIsActive(dto.getIsDelete());
             position.setDescription(dto.getDescription());
             repo.save(position);
-        }else if(!repo.existsByPositionCode(dto.getPositionCode())){
+        } else if (!repo.existsByPositionCode(dto.getPositionCode())) {
             CtgInfPosition hrmInfPosition = mapper.toE(dto);
             hrmInfPosition.setIsDelete(0);
             hrmInfPosition.setDescription(dto.getDescription());
@@ -61,7 +60,7 @@ public class CtgInfPositionServiceImpl extends BaseStoredProcedureService implem
             hrmInfPosition.setIsActive(dto.getIsDelete());
             hrmInfPosition.setRecordStatus(Constant.APPROVAL);
             repo.save(hrmInfPosition);
-        }else{
+        } else {
             throw new BusinessException(CommonErrorCode.EXIST_POSITION_ID, dto.getPositionCode());
         }
     }
@@ -69,13 +68,13 @@ public class CtgInfPositionServiceImpl extends BaseStoredProcedureService implem
     @Override
     public void updatePosition(String positionCode, CtgInfPositionDTO dto) {
         CtgInfPosition position = repo.findByPositionCode(positionCode);
-        if(position != null){
-            mapper.updateEntityFromDto(dto,position);
+        if (position != null) {
+            mapper.updateEntityFromDto(dto, position);
             position.setDescription(dto.getDescription());
             position.setIsDelete(0);
             position.setIsActive(dto.getIsDelete());
             repo.save(position);
-        }else{
+        } else {
             throw new BusinessException(ErrorCode.NOT_FOUND, positionCode);
         }
     }
@@ -98,15 +97,15 @@ public class CtgInfPositionServiceImpl extends BaseStoredProcedureService implem
 
     @Override
     public Page<CtgInfPositionDTO> search(String keyword, Pageable pageable) {
-        return repo.search(keyword,pageable);
+        return repo.search(keyword, pageable);
     }
 
     @Override
     public CtgInfPositionDTO getDetail(String positionCode) {
         CtgInfPosition position = repo.findByPositionCode(positionCode);
-        if(position != null){
-           return mapper.toDTO(position);
-        }else{
+        if (position != null) {
+            return mapper.toDTO(position);
+        } else {
             throw new BusinessException(ErrorCode.NOT_FOUND, positionCode);
         }
     }
@@ -114,7 +113,7 @@ public class CtgInfPositionServiceImpl extends BaseStoredProcedureService implem
     @Override
     public ResponseEntity<ByteArrayResource> exportExcel(ExportExcelDTO dto) {
         List<ExportCtgInfPositionDTO> lst = repo.exportData();
-        return service.exportToExcel(lst,dto.getLabels(), ExportCtgInfPositionDTO.class, dto.getFileName());
+        return service.exportToExcel(lst, dto.getLabels(), ExportCtgInfPositionDTO.class, dto.getFileName());
     }
 
     @Override
@@ -123,7 +122,7 @@ public class CtgInfPositionServiceImpl extends BaseStoredProcedureService implem
     }
 
     @Override
-    public  boolean checkExist(String code){
+    public boolean checkExist(String code) {
         CtgInfPosition position = repo.findByPositionCode(code);
         return position != null;
     }

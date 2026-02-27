@@ -12,9 +12,6 @@ import com.naas.admin_service.features.menu.repository.ComCfgMenuRepository;
 import com.naas.admin_service.features.menu.service.ComCfgMapMenuService;
 import com.ngvgroup.bpm.core.persistence.service.storedprocedure.BaseStoredProcedureService;
 
-
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +32,9 @@ public class ComCfgMapMenuServiceImpl extends BaseStoredProcedureService impleme
     private final AddMenuService addMenuService;
     private final GroupService groupService;
 
-    protected ComCfgMapMenuServiceImpl(ComCfgMapMenuRepository comCfgMapMenuRepository, ComCfgMenuRepository comCfgMenuRepository, ComCfgMenuMapper comCfgMenuMapper, AddMenuService addMenuService, GroupService groupService) {
+    protected ComCfgMapMenuServiceImpl(ComCfgMapMenuRepository comCfgMapMenuRepository,
+            ComCfgMenuRepository comCfgMenuRepository, ComCfgMenuMapper comCfgMenuMapper, AddMenuService addMenuService,
+            GroupService groupService) {
         super();
         this.comCfgMapMenuRepository = comCfgMapMenuRepository;
         this.comCfgMenuRepository = comCfgMenuRepository;
@@ -44,9 +43,8 @@ public class ComCfgMapMenuServiceImpl extends BaseStoredProcedureService impleme
         this.groupService = groupService;
     }
 
-
     @Override
-    public List<ComCfgMenuResDto> listMenuMapping(){
+    public List<ComCfgMenuResDto> listMenuMapping() {
         String userId = getCurrentUserId();
         List<String> groups = addMenuService.getGroups();
         List<ComCfgMenu> menuList = getMenu(userId, groups);
@@ -86,13 +84,13 @@ public class ComCfgMapMenuServiceImpl extends BaseStoredProcedureService impleme
     }
 
     @Override
-    public List<ComCfgMenuDTO> listMenuCheckedByUser(String userId){
+    public List<ComCfgMenuDTO> listMenuCheckedByUser(String userId) {
         addMenuService.checkUserIdExist(userId);
         List<ComCfgMenu> listMenuByUser = getListMenuByUser(userId);
         return getRootMenus(listMenuByUser);
     }
 
-    public List<ComCfgMenuDTO> listMenuCheckedByGroup(String groupName){
+    public List<ComCfgMenuDTO> listMenuCheckedByGroup(String groupName) {
         addMenuService.checkGroupNameNotFound(groupName);
         List<String> groups = new ArrayList<>();
         groups.add(groupName);
@@ -102,7 +100,7 @@ public class ComCfgMapMenuServiceImpl extends BaseStoredProcedureService impleme
 
     @Override
     @Transactional
-    public void grantMenuToUser(List<String> menuIds, String userId){
+    public void grantMenuToUser(List<String> menuIds, String userId) {
         addMenuService.checkUserIdExist(userId);
         addMenuService.checkMenuIdsExistByString(menuIds);
         comCfgMapMenuRepository.deleteAllByUserId(userId);
@@ -111,7 +109,7 @@ public class ComCfgMapMenuServiceImpl extends BaseStoredProcedureService impleme
 
     @Override
     @Transactional
-    public void grantMenuToGroup(List<String> menuIds, String groupName){
+    public void grantMenuToGroup(List<String> menuIds, String groupName) {
         addMenuService.checkGroupNameNotFound(groupName);
         addMenuService.checkMenuIdsExistByString(menuIds);
         comCfgMapMenuRepository.deleteAllByGroupName(groupName);

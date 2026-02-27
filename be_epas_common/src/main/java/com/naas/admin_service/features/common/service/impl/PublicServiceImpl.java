@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -83,15 +82,14 @@ public class PublicServiceImpl implements PublicService {
     }
 
     private static final Map<String, String> MIME_TYPES = Map.of(
-            "png",  "image/png",
+            "png", "image/png",
             "jpeg", DEFAULT_IMAGE_CONTENT_TYPE,
-            "jpg",  DEFAULT_IMAGE_CONTENT_TYPE,
-            "gif",  "image/gif",
+            "jpg", DEFAULT_IMAGE_CONTENT_TYPE,
+            "gif", "image/gif",
             "webp", "image/webp",
-            "svg",  "image/svg+xml",
-            "bmp",  "image/bmp",
-            "ico",  "image/x-icon"
-    );
+            "svg", "image/svg+xml",
+            "bmp", "image/bmp",
+            "ico", "image/x-icon");
 
     private String detectContentTypeByExtension(String fileName) {
         int dot = fileName.lastIndexOf('.');
