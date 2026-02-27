@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public record OracleTenantSchemaProvisioner(
         JdbcTenantDbConfigRegistry registry,
         DataSource masterDataSource
-) {
+) implements TenantSchemaProvisioner {
 
     private static final Pattern ORACLE_IDENTIFIER = Pattern.compile("^[A-Z][A-Z0-9_]{0,29}$");
 
@@ -78,6 +78,13 @@ public record OracleTenantSchemaProvisioner(
         }
     }
 
+    @Override
+    public boolean supports(String dbType) {
+        if (dbType == null) return false;
+        String t = dbType.trim().toUpperCase(Locale.ROOT);
+        return "ORACLE".equals(t);
+    }
+
     /** đảm bảo user đã có quota + tablespace đúng, dùng cho case user tồn tại nhưng thiếu quota */
     private void ensureQuotaAndBasics(Connection conn, String user) throws SQLException {
         try (Statement st = conn.createStatement()) {
@@ -112,7 +119,7 @@ public record OracleTenantSchemaProvisioner(
             registry.refresh();
             Thread.sleep(300L * i);
         }
-        log.warn("[MT][SCHEMA] TENANT_DB_CONFIG not found after retries for tenant={}. Continue provisioning anyway.", tenantId);
+        log.warn("[MT][SCHEMA] COM_CFG_TENANT not found after retries for tenant={}. Continue provisioning anyway.", tenantId);
     }
 
     private boolean existsUser(Connection conn, String username) throws SQLException {

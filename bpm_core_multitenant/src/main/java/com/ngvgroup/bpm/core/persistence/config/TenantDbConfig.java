@@ -6,18 +6,17 @@ public record TenantDbConfig(
         String jdbcUrl,
         String username,
         String password,
-        String driverClass,
-        String issuerUri
+        String driverClass
 ) {
     public TenantDbConfig withUsername(String u) {
-        return new TenantDbConfig(tenantId, dbType, jdbcUrl, u, password, driverClass, issuerUri);
+        return new TenantDbConfig(tenantId, dbType, jdbcUrl, u, password, driverClass);
     }
 
     public TenantDbConfig withPassword(String p) {
-        return new TenantDbConfig(tenantId, dbType, jdbcUrl, username, p, driverClass, issuerUri);
+        return new TenantDbConfig(tenantId, dbType, jdbcUrl, username, p, driverClass);
     }
 
     public TenantDbConfig withCreds(String u, String p) {
-        return new TenantDbConfig(tenantId, dbType, jdbcUrl, u, p, driverClass, issuerUri);
+        return new TenantDbConfig(tenantId, dbType, jdbcUrl, u, p, driverClass);
     }
 }

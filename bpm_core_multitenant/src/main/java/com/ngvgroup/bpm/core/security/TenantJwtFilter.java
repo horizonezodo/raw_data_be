@@ -131,7 +131,7 @@ public class TenantJwtFilter extends OncePerRequestFilter {
         String tenantId = readTenantFromHeaderOr400(request, response);
         if (tenantId == null) return;
 
-        // ✅ master được phép đi qua dù chưa có trong TENANT_DB_CONFIG
+        // ✅ master được phép đi qua dù chưa có trong COM_CFG_TENANT
         if (isNotMasterTenant(tenantId)) {
             if (registry == null || registry.find(tenantId).isEmpty()) {
                 writeBadRequest(response, "Invalid tenantId in header " + tenantHeader + ": " + tenantId);
@@ -207,9 +207,10 @@ public class TenantJwtFilter extends OncePerRequestFilter {
 
         String tenantId = null;
 
+        tenantId = extractFirstString(jwt.getClaims().get(tenantClaim));
+
         if (orgModeEffective) {
             // ưu tiên tenantClaim nếu có
-            tenantId = extractFirstString(jwt.getClaims().get(tenantClaim));
             if (tenantId == null || tenantId.isBlank()) {
                 tenantId = resolveTenantFromOrganization(jwt, request);
             }
@@ -219,15 +220,6 @@ public class TenantJwtFilter extends OncePerRequestFilter {
                 return null;
             }
             return tenantId.trim();
-        }
-
-        // non-org mode: ưu tiên issuer->tenant mapping, fallback tenantClaim
-        String issuer = (jwt.getIssuer() != null) ? jwt.getIssuer().toString() : null;
-        if (registry != null) {
-            tenantId = registry.findTenantIdByIssuer(issuer).orElse(null);
-        }
-        if (tenantId == null || tenantId.isBlank()) {
-            tenantId = extractFirstString(jwt.getClaims().get(tenantClaim));
         }
 
         if (tenantId == null || tenantId.isBlank()) {

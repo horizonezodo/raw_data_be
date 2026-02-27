@@ -33,7 +33,7 @@ public class RoutingDataSource extends AbstractDataSource {
 
         TenantDbConfig cfg = registry.find(tenantId).orElse(null);
         if (cfg == null) {
-            log.warn("[MT] tenant={} has no TENANT_DB_CONFIG fallback to spring.datasource",
+            log.warn("[MT] tenant={} has no COM_CFG_TENANT fallback to spring.datasource",
                     tenantId);
             return defaultDataSource;
         }

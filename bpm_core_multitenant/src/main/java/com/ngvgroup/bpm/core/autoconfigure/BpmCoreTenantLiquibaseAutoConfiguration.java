@@ -3,10 +3,12 @@ package com.ngvgroup.bpm.core.autoconfigure;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ngvgroup.bpm.core.kafka.TenantCreatedKafkaListener;
 import com.ngvgroup.bpm.core.liquibase.*;
+import com.ngvgroup.bpm.core.liquibase.provision.PostgresTenantSchemaProvisioner;
 import com.ngvgroup.bpm.core.liquibase.provision.OracleTenantSchemaProvisioner;
+import com.ngvgroup.bpm.core.liquibase.provision.TenantSchemaProvisioner;
+import com.ngvgroup.bpm.core.liquibase.provision.TenantSchemaProvisionerRouter;
 import com.ngvgroup.bpm.core.persistence.config.DataSourceCache;
 import com.ngvgroup.bpm.core.persistence.config.JdbcTenantDbConfigRegistry;
-import com.ngvgroup.bpm.core.persistence.config.MultitenancyProperties;
 import com.ngvgroup.bpm.core.persistence.config.ServiceCodeProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -32,6 +34,23 @@ public class BpmCoreTenantLiquibaseAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    public PostgresTenantSchemaProvisioner postgresTenantSchemaProvisioner(
+            JdbcTenantDbConfigRegistry registry,
+            DataSourceCache cache
+    ) {
+        return new PostgresTenantSchemaProvisioner(registry, cache);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TenantSchemaProvisionerRouter tenantSchemaProvisionerRouter(
+            java.util.List<TenantSchemaProvisioner> provisioners
+    ) {
+        return new TenantSchemaProvisionerRouter(provisioners);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public TenantSchemaLiquibaseRunner tenantSchemaLiquibaseRunner(
             JdbcTenantDbConfigRegistry registry,
             DataSourceCache cache,
@@ -46,24 +65,25 @@ public class BpmCoreTenantLiquibaseAutoConfiguration {
     public TenantLiquibaseStartupRunner tenantLiquibaseStartupRunner(
             JdbcTenantDbConfigRegistry registry,
             TenantSchemaLiquibaseRunner runner,
-            OracleTenantSchemaProvisioner provisioner,
+            TenantSchemaProvisionerRouter provisionerRouter,
             TenantLiquibaseProperties props,
             ServiceCodeProvider serviceCodeProvider,
             @Value("${multitenancy.schema.password}") String schemaPassword
     ) {
-        return new TenantLiquibaseStartupRunner(registry, runner, provisioner, props, serviceCodeProvider, schemaPassword);
+        return new TenantLiquibaseStartupRunner(registry, runner, provisionerRouter, props, serviceCodeProvider, schemaPassword);
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnClass(name = "org.springframework.kafka.annotation.KafkaListener")
     public TenantCreatedKafkaListener tenantCreatedKafkaListener(
-            OracleTenantSchemaProvisioner provisioner,
+            JdbcTenantDbConfigRegistry registry,
+            TenantSchemaProvisionerRouter provisionerRouter,
             TenantSchemaLiquibaseRunner runner,
             ServiceCodeProvider serviceCodeProvider,
             @Value("${multitenancy.schema.password}") String schemaPassword,
             ObjectMapper objectMapper
     ) {
-        return new TenantCreatedKafkaListener(provisioner, runner, serviceCodeProvider, schemaPassword , objectMapper);
+        return new TenantCreatedKafkaListener(registry, provisionerRouter, runner, serviceCodeProvider, schemaPassword , objectMapper);
     }
 }

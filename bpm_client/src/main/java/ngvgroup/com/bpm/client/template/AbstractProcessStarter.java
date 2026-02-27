@@ -27,6 +27,7 @@ import ngvgroup.com.bpm.client.dto.shared.AuditDto;
 import ngvgroup.com.bpm.client.dto.shared.BpmMultipartFile;
 import ngvgroup.com.bpm.client.dto.shared.FileDto;
 import ngvgroup.com.bpm.client.dto.shared.ProcessFileDto;
+import ngvgroup.com.bpm.client.dto.shared.ReportReqDto;
 import ngvgroup.com.bpm.client.dto.shared.TemplateResDto;
 import ngvgroup.com.bpm.client.dto.variable.ProcessData;
 import ngvgroup.com.bpm.client.dto.variable.TaskBpmData;
@@ -114,12 +115,16 @@ public abstract class AbstractProcessStarter<BusinessDto> {
 
         TemplateResDto template = commonFeignClient.getDetail(context.getProcessFileCode()).getData();
 
-        template.setFilePath(String.format("template/%s/%s", context.getProcessFileCode(), template.getFilePath()));
-        template.setFileMappingPath(
-                String.format("template/%s/%s", context.getProcessFileCode(), template.getFileMappingPath()));
+        ReportReqDto reportReqDto = new ReportReqDto();
+        reportReqDto.setTemplateCode(context.getProcessFileCode());
+        reportReqDto.setDataSource(context.getContext());
 
-        byte[] fileContent = templateService.generateFile(template.getFilePath(), template.getFileMappingPath(),
-                context.getContext());
+        String fileName = template.getFileName();
+        if (fileName != null && fileName.contains(".")) {
+            reportReqDto.setFormat(fileName.substring(fileName.lastIndexOf(".") + 1));
+        }
+
+        byte[] fileContent = commonFeignClient.generateReport(reportReqDto).getBody();
 
         MultipartFile docxFile = new BpmMultipartFile(template.getFileName(), template.getFileName(),
                 MediaType.APPLICATION_OCTET_STREAM_VALUE, fileContent);

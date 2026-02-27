@@ -18,7 +18,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * ✅ HỖ TRỢ KEYCLOAK ORGANIZATIONS:
  * - Nếu bật organizations.enabled=true:
  *   + App sẽ resolve tenant từ claim "organization" trong JWT (Keycloak Organizations)
- *   + Ưu tiên attribute (vd: organization.<alias>.tenant_id) để map về TENANT_DB_CONFIG.TENANT_ID
+ *   + Ưu tiên attribute (vd: organization.<alias>.tenant_id) để map về COM_CFG_TENANT.TENANT_ID
  */
 @Getter
 @Setter

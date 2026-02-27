@@ -6,7 +6,7 @@
 
   <groupId>ngvgroup.com</groupId>
   <artifactId>bpm-client</artifactId>
-  <version>1.0.19</version>
+  <version>1.0.29</version>
   <name>bpm-client</name>
   <description>NGV BPM Client library for integrating business services with Camunda remote engine</description>
   <packaging>jar</packaging>
@@ -21,7 +21,7 @@
     <poi.version>5.2.5</poi.version>
     <okhttp.version>4.12.0</okhttp.version>
     <commons-io.version>2.18.0</commons-io.version>
-    <bpm-core-multitenant.version>1.0.26</bpm-core-multitenant.version>
+    <bpm-core-multitenant.version>1.0.61</bpm-core-multitenant.version>
   </properties>
 
   <dependencyManagement>

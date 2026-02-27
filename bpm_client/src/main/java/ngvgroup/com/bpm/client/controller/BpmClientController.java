@@ -11,6 +11,7 @@ import ngvgroup.com.bpm.client.dto.request.SubmitTaskRequest;
 import ngvgroup.com.bpm.client.dto.response.StartResponse;
 import ngvgroup.com.bpm.client.dto.response.TaskViewResponse;
 import ngvgroup.com.bpm.client.dto.shared.ComCfgProcessFileDto;
+import ngvgroup.com.bpm.client.dto.shared.ReportReqDto;
 import ngvgroup.com.bpm.client.service.BpmClientService;
 import ngvgroup.com.bpm.client.service.FileService;
 import ngvgroup.com.bpm.client.template.ProcessStarterService;
@@ -125,5 +126,10 @@ public class BpmClientController {
     @PostMapping("/file/download")
     public ResponseEntity<byte[]> downloadFile(@RequestParam("fileId") String fileId) {
         return fileService.downloadFileById(fileId);
+    }
+
+    @PostMapping("/file/generate-report")
+    public ResponseEntity<byte[]> generateReport(@RequestBody ReportReqDto reportReqDto) {
+        return bpmClientService.generateReport(reportReqDto);
     }
 }

@@ -34,44 +34,74 @@ public record TenantSchemaLiquibaseRunner(
         TenantDbConfig base = registry.get(tenantId);
 
         String dbType = (base.dbType() == null) ? "UNKNOWN" : base.dbType().toUpperCase(Locale.ROOT);
-        String schemaUpper = schema.toUpperCase(Locale.ROOT);
+        String schemaNorm = normalizeSchemaForDb(base.dbType(), schema);
 
-        // ✅ Build tenant credential for migration
-        TenantDbConfig liquibaseCfg = base.withCreds(schemaUpper, schemaPassword);
+        // ✅ Build migration credential:
+        // - ORACLE: connect as schema owner (username == schema)
+        // - POSTGRES: connect using tenant-row username/password (no role creation), but set default schema
+        TenantDbConfig liquibaseCfg;
+        if ("POSTGRES".equalsIgnoreCase(dbType) || "POSTGRESQL".equalsIgnoreCase(dbType)) {
+            liquibaseCfg = base;
+        } else {
+            liquibaseCfg = base.withCreds(schemaNorm, schemaPassword);
+        }
 
         // ✅ Dedicated pool key for liquibase (avoid reuse with runtime/master)
-        DataSource ds = cache.getOrCreateTenantLiquibase(tenantId, schemaUpper, liquibaseCfg);
+        DataSource ds = cache.getOrCreateTenantLiquibase(tenantId, schemaNorm, liquibaseCfg);
 
         String changeLog = normalizeChangeLog(props.getChangeLog());
 
         log.info("[LIQUIBASE][TENANT_SCHEMA] start tenant={} schema={} dbType={} changelog={}",
-                tenantId, schemaUpper, dbType, changeLog);
+                tenantId, schemaNorm, dbType, changeLog);
 
         try (Connection conn = ds.getConnection()) {
             if (props.isDebugConnection()) {
-                logConn(conn, tenantId, schemaUpper);
+                logConn(conn, tenantId, schemaNorm);
             }
 
             Database database = DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(new JdbcConnection(conn));
 
-            database.setDefaultSchemaName(schemaUpper);
-            database.setLiquibaseSchemaName(schemaUpper);
+            database.setDefaultSchemaName(schemaNorm);
+            database.setLiquibaseSchemaName(schemaNorm);
 
             var accessor = new ClassLoaderResourceAccessor(Thread.currentThread().getContextClassLoader());
             Liquibase liquibase = new Liquibase(changeLog, accessor, database);
 
-            try (Statement st = conn.createStatement();
-                 ResultSet rs = st.executeQuery("SELECT SYS_CONTEXT('USERENV','CON_NAME') FROM dual")) {
-                rs.next();
-                log.info("[LIQUIBASE][DEBUG] CON_NAME={}", rs.getString(1));
+
+            if (props.getSchemaTargets() != null && !props.getSchemaTargets().isEmpty()) {
+                props.getSchemaTargets().forEach((paramName, suffix) -> {
+                    if (paramName == null || paramName.isBlank() || suffix == null || suffix.isBlank()) return;
+                    liquibase.setChangeLogParameter(paramName, TenantSchemaNaming.buildOracleSchema(tenantId, suffix));
+                });
+            }
+
+            // Oracle-only debug
+            if ("ORACLE".equalsIgnoreCase(dbType)) {
+
+                try (Statement st = conn.createStatement();
+                     ResultSet rs = st.executeQuery("SELECT SYS_CONTEXT('USERENV','CON_NAME') FROM dual")) {
+                    rs.next();
+                    log.info("[LIQUIBASE][DEBUG] CON_NAME={}", rs.getString(1));
+                }
             }
 
             // ✅ EXECUTE thật (không truyền Writer)
             liquibase.update(new Contexts(), new LabelExpression());
         }
 
-        log.info("[LIQUIBASE][TENANT_SCHEMA] done tenant={} schema={}", tenantId, schemaUpper);
+        log.info("[LIQUIBASE][TENANT_SCHEMA] done tenant={} schema={}", tenantId, schemaNorm);
+    }
+
+
+    private static String normalizeSchemaForDb(String dbType, String schema) {
+        if (schema == null) return null;
+        String s = schema.trim();
+        if (dbType == null) return s;
+        String t = dbType.trim().toUpperCase(Locale.ROOT);
+        if ("ORACLE".equals(t)) return s.toUpperCase(Locale.ROOT);
+        if ("POSTGRES".equals(t) || "POSTGRESQL".equals(t)) return s.toLowerCase(Locale.ROOT);
+        return s;
     }
 
     private void logConn(Connection conn, String tenantId, String schema) {

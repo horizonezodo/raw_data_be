@@ -63,6 +63,22 @@ public class DataSourceCache {
         return cache.get(key, k -> createDataSource(k, cfg));
     }
 
+    /**
+     * ✅ Datasource dùng cho PROVISIONING (tạo schema/user).
+     *
+     * - Provisioning có thể chạy trước khi schema tồn tại, nên tuyệt đối KHÔNG set
+     *   connectionInitSql kiểu "ALTER SESSION SET CURRENT_SCHEMA=..." (Oracle) hay
+     *   "SET search_path TO ..." (Postgres).
+     * - Key phải đủ entropy (dbType + jdbcUrl) để tránh reuse nhầm datasource (khi tenantId giữ nguyên
+     *   nhưng bạn đổi COM_CFG_TENANT từ ORACLE -> POSTGRES hoặc đổi jdbcUrl).
+     */
+    public HikariDataSource getOrCreateTenantProvision(String tenantId, TenantDbConfig cfg) {
+        String dbType = (cfg.dbType() == null) ? "UNKNOWN" : cfg.dbType().trim().toUpperCase(Locale.ROOT);
+        String jdbcHash = Integer.toHexString(Objects.toString(cfg.jdbcUrl(), "").hashCode());
+        String key = "TENANT:" + tenantId + ":" + dbType + ":" + jdbcHash + ":PROVISION";
+        return getOrCreate(key, cfg);
+    }
+
     /** ✅ Recommended: tenant runtime pool */
     public HikariDataSource getOrCreateTenantRuntime(String tenantId, String schema, TenantDbConfig cfg) {
         String dbType = (cfg.dbType() == null) ? "UNKNOWN" : cfg.dbType().trim().toUpperCase(Locale.ROOT);
@@ -108,23 +124,30 @@ public class DataSourceCache {
         hc.setMaxLifetime(props.getPool().getMaxLifetimeMs());
         hc.setConnectionTimeout(props.getPool().getConnectionTimeoutMs());
 
-        // ✅ Build schema = {tenantId}_{serviceCode} theo pattern (runtime use-case)
+        // ✅ PROVISION pool: KHÔNG set schema/search_path vì schema có thể CHƯA tồn tại.
+        boolean isProvision = key != null && key.contains(":PROVISION");
+
         String serviceCode = serviceCodeProvider.serviceCode();
-        String rawSchema = props.resolveSchema(cfg.tenantId(), serviceCode);
-        String schema = sanitizeSchema(rawSchema);
+        String schema = null;
+        if (!isProvision) {
+            // ✅ Build schema = {tenantId}_{serviceCode} theo pattern (runtime use-case)
+            String rawSchema = props.resolveSchema(cfg.tenantId(), serviceCode);
+            schema = sanitizeSchema(rawSchema);
 
-        // ✅ Nếu username chính là schema owner thì không cần set initSql
-        if (schema != null && cfg.username() != null && schema.equalsIgnoreCase(cfg.username().trim())) {
-            schema = null;
-        }
+            // ✅ Nếu username chính là schema owner thì không cần set initSql
+            if (schema != null && cfg.username() != null && schema.equalsIgnoreCase(cfg.username().trim())) {
+                schema = null;
+            }
 
-        String initSql = buildInitSql(cfg.dbType(), schema);
-        if (initSql != null) {
-            hc.setConnectionInitSql(initSql);
+            String initSql = buildInitSql(cfg.dbType(), schema);
+            if (initSql != null) {
+                hc.setConnectionInitSql(initSql);
+            }
         }
 
         log.info("[MT] Created datasource key={}, tenant={}, serviceCode={}, dbType={}, schema={}",
-                key, cfg.tenantId(), serviceCode, cfg.dbType(), (schema == null ? "(owner)" : schema));
+                key, cfg.tenantId(), serviceCode, cfg.dbType(),
+                (isProvision ? "(provision/no-schema)" : (schema == null ? "(owner)" : schema)));
 
         return new HikariDataSource(hc);
     }
